@@ -137,16 +137,16 @@ public class SurfacesView extends SurfaceView implements SurfaceHolder.Callback 
                 public void onPreviewFrame(byte[] data, Camera camera) {
                     //Log.e("kalu", "onPreviewFrame");
 
-                    boolean alive = mThread.isAlive();
-                    if (!alive) return;
+                    boolean alive1 = Thread1.isAlive();
+                    if (!alive1) return;
                     //Log.e("kalu11", "setPreviewCallback ==> ");
 
                     final Message obtain = Message.obtain();
                     obtain.obj = data;
                     obtain.arg1 = 640;
                     obtain.arg2 = 480;
-                    mHandler.removeCallbacksAndMessages(null);
-                    mHandler.sendMessage(obtain);
+//                    mHandler.removeCallbacksAndMessages(null);
+//                    mHandler.sendMessage(obtain);
                 }
             });
 
@@ -191,64 +191,19 @@ public class SurfacesView extends SurfaceView implements SurfaceHolder.Callback 
         }
     };
 
-    private final HandlerThread mThread = new HandlerThread("OcrThread");
+    private final HandlerThread Thread1 = new HandlerThread("Thread1");
 
     {
-        mThread.start();
+        Thread1.start();
     }
 
-    private final Handler mHandler = new Handler(mThread.getLooper()) {
+    private final Handler Handler1 = new Handler(Thread1.getLooper()) {
         @Override
         public void handleMessage(Message msg) {
 
             byte[] data = (byte[]) msg.obj;
             final int width = msg.arg1;
             final int height = msg.arg2;
-
-            long start = System.currentTimeMillis();
-
-//            //2017.11.13 添加竖屏代码处理，生成正确方向图片
-//            if (width < height) {
-//                // portrait
-//                byte[] rotatedData = new byte[data.length];
-//                for (int x = 0; x < width; x++) {
-//                    for (int y = 0; y < height; y++)
-//                        rotatedData[y * width + width - x - 1] = data[y + x * height];
-//                }
-//                data = rotatedData;
-//            }
-//
-//            Result rawResult = null;
-//            PlanarYUVLuminanceSource source = activity.getCameraManager().buildLuminanceSource(data, width, height);
-//            if (source != null) {
-//                BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-//                try {
-//                    rawResult = multiFormatReader.decodeWithState(bitmap);
-//                } catch (ReaderException re) {
-//                    // continue
-//                } finally {
-//                    multiFormatReader.reset();
-//                }
-//            }
-//
-//            Handler handler = activity.getHandler();
-//            if (rawResult != null) {
-//                // Don't log the barcode contents for security.
-//                long end = System.currentTimeMillis();
-//                Log.d(TAG, "Found barcode in " + (end - start) + " ms");
-//                if (handler != null) {
-//                    Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
-//                    Bundle bundle = new Bundle();
-//                    bundleThumbnail(source, bundle);
-//                    message.setData(bundle);
-//                    message.sendToTarget();
-//                }
-//            } else {
-//                if (handler != null) {
-//                    Message message = Message.obtain(handler, R.id.decode_failed);
-//                    message.sendToTarget();
-//                }
-//            }
 
             final String str = "";
             if (TextUtils.isEmpty(str))
@@ -261,20 +216,20 @@ public class SurfacesView extends SurfaceView implements SurfaceHolder.Callback 
             mMain.removeCallbacksAndMessages(null);
             mMain.sendMessage(obtain);
 
-            mHandler.removeCallbacksAndMessages(null);
-            mThread.quit();
+            Handler1.removeCallbacksAndMessages(null);
+            Thread1.quit();
         }
     };
 
     /**********************************************************************************/
 
-    private OnOcrChangeListener listener;
+    private OnCodeChangeListener listener;
 
-    public interface OnOcrChangeListener {
+    public interface OnCodeChangeListener {
         void onSucc(final String str);
     }
 
-    public void setOnOcrChangeListener(OnOcrChangeListener listener) {
+    public void setOnOcrChangeListener(OnCodeChangeListener listener) {
         this.listener = listener;
     }
 }

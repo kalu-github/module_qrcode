@@ -49,7 +49,7 @@ public class DecodeUtil {
             int[] pixels = new int[width * height];
             bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
             RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
-            Result result = new QRCodeReader().decode(new BinaryBitmap(new HybridBinarizer(source)));
+            Result result = QRCodeReader.obtain().decode(new BinaryBitmap(new HybridBinarizer(source)));
             if (result != null) {
 
                 String str = result.getText();
