@@ -31,6 +31,7 @@ import com.google.zxing.core.Result;
 import com.google.zxing.core.qrcode.QRCodeReader;
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.TimeUnit;
 
 public class DecodeHandler extends Handler {
 
@@ -50,11 +51,9 @@ public class DecodeHandler extends Handler {
         }
         if (message.what == R.id.decode) {
             decode((byte[]) message.obj, message.arg1, message.arg2);
-
         } else if (message.what == R.id.quit) {
             running = false;
             Looper.myLooper().quit();
-
         }
     }
 
@@ -67,32 +66,29 @@ public class DecodeHandler extends Handler {
      * @param height The height of the preview frame.
      */
     private void decode(byte[] data, int width, int height) {
-        long start = System.currentTimeMillis();
+
+        final Handler handler = activity.getHandler();
+        if (null == handler)
+            return;
+
+        long start = System.nanoTime();
 
         Rect rect = activity.getCameraManager().getFramingRectInPreview();
-
         PlanarYUVLuminanceSource source = QRCodeReader.obtain().source(rect, data, width, height);
         Result rawResult = QRCodeReader.obtain().decode(source);
-//        if (null == rawResult)
-//            return;
 
-        Handler handler = activity.getHandler();
+        long end = System.nanoTime();
+        Log.d(TAG, "DecodeHandler => decode-time = " + TimeUnit.NANOSECONDS.toMillis(end - start) + " ms");
+
         if (rawResult != null) {
-            // Don't log the barcode contents for security.
-            long end = System.currentTimeMillis();
-            Log.d(TAG, "Found barcode in " + (end - start) + " ms");
-            if (handler != null) {
-                Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
-                Bundle bundle = new Bundle();
-                bundleThumbnail(source, bundle);
-                message.setData(bundle);
-                message.sendToTarget();
-            }
+            Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
+            Bundle bundle = new Bundle();
+            bundleThumbnail(source, bundle);
+            message.setData(bundle);
+            message.sendToTarget();
         } else {
-            if (handler != null) {
-                Message message = Message.obtain(handler, R.id.decode_failed);
-                message.sendToTarget();
-            }
+            Message message = Message.obtain(handler, R.id.decode_failed);
+            message.sendToTarget();
         }
     }
 
@@ -106,5 +102,4 @@ public class DecodeHandler extends Handler {
         bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
         bundle.putFloat(DecodeThread.BARCODE_SCALED_FACTOR, (float) width / source.getWidth());
     }
-
 }
