@@ -41,14 +41,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.R;
-import com.google.zxing.android.view.ScansView;
-import com.google.zxing.core.Result;
 import com.google.zxing.android.camera.CameraManager;
+import com.google.zxing.android.decode.DecodeUtil;
 import com.google.zxing.android.manager.BeepManager;
 import com.google.zxing.android.manager.InactivityTimer;
 import com.google.zxing.android.model.MNScanConfig;
-import com.google.zxing.android.decode.DecodeUtil;
+import com.google.zxing.android.view.ScansView;
 import com.google.zxing.android.view.SeeksBar;
+import com.google.zxing.android.view.ZxingView;
+import com.google.zxing.core.Result;
 
 /**
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
@@ -79,12 +80,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private RelativeLayout btn_dialog_bg;
     private ImageView ivScreenshot;
 
-    private SurfaceView surfaceView;
+    private ZxingView surfaceView;
     private ImageView mIvScanZoomIn;
     private ImageView mIvScanZoomOut;
     private SeekBar mSeekBarZoom;
     private LinearLayout mLlRoomController;
-    private Context context;
     private SeeksBar mSeekBarZoomVertical;
     private ImageView mIvScanZoomOutVertical;
     private LinearLayout mLlRoomControllerVertical;
@@ -111,14 +111,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.mn_scan_capture);
-        context = this;
         initView();
         initIntent();
     }
-
 
     private void initIntent() {
         Intent intent = getIntent();
@@ -375,7 +375,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void initView() {
-        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+        surfaceView = findViewById(R.id.preview_view);
         scannersView = (ScansView) findViewById(R.id.viewfinder_view);
         btn_scan_light = (LinearLayout) findViewById(R.id.btn_scan_light);
         iv_scan_light = (ImageView) findViewById(R.id.iv_scan_light);
@@ -537,7 +537,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         //显示
         if (zoomControllerFlag) {
 
-            float scale = context.getResources().getDisplayMetrics().density;
+            float scale = getApplicationContext().getResources().getDisplayMetrics().density;
             int size10 = (int) (10 * scale + 0.5f);
 
             if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left) {

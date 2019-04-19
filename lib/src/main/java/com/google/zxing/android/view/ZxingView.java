@@ -17,32 +17,25 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import com.google.zxing.R;
-import com.google.zxing.core.BinaryBitmap;
-import com.google.zxing.core.PlanarYUVLuminanceSource;
-import com.google.zxing.core.ReaderException;
-import com.google.zxing.core.Result;
-import com.google.zxing.core.common.HybridBinarizer;
-
 /**
  * description: surfaceview
  * create by kalu on 2019/1/25 17:01
  */
-public class SurfacesView extends SurfaceView implements SurfaceHolder.Callback {
+public class ZxingView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Camera mCamera;
 
     /**********************************************************************************************/
 
-    public SurfacesView(Context context) {
+    public ZxingView(Context context) {
         this(context, null, 0);
     }
 
-    public SurfacesView(Context context, AttributeSet attrs) {
+    public ZxingView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SurfacesView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ZxingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         getHolder().addCallback(this);
@@ -55,7 +48,7 @@ public class SurfacesView extends SurfaceView implements SurfaceHolder.Callback 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         final int height = MeasureSpec.getSize(heightMeasureSpec);
-        final int width = 640 * height / 480;
+        final int width = 480 * height / 640;
         setMeasuredDimension(width, height);
 
 //        final int canvasHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -137,14 +130,14 @@ public class SurfacesView extends SurfaceView implements SurfaceHolder.Callback 
                 public void onPreviewFrame(byte[] data, Camera camera) {
                     //Log.e("kalu", "onPreviewFrame");
 
-                    boolean alive1 = Thread1.isAlive();
+                   /* boolean alive1 = Thread1.isAlive();
                     if (!alive1) return;
                     //Log.e("kalu11", "setPreviewCallback ==> ");
 
                     final Message obtain = Message.obtain();
                     obtain.obj = data;
                     obtain.arg1 = 640;
-                    obtain.arg2 = 480;
+                    obtain.arg2 = 480;*/
 //                    mHandler.removeCallbacksAndMessages(null);
 //                    mHandler.sendMessage(obtain);
                 }
@@ -175,61 +168,5 @@ public class SurfacesView extends SurfaceView implements SurfaceHolder.Callback 
             mCamera.release();
             mCamera = null;
         }
-    }
-
-    /**********************************************************************************************/
-
-    @SuppressLint("HandlerLeak")
-    private final Handler mMain = new Handler(Looper.getMainLooper()) {
-
-        @Override
-        public void handleMessage(Message msg) {
-
-            if (null == listener || null == msg.obj)
-                return;
-
-        }
-    };
-
-    private final HandlerThread Thread1 = new HandlerThread("Thread1");
-
-    {
-        Thread1.start();
-    }
-
-    private final Handler Handler1 = new Handler(Thread1.getLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-
-            byte[] data = (byte[]) msg.obj;
-            final int width = msg.arg1;
-            final int height = msg.arg2;
-
-            final String str = "";
-            if (TextUtils.isEmpty(str))
-                return;
-
-            final Message obtain = Message.obtain();
-            obtain.obj = str;
-            obtain.arg1 = width;
-            obtain.arg2 = height;
-            mMain.removeCallbacksAndMessages(null);
-            mMain.sendMessage(obtain);
-
-            Handler1.removeCallbacksAndMessages(null);
-            Thread1.quit();
-        }
-    };
-
-    /**********************************************************************************/
-
-    private OnCodeChangeListener listener;
-
-    public interface OnCodeChangeListener {
-        void onSucc(final String str);
-    }
-
-    public void setOnOcrChangeListener(OnCodeChangeListener listener) {
-        this.listener = listener;
     }
 }

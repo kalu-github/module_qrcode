@@ -17,7 +17,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <SurfaceView
+    <com.google.zxing.android.view.ZxingView
         android:id="@+id/preview_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -208,7 +208,6 @@
         </LinearLayout>
 
     </RelativeLayout>
-
 
     <ImageView
         android:id="@+id/ivScreenshot"
