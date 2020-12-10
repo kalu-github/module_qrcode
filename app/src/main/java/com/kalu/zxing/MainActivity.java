@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,15 +30,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                EditText editText = findViewById(R.id.input);
-                String str = editText.getText().toString();
-
-                if (TextUtils.isEmpty(str)) {
-                    Toast.makeText(MainActivity.this, "字符串不能为空", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Bitmap bitmap = EncodeUtil.encode(str);
+                Bitmap bitmap = EncodeUtil.encode("https://www.baidu.com/");
                 if (null == bitmap)
                     return;
 
@@ -53,15 +44,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                EditText editText = findViewById(R.id.input);
-                String str = editText.getText().toString();
-
-                if (TextUtils.isEmpty(str)) {
-                    Toast.makeText(MainActivity.this, "字符串不能为空", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String path = EncodeUtil.encodeRaw(getApplicationContext(), str, R.raw.logo);
+                String path = EncodeUtil.encodeRaw(getApplicationContext(), "https://www.baidu.com/", R.raw.logo);
                 if (TextUtils.isEmpty(path)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -69,6 +52,56 @@ public class MainActivity extends Activity {
 
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageURI(Uri.parse(path));
+            }
+        });
+
+        // 默认扫描
+        findViewById(R.id.scan_normal).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                requestCameraPerm();
+                MNScanManager.startScan(MainActivity.this, new MNScanCallback() {
+                    @Override
+                    public void onActivityResult(int resultCode, Intent data) {
+                        handlerResult(resultCode, data);
+                    }
+                });
+            }
+        });
+
+        // 自定义扫描
+        findViewById(R.id.scan_custom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                requestCameraPerm();
+                MNScanConfig scanConfig = new MNScanConfig.Builder()
+                        //设置完成震动
+                        .isShowVibrate(false)
+                        //扫描完成声音
+                        .isShowBeep(true)
+                        //显示相册功能
+                        .isShowPhotoAlbum(true)
+                        //打开扫描页面的动画
+                        .setActivityOpenAnime(R.anim.activity_anmie_in)
+                        //退出扫描页面动画
+                        .setActivityExitAnime(R.anim.activity_anmie_out)
+                        //自定义文案
+                        .setScanHintText("请将二维码放入框中...")
+                        //扫描线的颜色
+                        .setScanColor("#FFFF00")
+                        //是否显示缩放控制器
+                        .isShowZoomController(true)
+                        //显示缩放控制器位置
+                        .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
+                        .builder();
+                MNScanManager.startScan(MainActivity.this, scanConfig, new MNScanCallback() {
+                    @Override
+                    public void onActivityResult(int resultCode, Intent data) {
+                        handlerResult(resultCode, data);
+                    }
+                });
             }
         });
     }
@@ -82,66 +115,21 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void scanCodeDefault(View view) {
-        requestCameraPerm();
-        MNScanManager.startScan(this, new MNScanCallback() {
-            @Override
-            public void onActivityResult(int resultCode, Intent data) {
-                handlerResult(resultCode, data);
-            }
-        });
-    }
-
-    public void scanCode(View view) {
-        requestCameraPerm();
-        MNScanConfig scanConfig = new MNScanConfig.Builder()
-                //设置完成震动
-                .isShowVibrate(false)
-                //扫描完成声音
-                .isShowBeep(true)
-                //显示相册功能
-                .isShowPhotoAlbum(true)
-                //打开扫描页面的动画
-                .setActivityOpenAnime(R.anim.activity_anmie_in)
-                //退出扫描页面动画
-                .setActivityExitAnime(R.anim.activity_anmie_out)
-                //自定义文案
-                .setScanHintText("请将二维码放入框中...")
-                //扫描线的颜色
-                .setScanColor("#FFFF00")
-                //是否显示缩放控制器
-                .isShowZoomController(true)
-                //显示缩放控制器位置
-                .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
-                .builder();
-        MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
-            @Override
-            public void onActivityResult(int resultCode, Intent data) {
-                handlerResult(resultCode, data);
-            }
-        });
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-
     private void handlerResult(int resultCode, Intent data) {
         if (data == null) {
             return;
         }
         switch (resultCode) {
             case MNScanManager.RESULT_SUCCESS:
-                String resultSuccess = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS);
-                showToast(resultSuccess);
+                String msg = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                 break;
             case MNScanManager.RESULT_FAIL:
-                String resultError = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_ERROR);
-                showToast(resultError);
+                String msg1 = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_ERROR);
+                Toast.makeText(this, msg1, Toast.LENGTH_SHORT).show();
                 break;
             case MNScanManager.RESULT_CANCLE:
-                showToast("取消扫码");
+                Toast.makeText(this, "取消扫码", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

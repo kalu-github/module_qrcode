@@ -20,20 +20,6 @@
             android:layout_gravity="center_horizontal"
             android:background="#eeeeee" />
 
-        <EditText
-            android:id="@+id/input"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:drawablePadding="4dp"
-            android:gravity="center_vertical|left"
-            android:padding="10dp"
-            android:text="https://www.baidu.com/"
-            android:textColorHint="@android:color/black"
-            android:textSize="14sp" />
-
         <Button
             android:id="@+id/create_qr1"
             android:layout_width="match_parent"
