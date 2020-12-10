@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -34,7 +38,7 @@ public class EncodeUtil {
     }
 
     public static Bitmap encode(String str, int size) {
-        return encode(str, size, null);
+        return createQr(str, size, null);
     }
 
     public static Bitmap encode(String str, Resources resources, int logo) {
@@ -49,11 +53,11 @@ public class EncodeUtil {
             options.outConfig = Bitmap.Config.RGB_565;
         }
         options.inJustDecodeBounds = false;
-        return encode(str, 500, BitmapFactory.decodeResource(resources, logo, options));
+        return createQr(str, 500, BitmapFactory.decodeResource(resources, logo, options));
     }
 
     public static Bitmap encode(String str, Bitmap logo) {
-        return encode(str, 500, logo);
+        return createQr(str, 500, logo);
     }
 
     public static Bitmap encode(String str, Resources resources, int size, int logo) {
@@ -68,7 +72,7 @@ public class EncodeUtil {
             options.outConfig = Bitmap.Config.RGB_565;
         }
         options.inJustDecodeBounds = false;
-        return encode(str, size, BitmapFactory.decodeResource(resources, logo, options));
+        return createQr(str, size, BitmapFactory.decodeResource(resources, logo, options));
     }
 
     public static @Nullable
@@ -76,24 +80,8 @@ public class EncodeUtil {
 
         try {
 
-            Resources resources = context.getResources();
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            //  TypedValue value = new TypedValue();
-            // context.getResources().openRawResource(resId, value);
-            //  options.inTargetDensity = value.density;
-            options.inScaled = false;//不缩放
-
-            Bitmap logo = BitmapFactory.decodeResource(resources, resId, options);
-
-//            Paint paint = new Paint();
-//            Canvas canvas = new Canvas();
-//            paint.setStyle(Paint.Style.STROKE);   //空心
-//            paint.setAlpha(75);   //
-//            //canvas.drawBitmap ( vBitmap , 50, 100, null );  //无透明
-//            canvas.drawBitmap(logo, 50, 200, paint);  //有透明
-
-            Bitmap bitmap = encode(str, 500, logo);
+            Bitmap logo = createLogoWhiteEdgeDrawable(context, resId, 100);
+            Bitmap bitmap = createQr(str, 500, logo);
 
             if (null == bitmap && null != logo) {
                 logo.recycle();
@@ -146,24 +134,8 @@ public class EncodeUtil {
 
         try {
 
-            Resources resources = context.getResources();
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            TypedValue value = new TypedValue();
-            context.getResources().openRawResource(resId, value);
-            options.inTargetDensity = value.density;
-            options.inScaled = false;//不缩放
-
-            Bitmap logo = BitmapFactory.decodeResource(resources, resId, options);
-
-//            Paint paint = new Paint();
-//            Canvas canvas = new Canvas();
-//            paint.setStyle(Paint.Style.STROKE);   //空心
-//            paint.setAlpha(75);   //
-//            //canvas.drawBitmap ( vBitmap , 50, 100, null );  //无透明
-//            canvas.drawBitmap(logo, 50, 200, paint);  //有透明
-
-            Bitmap bitmap = encode(str, 500, logo);
+            Bitmap logo = createLogoWhiteEdgeRaw(context, resId, 100);
+            Bitmap bitmap = createQr(str, 500, logo);
 
             if (null == bitmap && null != logo) {
                 logo.recycle();
@@ -225,6 +197,127 @@ public class EncodeUtil {
     }
 
     /**
+     * bitmap 描白边
+     *
+     * @param resId
+     * @param border
+     * @return
+     */
+    private static @Nullable
+    Bitmap createLogoWhiteEdgeDrawable(@NonNull Context context, @DrawableRes int resId, @IntRange(from = 0, to = 100) int border) {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;//不缩放
+        options.inJustDecodeBounds = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            options.outConfig = Bitmap.Config.RGB_565;
+        }
+
+        Resources resources = context.getResources();
+        BitmapFactory.decodeResource(resources, resId, options);
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, resId, options);
+
+        // 不需要白边
+        if (border == 0) {
+            return bitmap;
+        }
+
+        // 边框容错
+        int size = Math.min(options.outWidth, options.outHeight) / 10;
+        if (border > size) {
+            border = size;
+        }
+
+        int width = options.outWidth + 2 * border;
+        int height = options.outHeight + 2 * border;
+        //创建一个空的Bitmap(内存区域),宽度等于第一张图片的宽度，高度等于两张图片高度总和
+        Bitmap logo = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        //将bitmap放置到绘制区域,并将要拼接的图片绘制到指定内存区域
+        Canvas canvas = new Canvas(logo);
+        Rect src = new Rect(0, 0, options.outWidth, options.outHeight);
+        Rect dst = new Rect(border, border, options.outWidth + border, options.outHeight + border);
+        canvas.drawBitmap(bitmap, src, dst, null);
+
+        Paint paint = new Paint();
+        //设置边框颜色
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        //设置边框宽度
+        paint.setStrokeWidth(border);
+        canvas.drawRect(border * 0.5f, border * 0.5f, width - border * 0.5f, height - border * 0.5f, paint);
+
+        if (null != bitmap) {
+            bitmap.recycle();
+        }
+
+        return logo;
+    }
+
+    /**
+     * bitmap 描白边
+     *
+     * @param resId
+     * @param border
+     * @return
+     */
+    private static @Nullable
+    Bitmap createLogoWhiteEdgeRaw(@NonNull Context context, @RawRes int resId, @IntRange(from = 0, to = 100) int border) {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;//不缩放
+        options.inJustDecodeBounds = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            options.outConfig = Bitmap.Config.RGB_565;
+        }
+
+        TypedValue value = new TypedValue();
+        context.getResources().openRawResource(resId, value);
+        options.inTargetDensity = value.density;
+//        BitmapFactory.decodeResource(resources, logo, options);
+
+        Resources resources = context.getResources();
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, resId, options);
+
+
+        // 不需要白边
+        if (border == 0) {
+            return bitmap;
+        }
+
+        // 边框容错
+        int size = Math.min(options.outWidth, options.outHeight) / 10;
+        if (border > size) {
+            border = size;
+        }
+
+        int width = options.outWidth + 2 * border;
+        int height = options.outHeight + 2 * border;
+        //创建一个空的Bitmap(内存区域),宽度等于第一张图片的宽度，高度等于两张图片高度总和
+        Bitmap logo = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        //将bitmap放置到绘制区域,并将要拼接的图片绘制到指定内存区域
+        Canvas canvas = new Canvas(logo);
+        Rect src = new Rect(0, 0, options.outWidth, options.outHeight);
+        Rect dst = new Rect(border, border, options.outWidth + border, options.outHeight + border);
+        canvas.drawBitmap(bitmap, src, dst, null);
+
+        Paint paint = new Paint();
+        //设置边框颜色
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        //设置边框宽度
+        paint.setStrokeWidth(border);
+        canvas.drawRect(border * 0.5f, border * 0.5f, width - border * 0.5f, height - border * 0.5f, paint);
+
+        if (null != bitmap) {
+            bitmap.recycle();
+        }
+
+        return logo;
+    }
+
+    /**
      * 生成Bitmap
      *
      * @param str
@@ -233,7 +326,7 @@ public class EncodeUtil {
      * @return
      */
     private static @Nullable
-    Bitmap encode(@NonNull String str, @IntRange(from = 100, to = 10000) int size, @Nullable Bitmap logo) {
+    Bitmap createQr(@NonNull String str, @IntRange(from = 100, to = 10000) int size, @Nullable Bitmap logo) {
 
         // 容错
         if (TextUtils.isEmpty(str))
