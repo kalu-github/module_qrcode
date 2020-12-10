@@ -1,2 +1,4 @@
 include ':app'
-include ':lib'
+//include ':lib_zxing'
+include ':lib_qr'
+//include ':lib_bar'

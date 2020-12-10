@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Zxing_Qrcode_v3.3.3.iml" filepath="$PROJECT_DIR$/Zxing_Qrcode_v3.3.3.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/zxing_lite.iml" filepath="$PROJECT_DIR$/.idea/modules/zxing_lite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/zxing_lite.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/zxing_lite.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib_qr/zxing_lite.lib_qr.iml" filepath="$PROJECT_DIR$/.idea/modules/lib_qr/zxing_lite.lib_qr.iml" />
     </modules>
   </component>
 </project>

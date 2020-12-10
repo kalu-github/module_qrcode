@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ Copyright (C) 2008 ZXing authors
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.zxing.android.view.ZxingView
+        android:id="@+id/preview_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.google.zxing.android.view.ScansView
+        android:id="@+id/viewfinder_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--菜单-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--闪光灯-->
+        <LinearLayout
+            android:id="@+id/btn_scan_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_scan_light"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/mn_icon_scan_flash_light_off" />
+
+            <TextView
+                android:id="@+id/tv_scan_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="打开手电筒"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+        <!--关闭-->
+        <LinearLayout
+            android:id="@+id/btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/mn_icon_scan_close" />
+
+        </LinearLayout>
+        <!--相册-->
+        <LinearLayout
+            android:id="@+id/btn_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="相册"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+        <!--放大缩小横向-->
+        <LinearLayout
+            android:id="@+id/ll_room_controller"
+            android:layout_width="240dp"
+            android:layout_height="24dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/mn_scan_zoom_bg"
+            android:gravity="center"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_scan_zoom_out"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mn_scan_icon_zoom_out" />
+
+            <SeekBar
+                android:id="@+id/seek_bar_zoom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_weight="1"
+                android:indeterminateOnly="false"
+                android:max="100"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:paddingEnd="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingStart="0dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/mn_scan_seekbar_zoom"
+                android:thumb="@drawable/mn_scan_seekbar_thumb"
+                android:thumbOffset="0dp" />
+
+            <ImageView
+                android:id="@+id/iv_scan_zoom_in"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mn_scan_icon_zoom_in" />
+
+        </LinearLayout>
+        <!--放大缩小竖向-->
+        <LinearLayout
+            android:id="@+id/ll_room_controller_vertical"
+            android:layout_width="24dp"
+            android:layout_height="200dp"
+            android:background="@drawable/mn_scan_zoom_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_scan_zoom_in_vertical"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mn_scan_icon_zoom_in" />
+
+            <com.google.zxing.android.view.SeeksBar
+                android:id="@+id/seek_bar_zoom_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1" />
+
+
+            <ImageView
+                android:id="@+id/iv_scan_zoom_out_vertical"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mn_scan_icon_zoom_out" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--LoadingDialog-->
+    <RelativeLayout
+        android:id="@+id/btn_dialog_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/mn_scan_dialog_bg"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.google.zxing.android.view.LoadingsView
+                android:id="@+id/progress_wheel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:mn_barColor="#FFFFFF"
+                app:mn_barWidth="2dp"
+                app:mn_fillRadius="true"
+                app:mn_progressIndeterminate="true" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ivScreenshot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:visibility="gone" />
+
+</merge>

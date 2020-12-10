@@ -1,19 +1,17 @@
 package com.kalu.zxing;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.android.MNScanManager;
@@ -21,25 +19,58 @@ import com.google.zxing.android.encode.EncodeUtil;
 import com.google.zxing.android.model.MNScanConfig;
 import com.google.zxing.android.other.MNScanCallback;
 
-public class MainActivity extends AppCompatActivity {
-
-    private TextView textView;
-
-    private ImageView imageView;
-    private EditText editText;
-    private CheckBox checkbox;
-
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = findViewById(R.id.tv_show);
-        imageView = findViewById(R.id.imageView);
-        editText = findViewById(R.id.editText);
-        checkbox = findViewById(R.id.checkbox);
+        // 无LOGO
+        findViewById(R.id.create_qr1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                EditText editText = findViewById(R.id.input);
+                String str = editText.getText().toString();
+
+                if (TextUtils.isEmpty(str)) {
+                    Toast.makeText(MainActivity.this, "字符串不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Bitmap bitmap = EncodeUtil.encode(str);
+                if (null == bitmap)
+                    return;
+
+                ImageView imageView = findViewById(R.id.logo);
+                imageView.setImageBitmap(bitmap);
+            }
+        });
+
+        // 有LOGO
+        findViewById(R.id.create_qr2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EditText editText = findViewById(R.id.input);
+                String str = editText.getText().toString();
+
+                if (TextUtils.isEmpty(str)) {
+                    Toast.makeText(MainActivity.this, "字符串不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String path = EncodeUtil.encodeRaw(getApplicationContext(), str, R.raw.logo);
+                if (TextUtils.isEmpty(path)) {
+                    Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ImageView imageView = findViewById(R.id.logo);
+                imageView.setImageURI(Uri.parse(path));
+            }
+        });
     }
 
     public void requestCameraPerm() {
@@ -91,30 +122,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    public void createQRImage(View view) {
-        String str = editText.getText().toString();
-
-        if (TextUtils.isEmpty(str)) {
-            Toast.makeText(this, "字符串不能为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Bitmap qrImage;
-        if (checkbox.isChecked()) {
-            Bitmap logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-            qrImage = EncodeUtil.encode(str, logo);
-        } else {
-            qrImage = EncodeUtil.encode(str);
-        }
-
-        if (qrImage != null) {
-            imageView.setImageBitmap(qrImage);
-        } else {
-            Toast.makeText(this, "生成失败", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -128,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
             case MNScanManager.RESULT_SUCCESS:
                 String resultSuccess = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS);
                 showToast(resultSuccess);
-                textView.setText(resultSuccess);
                 break;
             case MNScanManager.RESULT_FAIL:
                 String resultError = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_ERROR);
