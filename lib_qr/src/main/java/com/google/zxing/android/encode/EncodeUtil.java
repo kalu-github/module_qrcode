@@ -26,6 +26,10 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 /**
  * description: 创建二维码
@@ -81,6 +85,9 @@ public class EncodeUtil {
         try {
 
             Bitmap logo = createLogoWhiteEdgeDrawable(context, resId, 100);
+            if (null == logo)
+                return null;
+
             Bitmap bitmap = createQr(str, 500, logo);
 
             if (null == bitmap && null != logo) {
@@ -135,6 +142,9 @@ public class EncodeUtil {
         try {
 
             Bitmap logo = createLogoWhiteEdgeRaw(context, resId, 100);
+            if (null == logo)
+                return null;
+
             Bitmap bitmap = createQr(str, 500, logo);
 
             if (null == bitmap && null != logo) {
@@ -188,12 +198,109 @@ public class EncodeUtil {
 
         try {
 
-            return null;
+            Bitmap logo = createLogoWhiteEdgeUrl(context, url, 100);
+            if (null == logo)
+                return null;
+
+            Bitmap bitmap = createQr(str, 500, logo);
+
+            if (null == bitmap && null != logo) {
+                logo.recycle();
+                Log.e("EncodeUtil", "encode => recycle1");
+            }
+
+            File dir = context.getFilesDir();
+            if (!dir.exists() || !dir.isDirectory()) {
+                dir.mkdir();
+                Log.e("EncodeUtil", "encode => 生成文件目录");
+            }
+
+            String parent = dir.getAbsolutePath();
+            String child = "qrLogo.png";
+
+            File file = new File(parent, child);
+            if (file.exists()) {
+                file.delete();
+                Log.e("EncodeUtil", "encode => 删除文件缓存");
+            }
+
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+            fos.flush();
+            fos.close();
+            Log.e("EncodeUtil", "encode => 关闭流");
+
+            if (null != logo) {
+                logo.recycle();
+                Log.e("EncodeUtil", "encode => recycle2");
+            }
+
+            if (null != bitmap) {
+                bitmap.recycle();
+                Log.e("EncodeUtil", "encode => recycle3");
+            }
+
+            return parent + File.separator + child;
 
         } catch (Exception e) {
             Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * bitmap 描白边
+     *
+     * @param border
+     * @return
+     */
+    private static @Nullable
+    Bitmap createLogoWhiteEdgeUrl(@NonNull Context context, @NonNull String url, @IntRange(from = 0, to = 100) int border) {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;//不缩放
+        options.inJustDecodeBounds = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            options.outConfig = Bitmap.Config.RGB_565;
+        }
+
+        Bitmap bitmap = null;
+
+        try {
+
+            // 网络图片
+            bitmap = Executors.newSingleThreadExecutor().submit(new Callable<Bitmap>() {
+                @Override
+                public Bitmap call() {
+                    try {
+
+                        InputStream is = new URL(url).openStream();
+                        Bitmap logo = BitmapFactory.decodeStream(is, null, options);
+
+                        if (null != is) {
+                            is.close();
+                            Log.e("EncodeUtil", "encode => recycle4");
+                        }
+
+                        return logo;
+
+                    } catch (Exception e) {
+
+                        Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
+                        return null;
+                    }
+                }
+            }).get();
+
+        } catch (Exception e) {
+
+            Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
+        }
+
+        Bitmap logo = createWhiteEdge(context, bitmap, options, border);
+        return logo;
     }
 
     /**
@@ -217,40 +324,7 @@ public class EncodeUtil {
         BitmapFactory.decodeResource(resources, resId, options);
         Bitmap bitmap = BitmapFactory.decodeResource(resources, resId, options);
 
-        // 不需要白边
-        if (border == 0) {
-            return bitmap;
-        }
-
-        // 边框容错
-        int size = Math.min(options.outWidth, options.outHeight) / 10;
-        if (border > size) {
-            border = size;
-        }
-
-        int width = options.outWidth + 2 * border;
-        int height = options.outHeight + 2 * border;
-        //创建一个空的Bitmap(内存区域),宽度等于第一张图片的宽度，高度等于两张图片高度总和
-        Bitmap logo = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        //将bitmap放置到绘制区域,并将要拼接的图片绘制到指定内存区域
-        Canvas canvas = new Canvas(logo);
-        Rect src = new Rect(0, 0, options.outWidth, options.outHeight);
-        Rect dst = new Rect(border, border, options.outWidth + border, options.outHeight + border);
-        canvas.drawBitmap(bitmap, src, dst, null);
-
-        Paint paint = new Paint();
-        //设置边框颜色
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.STROKE);
-        //设置边框宽度
-        paint.setStrokeWidth(border);
-        canvas.drawRect(border * 0.5f, border * 0.5f, width - border * 0.5f, height - border * 0.5f, paint);
-
-        if (null != bitmap) {
-            bitmap.recycle();
-        }
-
+        Bitmap logo = createWhiteEdge(context, bitmap, options, border);
         return logo;
     }
 
@@ -279,6 +353,26 @@ public class EncodeUtil {
         Resources resources = context.getResources();
         Bitmap bitmap = BitmapFactory.decodeResource(resources, resId, options);
 
+
+        Bitmap logo = createWhiteEdge(context, bitmap, options, border);
+        return logo;
+    }
+
+
+    /**
+     * 描白边
+     *
+     * @param context
+     * @param bitmap
+     * @param options
+     * @param border
+     * @return
+     */
+    private static @Nullable
+    Bitmap createWhiteEdge(@NonNull Context context, @Nullable Bitmap bitmap, @NonNull BitmapFactory.Options options, @IntRange(from = 0, to = 100) int border) {
+
+        if (null == bitmap)
+            return null;
 
         // 不需要白边
         if (border == 0) {

@@ -44,7 +44,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                String path = EncodeUtil.encodeRaw(getApplicationContext(), "https://www.baidu.com/", R.raw.logo);
+                String path = EncodeUtil.encodeUrl(getApplicationContext(), "https://www.baidu.com/", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607941610003&di=93e4a9c692748efae6a7214320d8f2fc&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201709%2F24%2F20170924172335_m3cNW.jpeg");
+//                String path = EncodeUtil.encodeRaw(getApplicationContext(), "https://www.baidu.com/", R.raw.logo);
 //                String path = EncodeUtil.encodeDrawable(getApplicationContext(), "https://www.baidu.com/", R.drawable.logo);
                 if (TextUtils.isEmpty(path)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
