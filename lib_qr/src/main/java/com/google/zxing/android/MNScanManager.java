@@ -3,15 +3,17 @@ package com.google.zxing.android;
 import android.app.Activity;
 import android.content.Intent;
 
+import androidx.annotation.Keep;
+
 import com.google.zxing.android.model.MNScanConfig;
 import com.google.zxing.android.other.ActResultRequest;
 import com.google.zxing.android.other.MNScanCallback;
 
 /**
- * Created by maning on 2017/12/7.
- * 启动扫描的主类
+ * description:
+ * created by kalu on 2021-02-09
  */
-
+@Keep
 public class MNScanManager {
 
     //常量

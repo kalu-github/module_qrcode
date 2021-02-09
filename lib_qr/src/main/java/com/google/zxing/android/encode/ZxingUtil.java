@@ -16,6 +16,7 @@ import android.util.TypedValue;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IntRange;
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
@@ -35,17 +36,21 @@ import java.util.concurrent.Executors;
  * description: 创建二维码
  * create by kalu on 2019/1/30 13:08
  */
-public class EncodeUtil {
+@Keep
+public final class ZxingUtil {
 
+    @Keep
     public static Bitmap encode(String str) {
         return encode(str, 500);
     }
 
+    @Keep
     public static Bitmap encode(String str, int size) {
         return createQr(str, size, null);
     }
 
-    public static Bitmap encode(String str, Resources resources, int logo) {
+    @Keep
+    public static Bitmap encode(@NonNull String str, @NonNull Resources resources, @DrawableRes int logo) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(resources, logo, options);
@@ -60,10 +65,12 @@ public class EncodeUtil {
         return createQr(str, 500, BitmapFactory.decodeResource(resources, logo, options));
     }
 
+    @Keep
     public static Bitmap encode(String str, Bitmap logo) {
         return createQr(str, 500, logo);
     }
 
+    @Keep
     public static Bitmap encode(String str, Resources resources, int size, int logo) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -79,8 +86,8 @@ public class EncodeUtil {
         return createQr(str, size, BitmapFactory.decodeResource(resources, logo, options));
     }
 
-    public static @Nullable
-    String encodeDrawable(@NonNull Context context, @NonNull String str, @DrawableRes int resId) {
+    @Keep
+    public static String encodeDrawable(@NonNull Context context, @NonNull String str, @DrawableRes int resId) {
 
         try {
 
@@ -136,8 +143,8 @@ public class EncodeUtil {
         }
     }
 
-    public static @Nullable
-    String encodeRaw(@NonNull Context context, @NonNull String str, @RawRes int resId) {
+    @Keep
+    public static String encodeRaw(@NonNull Context context, @NonNull String str, @RawRes int resId) {
 
         try {
 
@@ -193,8 +200,8 @@ public class EncodeUtil {
         }
     }
 
-    public static @Nullable
-    String encodeUrl(@NonNull Context context, @NonNull String str, @NonNull String url) {
+    @Keep
+    public static String encodeUrl(@NonNull Context context, @NonNull String str, @NonNull String url) {
 
         try {
 

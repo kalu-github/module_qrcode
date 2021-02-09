@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.zxing.android.MNScanManager;
-import com.google.zxing.android.encode.EncodeUtil;
+import com.google.zxing.android.encode.ZxingUtil;
 import com.google.zxing.android.model.MNScanConfig;
 import com.google.zxing.android.other.MNScanCallback;
 
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Bitmap bitmap = EncodeUtil.encode("https://www.baidu.com/");
+                Bitmap bitmap = ZxingUtil.encode("https://www.baidu.com/");
                 if (null == bitmap)
                     return;
 
@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                String path = EncodeUtil.encodeUrl(getApplicationContext(), "https://www.baidu.com/", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607941610003&di=93e4a9c692748efae6a7214320d8f2fc&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201709%2F24%2F20170924172335_m3cNW.jpeg");
+                String path = ZxingUtil.encodeUrl(getApplicationContext(), "https://www.baidu.com/", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607942590295&di=28fb9f16991ad4e174bce0073729c7ad&imgtype=0&src=http%3A%2F%2Fb.zol-img.com.cn%2Fdesk%2Fbizhi%2Fimage%2F1%2F960x600%2F135115625376.jpg");
 //                String path = EncodeUtil.encodeRaw(getApplicationContext(), "https://www.baidu.com/", R.raw.logo);
 //                String path = EncodeUtil.encodeDrawable(getApplicationContext(), "https://www.baidu.com/", R.drawable.logo);
                 if (TextUtils.isEmpty(path)) {
