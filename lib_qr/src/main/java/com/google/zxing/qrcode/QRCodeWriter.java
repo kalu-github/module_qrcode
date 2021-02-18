@@ -60,17 +60,17 @@ public final class QRCodeWriter implements Writer {
 
         ErrorCorrectionLevel errorCorrectionLevel = level;
         int quietZone = QUIET_ZONE_SIZE;
-        if (hints != null) {
-            if (hints.containsKey(EncodeHintType.ERROR_CORRECTION)) {
-                errorCorrectionLevel = ErrorCorrectionLevel.valueOf(hints.get(EncodeHintType.ERROR_CORRECTION).toString());
-            }
-            if (hints.containsKey(EncodeHintType.MARGIN)) {
-                quietZone = Integer.parseInt(hints.get(EncodeHintType.MARGIN).toString());
-            }
-        }
+//        if (hints != null) {
+//            if (hints.containsKey(EncodeHintType.ERROR_CORRECTION)) {
+//                errorCorrectionLevel = ErrorCorrectionLevel.valueOf(hints.get(EncodeHintType.ERROR_CORRECTION).toString());
+//            }
+//            if (hints.containsKey(EncodeHintType.MARGIN)) {
+//                quietZone = Integer.parseInt(hints.get(EncodeHintType.MARGIN).toString());
+//            }
+//        }
 
         QRCode code = Encoder.encode(contents, errorCorrectionLevel, hints);
-        return renderResult(code, width, height, quietZone);
+        return renderResult(code, width, height, 0);
     }
 
     // Note that the input matrix uses 0 == white, 1 == black, while the output matrix uses

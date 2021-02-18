@@ -1,7 +1,6 @@
 package com.google.zxing.android.encode;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,11 +9,10 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
-import android.util.TypedValue;
 
-import androidx.annotation.DrawableRes;
+import androidx.annotation.ColorInt;
 import androidx.annotation.IntRange;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -40,403 +38,131 @@ import java.util.concurrent.Executors;
 public final class ZxingUtil {
 
     @Keep
-    public static Bitmap encode(String str) {
-        return encode(str, 500);
-    }
+    public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull String url) {
 
-    @Keep
-    public static Bitmap encode(String str, int size) {
-        return createQr(str, size, null);
-    }
+        InputStream inputStream = null;
 
-    @Keep
-    public static Bitmap encode(@NonNull String str, @NonNull Resources resources, @DrawableRes int logo) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(resources, logo, options);
-        int sampleSize = options.outHeight / 400;
-        if (sampleSize <= 0)
-            sampleSize = 1;
-        options.inSampleSize = sampleSize;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            options.outConfig = Bitmap.Config.RGB_565;
-        }
-        options.inJustDecodeBounds = false;
-        return createQr(str, 500, BitmapFactory.decodeResource(resources, logo, options));
-    }
-
-    @Keep
-    public static Bitmap encode(String str, Bitmap logo) {
-        return createQr(str, 500, logo);
-    }
-
-    @Keep
-    public static Bitmap encode(String str, Resources resources, int size, int logo) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(resources, logo, options);
-        int sampleSize = options.outHeight / 400;
-        if (sampleSize <= 0)
-            sampleSize = 1;
-        options.inSampleSize = sampleSize;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            options.outConfig = Bitmap.Config.RGB_565;
-        }
-        options.inJustDecodeBounds = false;
-        return createQr(str, size, BitmapFactory.decodeResource(resources, logo, options));
-    }
-
-    @Keep
-    public static String encodeDrawable(@NonNull Context context, @NonNull String str, @DrawableRes int resId) {
-
+        // 网络图片
         try {
-
-            Bitmap logo = createLogoWhiteEdgeDrawable(context, resId, 100);
-            if (null == logo)
-                return null;
-
-            Bitmap bitmap = createQr(str, 500, logo);
-
-            if (null == bitmap && null != logo) {
-                logo.recycle();
-                Log.e("EncodeUtil", "encode => recycle1");
-            }
-
-            File dir = context.getFilesDir();
-            if (!dir.exists() || !dir.isDirectory()) {
-                dir.mkdir();
-                Log.e("EncodeUtil", "encode => 生成文件目录");
-            }
-
-            String parent = dir.getAbsolutePath();
-            String child = "qrLogo.png";
-
-            File file = new File(parent, child);
-            if (file.exists()) {
-                file.delete();
-                Log.e("EncodeUtil", "encode => 删除文件缓存");
-            }
-
-            file.createNewFile();
-            FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-
-            fos.flush();
-            fos.close();
-            Log.e("EncodeUtil", "encode => 关闭流");
-
-            if (null != logo) {
-                logo.recycle();
-                Log.e("EncodeUtil", "encode => recycle2");
-            }
-
-            if (null != bitmap) {
-                bitmap.recycle();
-                Log.e("EncodeUtil", "encode => recycle3");
-            }
-
-            return parent + File.separator + child;
-
-        } catch (Exception e) {
-            Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
-            return null;
-        }
-    }
-
-    @Keep
-    public static String encodeRaw(@NonNull Context context, @NonNull String str, @RawRes int resId) {
-
-        try {
-
-            Bitmap logo = createLogoWhiteEdgeRaw(context, resId, 100);
-            if (null == logo)
-                return null;
-
-            Bitmap bitmap = createQr(str, 500, logo);
-
-            if (null == bitmap && null != logo) {
-                logo.recycle();
-                Log.e("EncodeUtil", "encode => recycle1");
-            }
-
-            File dir = context.getFilesDir();
-            if (!dir.exists() || !dir.isDirectory()) {
-                dir.mkdir();
-                Log.e("EncodeUtil", "encode => 生成文件目录");
-            }
-
-            String parent = dir.getAbsolutePath();
-            String child = "qrLogo.png";
-
-            File file = new File(parent, child);
-            if (file.exists()) {
-                file.delete();
-                Log.e("EncodeUtil", "encode => 删除文件缓存");
-            }
-
-            file.createNewFile();
-            FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-
-            fos.flush();
-            fos.close();
-            Log.e("EncodeUtil", "encode => 关闭流");
-
-            if (null != logo) {
-                logo.recycle();
-                Log.e("EncodeUtil", "encode => recycle2");
-            }
-
-            if (null != bitmap) {
-                bitmap.recycle();
-                Log.e("EncodeUtil", "encode => recycle3");
-            }
-
-            return parent + File.separator + child;
-
-        } catch (Exception e) {
-            Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
-            return null;
-        }
-    }
-
-    @Keep
-    public static String encodeUrl(@NonNull Context context, @NonNull String str, @NonNull String url) {
-
-        try {
-
-            Bitmap logo = createLogoWhiteEdgeUrl(context, url, 100);
-            if (null == logo)
-                return null;
-
-            Bitmap bitmap = createQr(str, 500, logo);
-
-            if (null == bitmap && null != logo) {
-                logo.recycle();
-                Log.e("EncodeUtil", "encode => recycle1");
-            }
-
-            File dir = context.getFilesDir();
-            if (!dir.exists() || !dir.isDirectory()) {
-                dir.mkdir();
-                Log.e("EncodeUtil", "encode => 生成文件目录");
-            }
-
-            String parent = dir.getAbsolutePath();
-            String child = "qrLogo.png";
-
-            File file = new File(parent, child);
-            if (file.exists()) {
-                file.delete();
-                Log.e("EncodeUtil", "encode => 删除文件缓存");
-            }
-
-            file.createNewFile();
-            FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-
-            fos.flush();
-            fos.close();
-            Log.e("EncodeUtil", "encode => 关闭流");
-
-            if (null != logo) {
-                logo.recycle();
-                Log.e("EncodeUtil", "encode => recycle2");
-            }
-
-            if (null != bitmap) {
-                bitmap.recycle();
-                Log.e("EncodeUtil", "encode => recycle3");
-            }
-
-            return parent + File.separator + child;
-
-        } catch (Exception e) {
-            Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
-            return null;
-        }
-    }
-
-    /**
-     * bitmap 描白边
-     *
-     * @param border
-     * @return
-     */
-    private static @Nullable
-    Bitmap createLogoWhiteEdgeUrl(@NonNull Context context, @NonNull String url, @IntRange(from = 0, to = 100) int border) {
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;//不缩放
-        options.inJustDecodeBounds = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            options.outConfig = Bitmap.Config.RGB_565;
-        }
-
-        Bitmap bitmap = null;
-
-        try {
-
-            // 网络图片
-            bitmap = Executors.newSingleThreadExecutor().submit(new Callable<Bitmap>() {
+            inputStream = Executors.newSingleThreadExecutor().submit(new Callable<InputStream>() {
                 @Override
-                public Bitmap call() {
+                public InputStream call() {
                     try {
 
                         InputStream is = new URL(url).openStream();
-                        Bitmap logo = BitmapFactory.decodeStream(is, null, options);
-
-                        if (null != is) {
-                            is.close();
-                            Log.e("EncodeUtil", "encode => recycle4");
-                        }
-
-                        return logo;
+                        return is;
 
                     } catch (Exception e) {
-
-                        Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
+                        Log.e("ZxingUtil", "createQrcodeFromUrl => " + e.getMessage(), e);
                         return null;
                     }
                 }
             }).get();
 
         } catch (Exception e) {
-
-            Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
+            Log.e("ZxingUtil", "createQrcodeFromUrl => " + e.getMessage(), e);
         }
 
-        Bitmap logo = createWhiteEdge(context, bitmap, options, border);
-        return logo;
+        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
+        return qrcode;
     }
 
-    /**
-     * bitmap 描白边
-     *
-     * @param resId
-     * @param border
-     * @return
-     */
-    private static @Nullable
-    Bitmap createLogoWhiteEdgeDrawable(@NonNull Context context, @DrawableRes int resId, @IntRange(from = 0, to = 100) int border) {
+    @Keep
+    public static String createQrcodeFromBase64(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull String base64) {
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;//不缩放
-        options.inJustDecodeBounds = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            options.outConfig = Bitmap.Config.RGB_565;
-        }
-
-        Resources resources = context.getResources();
-        BitmapFactory.decodeResource(resources, resId, options);
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, resId, options);
-
-        Bitmap logo = createWhiteEdge(context, bitmap, options, border);
-        return logo;
-    }
-
-    /**
-     * bitmap 描白边
-     *
-     * @param resId
-     * @param border
-     * @return
-     */
-    private static @Nullable
-    Bitmap createLogoWhiteEdgeRaw(@NonNull Context context, @RawRes int resId, @IntRange(from = 0, to = 100) int border) {
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;//不缩放
-        options.inJustDecodeBounds = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            options.outConfig = Bitmap.Config.RGB_565;
-        }
-
-        TypedValue value = new TypedValue();
-        context.getResources().openRawResource(resId, value);
-        options.inTargetDensity = value.density;
-//        BitmapFactory.decodeResource(resources, logo, options);
-
-        Resources resources = context.getResources();
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, resId, options);
-
-
-        Bitmap logo = createWhiteEdge(context, bitmap, options, border);
-        return logo;
-    }
-
-
-    /**
-     * 描白边
-     *
-     * @param context
-     * @param bitmap
-     * @param options
-     * @param border
-     * @return
-     */
-    private static @Nullable
-    Bitmap createWhiteEdge(@NonNull Context context, @Nullable Bitmap bitmap, @NonNull BitmapFactory.Options options, @IntRange(from = 0, to = 100) int border) {
-
-        if (null == bitmap)
+        if (null == base64 || base64.length() == 0)
             return null;
 
-        // 不需要白边
-        if (border == 0) {
-            return bitmap;
+        Bitmap base64ToBitmap = base64ToBitmap(base64);
+        String qrcode = createQrcode(context, message, size, base64ToBitmap);
+
+        if (null != base64ToBitmap) {
+            base64ToBitmap.recycle();
+            base64ToBitmap = null;
         }
 
-        // 边框容错
-        int size = Math.min(options.outWidth, options.outHeight) / 10;
-        if (border > size) {
-            border = size;
-        }
-
-        int width = options.outWidth + 2 * border;
-        int height = options.outHeight + 2 * border;
-        //创建一个空的Bitmap(内存区域),宽度等于第一张图片的宽度，高度等于两张图片高度总和
-        Bitmap logo = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        //将bitmap放置到绘制区域,并将要拼接的图片绘制到指定内存区域
-        Canvas canvas = new Canvas(logo);
-        Rect src = new Rect(0, 0, options.outWidth, options.outHeight);
-        Rect dst = new Rect(border, border, options.outWidth + border, options.outHeight + border);
-        canvas.drawBitmap(bitmap, src, dst, null);
-
-        Paint paint = new Paint();
-        //设置边框颜色
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.STROKE);
-        //设置边框宽度
-        paint.setStrokeWidth(border);
-        canvas.drawRect(border * 0.5f, border * 0.5f, width - border * 0.5f, height - border * 0.5f, paint);
-
-        if (null != bitmap) {
-            bitmap.recycle();
-        }
-
-        return logo;
+        return qrcode;
     }
 
-    /**
-     * 生成Bitmap
-     *
-     * @param str
-     * @param size
-     * @param logo
-     * @return
-     */
-    private static @Nullable
-    Bitmap createQr(@NonNull String str, @IntRange(from = 100, to = 10000) int size, @Nullable Bitmap logo) {
+    @Keep
+    public static String createQrcodeFromRaw(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @RawRes int raw) {
 
-        // 容错
-        if (TextUtils.isEmpty(str))
+        if (null == context)
+            return null;
+
+        InputStream inputStream = context.getResources().openRawResource(raw);
+        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
+        return qrcode;
+    }
+
+    @Keep
+    public static String createQrcodeFromAssets(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull String asset) {
+
+        if (null == context || null == asset || asset.length() == 0)
+            return null;
+
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getResources().getAssets().open(asset);
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "createQrcodeFromAssets => " + e.getMessage(), e);
+        }
+
+        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
+        return qrcode;
+    }
+
+    @Keep
+    public static String createQrcodeFromInputStream(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull InputStream inputStream) {
+
+        if (null == context)
+            return null;
+
+        Bitmap logoBitmap = createBitmapLogo(context, inputStream, 8, Color.WHITE);
+        String qrcode = createQrcode(context, message, size, logoBitmap);
+
+        if (null != logoBitmap) {
+            logoBitmap.recycle();
+            logoBitmap = null;
+        }
+
+        return qrcode;
+    }
+
+    @Keep
+    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size) {
+
+        String qrcode = createQrcode(context, message, size, null);
+        return qrcode;
+    }
+
+    @Keep
+    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @Nullable Bitmap logo) {
+
+        if (null == context || null == message || message.length() == 0)
+            return null;
+
+        Bitmap bitmapQrcode = createBitmapQrcode(context, message, size, logo);
+        String saveBitmapLocal = saveBitmapLocal(context, bitmapQrcode);
+
+        if (null != logo) {
+            logo.recycle();
+            logo = null;
+        }
+
+        return saveBitmapLocal;
+    }
+
+    @Keep
+    private static Bitmap createBitmapQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @Nullable Bitmap logo) {
+
+        if (null == context || null == message || message.length() == 0)
             return null;
 
         try {
 
             QRCodeWriter writer = new QRCodeWriter();
-            BitMatrix bitMatrix = writer.encode(str, size, size, null == logo ? ErrorCorrectionLevel.L : ErrorCorrectionLevel.H);
+            BitMatrix bitMatrix = writer.encode(message, size, size, null == logo ? ErrorCorrectionLevel.L : ErrorCorrectionLevel.H);
 
             // step2
             int[] pixels = new int[size * size];
@@ -487,9 +213,158 @@ public final class ZxingUtil {
             // step3
             Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
             bitmap.setPixels(pixels, 0, size, 0, 0, size, size);
+
+            return bitmap;
+
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "createQrcode => " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * 保存bitmap至本地
+     *
+     * @param context
+     * @param bitmap
+     * @return
+     */
+    @Keep
+    private static String saveBitmapLocal(@NonNull Context context, @NonNull Bitmap bitmap) {
+
+        if (null == context || null == bitmap)
+            return null;
+
+        try {
+
+            File dir = context.getFilesDir();
+            if (!dir.exists() || !dir.isDirectory()) {
+                dir.mkdir();
+            }
+
+            String parent = dir.getAbsolutePath();
+            String child = "temp_qrcode.png";
+
+            File file = new File(parent, child);
+            if (file.exists()) {
+                file.delete();
+            }
+
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+            fos.flush();
+            fos.close();
+
+            if (null != bitmap) {
+                bitmap.recycle();
+            }
+
+            return parent + File.separator + child;
+
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "saveBitmapLocal => " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * decodeBitmapFromInputStream
+     *
+     * @param inputStream
+     * @return
+     */
+    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull InputStream inputStream, @IntRange(from = 4, to = 8) int boderWidth, @ColorInt int borderColor) {
+
+        try {
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;//不缩放
+            options.inJustDecodeBounds = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                options.outConfig = Bitmap.Config.RGB_565;
+            }
+            options.inSampleSize = 2;
+
+            Bitmap logoBitmap = BitmapFactory.decodeStream(inputStream, null, options);
+            Bitmap bitmapBorder = createBitmapBorder(logoBitmap, options, boderWidth, borderColor);
+
+            if (null != logoBitmap) {
+                logoBitmap.recycle();
+                logoBitmap = null;
+            }
+
+            return bitmapBorder;
+
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "decodeBitmapFromInputStream => " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * 描白边
+     *
+     * @param logoBitmap
+     * @param options
+     * @param border
+     * @return
+     */
+    private static @Nullable
+    Bitmap createBitmapBorder(@Nullable Bitmap logoBitmap, @NonNull BitmapFactory.Options options, @IntRange(from = 0, to = 100) int border, @ColorInt int color) {
+
+        if (null == logoBitmap)
+            return null;
+
+        // 不需要白边
+        if (border == 0) {
+            return logoBitmap;
+        }
+
+        // 边框容错
+        int size = Math.min(options.outWidth, options.outHeight) / 10;
+        if (border > size) {
+            border = size;
+        }
+
+        int width = options.outWidth + 2 * border;
+        int height = options.outHeight + 2 * border;
+        // 创建一个空的Bitmap(内存区域),宽度等于第一张图片的宽度，高度等于两张图片高度总和
+        Bitmap logo = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        // 将bitmap放置到绘制区域,并将要拼接的图片绘制到指定内存区域
+        Canvas canvas = new Canvas(logo);
+        Rect src = new Rect(0, 0, options.outWidth, options.outHeight);
+        Rect dst = new Rect(border, border, options.outWidth + border, options.outHeight + border);
+        canvas.drawBitmap(logoBitmap, src, dst, null);
+
+        Paint paint = new Paint();
+        // 设置边框颜色
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
+        //  设置边框宽度
+        paint.setStrokeWidth(border);
+        canvas.drawRect(border * 0.5f, border * 0.5f, width - border * 0.5f, height - border * 0.5f, paint);
+
+        if (null != logoBitmap) {
+            logoBitmap.recycle();
+        }
+
+        return logo;
+    }
+
+    /**
+     * description: 将Base64转换成为Bitmap
+     * created by kalu on 2021-02-18
+     */
+    public static Bitmap base64ToBitmap(String base64) {
+        try {
+            byte[] bytes = Base64.decode(base64, android.util.Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             return bitmap;
         } catch (Exception e) {
-            Log.e("EncodeUtil", "encode => " + e.getMessage(), e);
+            Log.e("ZxingUtil", "base64ToBitmap => " + e.getMessage(), e);
             return null;
         }
     }
