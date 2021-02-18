@@ -59,7 +59,7 @@ public final class QRCodeWriter implements Writer {
         }
 
         ErrorCorrectionLevel errorCorrectionLevel = level;
-        int quietZone = QUIET_ZONE_SIZE;
+//        int quietZone = QUIET_ZONE_SIZE;
 //        if (hints != null) {
 //            if (hints.containsKey(EncodeHintType.ERROR_CORRECTION)) {
 //                errorCorrectionLevel = ErrorCorrectionLevel.valueOf(hints.get(EncodeHintType.ERROR_CORRECTION).toString());

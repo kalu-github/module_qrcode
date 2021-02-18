@@ -73,12 +73,12 @@ public final class ZxingUtil {
         if (null == base64 || base64.length() == 0)
             return null;
 
-        Bitmap base64ToBitmap = base64ToBitmap(base64);
-        String qrcode = createQrcode(context, message, size, base64ToBitmap);
+        Bitmap logoBitmap = createBitmapLogo(context, base64, 8, Color.WHITE);
+        String qrcode = createQrcode(context, message, size, logoBitmap);
 
-        if (null != base64ToBitmap) {
-            base64ToBitmap.recycle();
-            base64ToBitmap = null;
+        if (null != logoBitmap) {
+            logoBitmap.recycle();
+            logoBitmap = null;
         }
 
         return qrcode;
@@ -162,7 +162,8 @@ public final class ZxingUtil {
         try {
 
             QRCodeWriter writer = new QRCodeWriter();
-            BitMatrix bitMatrix = writer.encode(message, size, size, null == logo ? ErrorCorrectionLevel.L : ErrorCorrectionLevel.H);
+            BitMatrix bitMatrix = writer.encode(message, size, size, ErrorCorrectionLevel.L);
+//            BitMatrix bitMatrix = writer.encode(message, size, size, null == logo ? ErrorCorrectionLevel.L : ErrorCorrectionLevel.H);
 
             // step2
             int[] pixels = new int[size * size];
@@ -295,6 +296,39 @@ public final class ZxingUtil {
                 logoBitmap = null;
             }
 
+            if (null != inputStream) {
+                inputStream.close();
+                inputStream = null;
+            }
+
+            return bitmapBorder;
+
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "decodeBitmapFromInputStream => " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull String base64, @IntRange(from = 4, to = 8) int boderWidth, @ColorInt int borderColor) {
+
+        try {
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;//不缩放
+            options.inJustDecodeBounds = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                options.outConfig = Bitmap.Config.RGB_565;
+            }
+            options.inSampleSize = 2;
+
+            Bitmap logoBitmap = base64ToBitmap(base64, options);
+            Bitmap bitmapBorder = createBitmapBorder(logoBitmap, options, boderWidth, borderColor);
+
+            if (null != logoBitmap) {
+                logoBitmap.recycle();
+                logoBitmap = null;
+            }
+
             return bitmapBorder;
 
         } catch (Exception e) {
@@ -358,10 +392,10 @@ public final class ZxingUtil {
      * description: 将Base64转换成为Bitmap
      * created by kalu on 2021-02-18
      */
-    public static Bitmap base64ToBitmap(String base64) {
+    public static Bitmap base64ToBitmap(@NonNull String base64, @NonNull BitmapFactory.Options options) {
         try {
             byte[] bytes = Base64.decode(base64, android.util.Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
             return bitmap;
         } catch (Exception e) {
             Log.e("ZxingUtil", "base64ToBitmap => " + e.getMessage(), e);
