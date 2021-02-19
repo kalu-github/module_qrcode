@@ -38,7 +38,7 @@ import java.util.concurrent.Executors;
 public final class ZxingUtil {
 
     @Keep
-    public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull String url) {
+    public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String url) {
 
         InputStream inputStream = null;
 
@@ -68,12 +68,12 @@ public final class ZxingUtil {
     }
 
     @Keep
-    public static String createQrcodeFromBase64(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull String base64) {
+    public static String createQrcodeFromBase64(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String base64) {
 
         if (null == base64 || base64.length() == 0)
             return null;
 
-        Bitmap logoBitmap = createBitmapLogo(context, base64, 8, Color.WHITE);
+        Bitmap logoBitmap = createBitmapLogo(context, base64, 14, Color.WHITE);
         String qrcode = createQrcode(context, message, size, logoBitmap);
 
         if (null != logoBitmap) {
@@ -85,7 +85,7 @@ public final class ZxingUtil {
     }
 
     @Keep
-    public static String createQrcodeFromRaw(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @RawRes int raw) {
+    public static String createQrcodeFromRaw(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @RawRes int raw) {
 
         if (null == context)
             return null;
@@ -96,7 +96,7 @@ public final class ZxingUtil {
     }
 
     @Keep
-    public static String createQrcodeFromAssets(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull String asset) {
+    public static String createQrcodeFromAssets(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String asset) {
 
         if (null == context || null == asset || asset.length() == 0)
             return null;
@@ -113,12 +113,12 @@ public final class ZxingUtil {
     }
 
     @Keep
-    public static String createQrcodeFromInputStream(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @NonNull InputStream inputStream) {
+    public static String createQrcodeFromInputStream(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull InputStream inputStream) {
 
         if (null == context)
             return null;
 
-        Bitmap logoBitmap = createBitmapLogo(context, inputStream, 8, Color.WHITE);
+        Bitmap logoBitmap = createBitmapLogo(context, inputStream, 14, Color.WHITE);
         String qrcode = createQrcode(context, message, size, logoBitmap);
 
         if (null != logoBitmap) {
@@ -130,14 +130,14 @@ public final class ZxingUtil {
     }
 
     @Keep
-    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size) {
+    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size) {
 
         String qrcode = createQrcode(context, message, size, null);
         return qrcode;
     }
 
     @Keep
-    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @Nullable Bitmap logo) {
+    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @Nullable Bitmap logo) {
 
         if (null == context || null == message || message.length() == 0)
             return null;
@@ -154,7 +154,7 @@ public final class ZxingUtil {
     }
 
     @Keep
-    private static Bitmap createBitmapQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 400, to = 4000) int size, @Nullable Bitmap logo) {
+    private static Bitmap createBitmapQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @Nullable Bitmap logo) {
 
         if (null == context || null == message || message.length() == 0)
             return null;
@@ -162,7 +162,7 @@ public final class ZxingUtil {
         try {
 
             QRCodeWriter writer = new QRCodeWriter();
-            BitMatrix bitMatrix = writer.encode(message, size, size, ErrorCorrectionLevel.L);
+            BitMatrix bitMatrix = writer.encode(message, size, size, ErrorCorrectionLevel.H);
 //            BitMatrix bitMatrix = writer.encode(message, size, size, null == logo ? ErrorCorrectionLevel.L : ErrorCorrectionLevel.H);
 
             // step2
@@ -179,14 +179,14 @@ public final class ZxingUtil {
                 }
             } else {
 
-                int IMAGE_HALFWIDTH = size / 10;
+                int IMAGE_HALFWIDTH = size / 8;
                 int width = bitMatrix.getWidth();//矩阵高度
                 int height = bitMatrix.getHeight();//矩阵宽度
                 int halfW = width / 2;
                 int halfH = height / 2;
                 Matrix m = new Matrix();
-                float sx = (float) 2 * IMAGE_HALFWIDTH / logo.getWidth();
-                float sy = (float) 2 * IMAGE_HALFWIDTH / logo.getHeight();
+                float sx = 2f * IMAGE_HALFWIDTH / logo.getWidth();
+                float sy = 2f * IMAGE_HALFWIDTH / logo.getHeight();
                 m.setScale(sx, sy);
                 //设置缩放信息
                 //将logo图片按martix设置的信息缩放
@@ -276,7 +276,7 @@ public final class ZxingUtil {
      * @param inputStream
      * @return
      */
-    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull InputStream inputStream, @IntRange(from = 4, to = 8) int boderWidth, @ColorInt int borderColor) {
+    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull InputStream inputStream, @IntRange(from = 4, to = 14) int boderWidth, @ColorInt int borderColor) {
 
         try {
 
@@ -309,7 +309,7 @@ public final class ZxingUtil {
         }
     }
 
-    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull String base64, @IntRange(from = 4, to = 8) int boderWidth, @ColorInt int borderColor) {
+    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull String base64, @IntRange(from = 4, to = 14) int boderWidth, @ColorInt int borderColor) {
 
         try {
 
