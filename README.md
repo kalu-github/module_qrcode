@@ -1,16 +1,16 @@
 #
-#### 预览图片
+#### demo
 
 ![image](https://github.com/153437803/zxing_lite/blob/master/logo.gif )
 
 #
 #### zxing-3.4.1
 ```
-https://github.com/zxing/zxing
+https://github.com/zxing/zxing/releases
 ```
 
 #
-#### 生成二维码图片
+#### 1.生成二维码图片
 ```
     /**
      * @param context 上下文
@@ -23,7 +23,7 @@ https://github.com/zxing/zxing
 ```
 
 #
-#### 生成带logo二维码图片 - bitmap
+#### 2.生成带logo二维码图片 - bitmap
 ```
     /**
      * @param context 上下文
@@ -37,7 +37,7 @@ https://github.com/zxing/zxing
 ```
 
 #
-#### 生成带logo二维码图片 - InputStream
+#### 3.生成带logo二维码图片 - InputStream
 ```
     /**
      * @param context     上下文
@@ -51,7 +51,7 @@ https://github.com/zxing/zxing
 ```
 
 #
-#### 生成带logo二维码图片 - raw
+#### 4.生成带logo二维码图片 - raw
 ```
     /**
      * @param context 上下文
@@ -65,7 +65,7 @@ https://github.com/zxing/zxing
 ```
 
 #
-#### 生成带logo二维码图片 - asset
+#### 5.生成带logo二维码图片 - asset
 ```
     /**
      * @param context 上下文
@@ -79,7 +79,7 @@ https://github.com/zxing/zxing
 ```
 
 #
-#### 生成带logo二维码图片 - base64字符串
+#### 6.生成带logo二维码图片 - base64字符串
 ```
     /**
      * @param context 上下文
@@ -93,7 +93,7 @@ https://github.com/zxing/zxing
 ```
 
 #
-#### 生成带logo二维码图片 - url网络图片
+#### 7.生成带logo二维码图片 - url网络图片
 ```
     /**
      * @param context 上下文
