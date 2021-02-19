@@ -37,6 +37,13 @@ import java.util.concurrent.Executors;
 @Keep
 public final class ZxingUtil {
 
+    /**
+     * @param context 上下文
+     * @param message 二维码信息
+     * @param size    二维码大小
+     * @param url     logo-url网络图片地址
+     * @return
+     */
     @Keep
     public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String url) {
 
@@ -67,6 +74,13 @@ public final class ZxingUtil {
         return qrcode;
     }
 
+    /**
+     * @param context 上下文
+     * @param message 二维码信息
+     * @param size    二维码大小
+     * @param base64  logo-base64字符串
+     * @return
+     */
     @Keep
     public static String createQrcodeFromBase64(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String base64) {
 
@@ -84,6 +98,13 @@ public final class ZxingUtil {
         return qrcode;
     }
 
+    /**
+     * @param context 上下文
+     * @param message 二维码信息
+     * @param size    二维码大小
+     * @param raw     logo-raw文件夹
+     * @return
+     */
     @Keep
     public static String createQrcodeFromRaw(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @RawRes int raw) {
 
@@ -95,15 +116,22 @@ public final class ZxingUtil {
         return qrcode;
     }
 
+    /**
+     * @param context 上下文
+     * @param message 二维码信息
+     * @param size    二维码大小
+     * @param assets  logo-assets文件夹
+     * @return
+     */
     @Keep
-    public static String createQrcodeFromAssets(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String asset) {
+    public static String createQrcodeFromAssets(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String assets) {
 
-        if (null == context || null == asset || asset.length() == 0)
+        if (null == context || null == assets || assets.length() == 0)
             return null;
 
         InputStream inputStream = null;
         try {
-            inputStream = context.getResources().getAssets().open(asset);
+            inputStream = context.getResources().getAssets().open(assets);
         } catch (Exception e) {
             Log.e("ZxingUtil", "createQrcodeFromAssets => " + e.getMessage(), e);
         }
@@ -112,6 +140,13 @@ public final class ZxingUtil {
         return qrcode;
     }
 
+    /**
+     * @param context     上下文
+     * @param message     二维码信息
+     * @param size        二维码大小
+     * @param inputStream logo-inputStream流
+     * @return
+     */
     @Keep
     public static String createQrcodeFromInputStream(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull InputStream inputStream) {
 
@@ -129,6 +164,12 @@ public final class ZxingUtil {
         return qrcode;
     }
 
+    /**
+     * @param context 上下文
+     * @param message 二维码信息
+     * @param size    二维码大小
+     * @return
+     */
     @Keep
     public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size) {
 
@@ -136,6 +177,13 @@ public final class ZxingUtil {
         return qrcode;
     }
 
+    /**
+     * @param context 上下文
+     * @param message 二维码信息
+     * @param size    二维码大小
+     * @param logo    logo-bitmap
+     * @return
+     */
     @Keep
     public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @Nullable Bitmap logo) {
 
