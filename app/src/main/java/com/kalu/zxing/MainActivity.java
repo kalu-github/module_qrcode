@@ -27,6 +27,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String url = "http://umspos.caitc.cn/cajinfu-wx-web/#/user/registerQrcode?posterId=AD20210218155306&staffCode=17242a4d541ee348658c12ecde90103b346f05144805be07";
+        String logo = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fs9.sinaimg.cn%2Fbmiddle%2F5ceba31bg5d6503750788&refer=http%3A%2F%2Fs9.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1616396178&t=68870ef9ba794e07c9db62b6f3365627";
+
         // 无LOGO
         findViewById(R.id.create_qr1).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,7 +38,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcode(getApplicationContext(), "https://www.baidu.com/", 800);
+                String qrcode = ZxingUtil.createQrcode(getApplicationContext(), url, 380);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -54,13 +57,26 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromUrl(getApplicationContext(), "https://www.baidu.com/", 800, "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607942590295&di=28fb9f16991ad4e174bce0073729c7ad&imgtype=0&src=http%3A%2F%2Fb.zol-img.com.cn%2Fdesk%2Fbizhi%2Fimage%2F1%2F960x600%2F135115625376.jpg");
-                if (TextUtils.isEmpty(qrcode)) {
-                    Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                new Thread(new Runnable(){
 
-                imageView.setImageURI(Uri.parse(qrcode));
+                    @Override
+                    public void run() {
+
+                        String qrcode = ZxingUtil.createQrcodeFromUrl(getApplicationContext(), url, 380, logo);
+                        if (TextUtils.isEmpty(qrcode)) {
+                            Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                imageView.setImageURI(Uri.parse(qrcode));
+                            }
+                        });
+                    }
+                }).start();
             }
         });
 
@@ -72,7 +88,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromRaw(getApplicationContext(), "https://www.baidu.com/", 800, R.raw.logo);
+                String qrcode = ZxingUtil.createQrcodeFromRaw(getApplicationContext(), url, 380, R.raw.logo);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -90,7 +106,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromAssets(getApplicationContext(), "https://www.baidu.com/", 800, "logo.jpg");
+                String qrcode = ZxingUtil.createQrcodeFromAssets(getApplicationContext(), url, 380, "logo.jpg");
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;

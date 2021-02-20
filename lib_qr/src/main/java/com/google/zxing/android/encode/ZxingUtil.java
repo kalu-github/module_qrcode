@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -47,18 +49,21 @@ public final class ZxingUtil {
     @Keep
     public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String url) {
 
+        // 检测当前线程是否是分线程
+        if (Looper.getMainLooper().getThread().getId() == Looper.myLooper().getThread().getId())
+            throw new RuntimeException("createQrcodeFromUrl 当前方法必须在分线程执行");
+
         InputStream inputStream = null;
 
         // 网络图片
         try {
-            inputStream = Executors.newSingleThreadExecutor().submit(new Callable<InputStream>() {
+            inputStream = Executors.newFixedThreadPool(1).submit(new Callable<InputStream>() {
                 @Override
                 public InputStream call() {
+
                     try {
-
-                        InputStream is = new URL(url).openStream();
-                        return is;
-
+                        InputStream openStream = new URL(url).openStream();
+                        return openStream;
                     } catch (Exception e) {
                         Log.e("ZxingUtil", "createQrcodeFromUrl => " + e.getMessage(), e);
                         return null;
@@ -87,12 +92,15 @@ public final class ZxingUtil {
         if (null == base64 || base64.length() == 0)
             return null;
 
-        Bitmap logoBitmap = createBitmapLogo(context, base64, 14, Color.WHITE);
-        String qrcode = createQrcode(context, message, size, logoBitmap);
+        InputStream inputStream = base64ToInputStream(base64);
+        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
 
-        if (null != logoBitmap) {
-            logoBitmap.recycle();
-            logoBitmap = null;
+        if (null != inputStream) {
+            try {
+                inputStream.close();
+                inputStream = null;
+            } catch (Exception e) {
+            }
         }
 
         return qrcode;
@@ -437,10 +445,13 @@ public final class ZxingUtil {
     }
 
     /**
-     * description: 将Base64转换成为Bitmap
-     * created by kalu on 2021-02-18
+     * 将Base64转换成为Bitmap
+     *
+     * @param base64
+     * @param options
+     * @return
      */
-    public static Bitmap base64ToBitmap(@NonNull String base64, @NonNull BitmapFactory.Options options) {
+    private static Bitmap base64ToBitmap(@NonNull String base64, @NonNull BitmapFactory.Options options) {
         try {
             byte[] bytes = Base64.decode(base64, android.util.Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
@@ -449,5 +460,18 @@ public final class ZxingUtil {
             Log.e("ZxingUtil", "base64ToBitmap => " + e.getMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * description: 将Base64转换成为Bitmap
+     * created by kalu on 2021-02-18
+     */
+    private static InputStream base64ToInputStream(@NonNull String base64) {
+        //将字符串转换为byte数组
+        String trim = base64.trim();
+        byte[] bytes = Base64.decode(trim, Base64.DEFAULT);
+        //转化为输入流
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        return inputStream;
     }
 }
