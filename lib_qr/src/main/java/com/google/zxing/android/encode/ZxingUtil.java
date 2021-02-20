@@ -50,7 +50,7 @@ public final class ZxingUtil {
     public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String url) {
 
         // 检测当前线程是否是分线程
-        if (Looper.getMainLooper().getThread().getId() == Looper.myLooper().getThread().getId())
+        if (Looper.getMainLooper() == Looper.myLooper())
             throw new RuntimeException("createQrcodeFromUrl 当前方法必须在分线程执行");
 
         InputStream inputStream = null;
