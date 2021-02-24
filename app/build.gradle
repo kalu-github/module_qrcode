@@ -21,13 +21,21 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // 依赖
     implementation 'androidx.activity:activity:1.1.0'
     implementation 'androidx.fragment:fragment:1.2.5'
     implementation 'androidx.annotation:annotation:1.1.0'
 
-    // 模块
-    implementation project(':lib_qr')
+    // qrcode
+    implementation(name: 'lib_qrcode_release_20210224', ext: 'aar')
+    // implementation project(':lib_qrcode')
 }

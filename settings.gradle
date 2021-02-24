@@ -1,4 +1,3 @@
 include ':app'
-//include ':lib_zxing'
-include ':lib_qr'
+include ':lib_qrcode'
 //include ':lib_bar'
