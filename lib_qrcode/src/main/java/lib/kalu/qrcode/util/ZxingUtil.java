@@ -21,7 +21,6 @@ import androidx.annotation.RawRes;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -87,31 +86,18 @@ public final class ZxingUtil {
     @Keep
     public static String createQrcodeFromFile(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String filePath) {
 
-        FileInputStream fis = null;
+        Bitmap bitmap = null;
 
-        if (null != filePath && filePath.length() > 0) {
-            File file = new File(filePath);
-            if (null != file && file.exists() && file.isFile()) {
-                try {
-                    fis = new FileInputStream(file);
-                    byte[] bytes = new byte[1024];
-                    //循环读取
-                    while (fis.read(bytes) != -1) {
-                    }
-                } catch (Exception e) {
-                    Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
-                }
-            }
+        try {
+            bitmap = createBitmapLogoFromFile(context, filePath, 14, Color.WHITE);
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
         }
 
-        String qrcode = createQrcodeFromInputStream(context, message, size, fis);
-        if (null != fis) {
-            try {
-                fis.close();
-                fis = null;
-            } catch (Exception e) {
-                Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
-            }
+        String qrcode = createQrcode(context, message, size, bitmap);
+        if (null != bitmap) {
+            bitmap.recycle();
+            bitmap = null;
         }
 
         return qrcode;
@@ -292,6 +278,40 @@ public final class ZxingUtil {
 
         } catch (Exception e) {
             Log.e("ZxingUtil", "saveBitmapLocal => " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * createBitmapLogoFromFile
+     *
+     * @param filePath
+     * @return
+     */
+    private static Bitmap createBitmapLogoFromFile(@NonNull Context context, @NonNull String filePath, @IntRange(from = 4, to = 14) int boderWidth, @ColorInt int borderColor) {
+
+        try {
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;//不缩放
+            options.inJustDecodeBounds = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                options.outConfig = Bitmap.Config.RGB_565;
+            }
+            options.inSampleSize = 2;
+
+            Bitmap logoBitmap = BitmapFactory.decodeFile(filePath, options);
+            Bitmap bitmapBorder = createBitmapBorder(logoBitmap, options, boderWidth, borderColor);
+
+            if (null != logoBitmap) {
+                logoBitmap.recycle();
+                logoBitmap = null;
+            }
+
+            return bitmapBorder;
+
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "decodeBitmapFromInputStream => " + e.getMessage(), e);
             return null;
         }
     }
