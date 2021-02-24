@@ -4,9 +4,16 @@
 ![image](https://github.com/153437803/zxing_lite/blob/master/logo.gif )
 
 #
-#### zxing-3.4.1
+#### 说明
 ```
+zxing-3.4.1
 https://github.com/zxing/zxing/releases
+
+二维码模块
+lib_qrcode
+
+条形码模块
+lib_barcode
 ```
 
 #

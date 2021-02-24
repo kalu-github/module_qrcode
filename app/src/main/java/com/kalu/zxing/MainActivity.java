@@ -13,10 +13,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.google.zxing.android.QrcodeScanManager;
-import com.google.zxing.android.config.QrcodeScanConfig;
-import com.google.zxing.android.listener.OnQrcodeScanChangeListener;
-import com.google.zxing.util.ZxingUtil;
+import lib.kalu.qrcode.QrcodeManager;
+import lib.kalu.qrcode.config.QrcodeConfig;
+import lib.kalu.qrcode.listener.OnQrcodeScanChangeListener;
+import lib.kalu.qrcode.util.ZxingUtil;
 
 public class MainActivity extends Activity {
 
@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 requestCameraPerm();
-                QrcodeScanManager.start(MainActivity.this, new OnQrcodeScanChangeListener() {
+                QrcodeManager.start(MainActivity.this, new OnQrcodeScanChangeListener() {
                     @Override
                     public void onSucc(@NonNull String s) {
                         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
@@ -145,7 +145,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 requestCameraPerm();
-                QrcodeScanConfig builder = new QrcodeScanConfig.Builder()
+                QrcodeConfig builder = new QrcodeConfig.Builder()
                         //设置完成震动
                         .isShowVibrate(false)
                         //扫描完成声音
@@ -163,9 +163,9 @@ public class MainActivity extends Activity {
                         //是否显示缩放控制器
                         .isShowZoomController(true)
                         //显示缩放控制器位置
-                        .setZoomControllerLocation(QrcodeScanConfig.ZoomControllerLocation.Bottom)
+                        .setZoomControllerLocation(QrcodeConfig.ZoomControllerLocation.Bottom)
                         .builder();
-                QrcodeScanManager.start(MainActivity.this, builder, new OnQrcodeScanChangeListener() {
+                QrcodeManager.start(MainActivity.this, builder, new OnQrcodeScanChangeListener() {
                     @Override
                     public void onSucc(@NonNull String s) {
                         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
