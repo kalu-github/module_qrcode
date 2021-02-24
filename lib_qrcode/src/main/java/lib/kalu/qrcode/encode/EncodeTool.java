@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.google.zxing.barcode.QRCodeWriter;
+import com.google.zxing.barcode.decoder.ErrorCorrectionLevel;
 
 /**
  * description: 创建二维码

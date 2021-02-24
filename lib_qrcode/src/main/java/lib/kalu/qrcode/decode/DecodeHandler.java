@@ -29,7 +29,7 @@ import com.google.zxing.Result;
 import lib.kalu.qrcode.QrcodeActivity;
 import lib.kalu.qrcode.R;
 
-import com.google.zxing.qrcode.QRCodeReader;
+import com.google.zxing.barcode.QRCodeReader;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.TimeUnit;

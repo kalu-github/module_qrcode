@@ -97,7 +97,7 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.mn_scan_capture);
+        setContentView(R.layout.lib_qrcode_activity_qrcode);
         initView();
         initIntent();
     }

@@ -139,7 +139,7 @@ public class QrcodeConfig implements Serializable {
         private boolean showVibrate = true;
         private String scanColor;
         private String scanHintText;
-        private int activityOpenAnime = R.anim.lib_qrcode_anim_bottom_in;
+        private int activityOpenAnime = R.anim.lib_barcode_anim_bottom_in;
         private int activityExitAnime = R.anim.lib_qrcode_anim_bottom_out;
         private boolean showZoomController = true;
         private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
