@@ -19,15 +19,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
 
-import lib.kalu.qrcode.encode.EncodeTool;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+
+import lib.kalu.qrcode.encode.EncodeTool;
 
 /**
  * description: 创建二维码
@@ -77,6 +78,47 @@ public final class ZxingUtil {
     }
 
     /**
+     * @param context  上下文
+     * @param message  二维码信息
+     * @param size     二维码大小
+     * @param filePath logo-本地图片地址
+     * @return
+     */
+    @Keep
+    public static String createQrcodeFromFile(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String filePath) {
+
+        FileInputStream fis = null;
+
+        if (null != filePath && filePath.length() > 0) {
+            File file = new File(filePath);
+            if (null != file && file.exists() && file.isFile()) {
+                try {
+                    fis = new FileInputStream(file);
+                    byte[] bytes = new byte[1024];
+                    //循环读取
+                    while (fis.read(bytes) != -1) {
+                    }
+                } catch (Exception e) {
+                    Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
+                }
+            }
+        }
+
+        String qrcode = createQrcodeFromInputStream(context, message, size, fis);
+        if (null != fis) {
+            try {
+                fis.close();
+                fis = null;
+            } catch (Exception e) {
+                Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
+            }
+        }
+
+        return qrcode;
+    }
+
+
+    /**
      * @param context 上下文
      * @param message 二维码信息
      * @param size    二维码大小
@@ -86,10 +128,11 @@ public final class ZxingUtil {
     @Keep
     public static String createQrcodeFromBase64(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String base64) {
 
-        if (null == base64 || base64.length() == 0)
-            return null;
+        InputStream inputStream = null;
+        if (null != base64 && base64.length() > 0) {
+            inputStream = base64ToInputStream(base64);
+        }
 
-        InputStream inputStream = base64ToInputStream(base64);
         String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
 
         if (null != inputStream) {
