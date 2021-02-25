@@ -27,7 +27,7 @@ public final class EncodeTool {
         try {
 
             QRCodeWriter writer = new QRCodeWriter();
-            BitMatrix bitMatrix = writer.encode(message, size, size, ErrorCorrectionLevel.H);
+            BitMatrix bitMatrix = writer.encode(message, size, size, ErrorCorrectionLevel.L);
 //            BitMatrix bitMatrix = writer.encode(message, size, size, null == logo ? ErrorCorrectionLevel.L : ErrorCorrectionLevel.H);
 
             // step2
