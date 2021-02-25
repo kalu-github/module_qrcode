@@ -25,7 +25,7 @@ import android.os.Message;
 import com.google.zxing.Result;
 
 import lib.kalu.barcode.QrcodeActivity;
-import lib.kalu.qrcode.R;
+import lib.kalu.barcode.R;
 import lib.kalu.barcode.camera.CameraManager;
 import lib.kalu.barcode.decode.DecodeThread;
 

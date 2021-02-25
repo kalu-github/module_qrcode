@@ -4,7 +4,7 @@ import androidx.annotation.Keep;
 
 import java.io.Serializable;
 
-import lib.kalu.qrcode.R;
+import lib.kalu.barcode.R;
 
 /**
  * description: 二维码扫描配置信息
@@ -139,8 +139,8 @@ public class QrcodeConfig implements Serializable {
         private boolean showVibrate = true;
         private String scanColor;
         private String scanHintText;
-        private int activityOpenAnime = R.anim.lib_qrcode_anim_bottom_in;
-        private int activityExitAnime = R.anim.lib_qrcode_anim_bottom_out;
+        private int activityOpenAnime = R.anim.lib_barcode_anim_bottom_in;
+        private int activityExitAnime = R.anim.lib_barcode_anim_bottom_out;
         private boolean showZoomController = true;
         private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
 
