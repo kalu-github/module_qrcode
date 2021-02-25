@@ -1,7 +1,7 @@
 #
 #### demo
 
-![image](https://github.com/153437803/zxing_lite/blob/master/logo.gif )
+![image](https://github.com/153437803/moudle_zxing/blob/master/logo.gif )
 
 #
 #### 说明
