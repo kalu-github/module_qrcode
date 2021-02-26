@@ -17,98 +17,157 @@ lib_barcode
 ```
 
 #
-#### 1.生成二维码图片
+#### 1.生成二维码 => createQrcode
 ```
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param logo         二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size)
+    public static String createQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable Bitmap logo)
 ```
 
 #
-#### 2.生成带logo二维码图片 - bitmap
+#### 生成二维码 => createQrcodeFromUrl
 ```
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param logo    logo-bitmap
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param url          二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @Nullable Bitmap logo)
+    public static String createQrcodeFromUrl(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String url)
 ```
 
 #
-#### 3.生成带logo二维码图片 - InputStream
+#### 生成二维码 => createQrcodeFromRaw
 ```
     /**
-     * @param context     上下文
-     * @param message     二维码信息
-     * @param size        二维码大小
-     * @param inputStream logo-inputStream流
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param raw          二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcodeFromInputStream(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull InputStream inputStream)
+    public static String createQrcodeFromRaw(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @RawRes int raw)
 ```
 
 #
-#### 4.生成带logo二维码图片 - raw
+#### 生成二维码 => createQrcodeFromFile
 ```
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param raw     logo-raw文件夹
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param filePath     二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcodeFromRaw(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @RawRes int raw)
+    public static String createQrcodeFromFile(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String filePath)
 ```
 
 #
-#### 5.生成带logo二维码图片 - asset
+#### 生成二维码 => createQrcodeFromAssets
 ```
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param assets  logo-assets文件夹
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param assets       二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcodeFromAssets(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String assets)
+    public static String createQrcodeFromAssets(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String assets)
 ```
 
 #
-#### 6.生成带logo二维码图片 - base64字符串
+#### 生成二维码 => createQrcodeFromBase64
 ```
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param base64  logo-base64字符串
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param base64       二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcodeFromBase64(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String base64)
-```
-
-#
-#### 7.生成带logo二维码图片 - url网络图片
-```
-    /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param url     logo-url网络图片地址
-     * @return
-     */
-    @Keep
-    public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String url)
+    public static String createQrcodeFromBase64(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String base64)
 ```

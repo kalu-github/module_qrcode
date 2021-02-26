@@ -16,8 +16,12 @@
 
 package com.google.zxing;
 
-import com.google.zxing.common.BitMatrix;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.zxing.barcode.decoder.ErrorCorrectionLevel;
+import com.google.zxing.common.BitMatrix;
 
 import java.util.Map;
 
@@ -28,30 +32,45 @@ import java.util.Map;
  */
 public interface Writer {
 
-    /**
-     * Encode a barcode using the default settings.
-     *
-     * @param contents The contents to encode in the barcode
-     * @param width    The preferred width in pixels
-     * @param height   The preferred height in pixels
-     * @return {@link BitMatrix} representing encoded barcode image
-     * @throws WriterException if contents cannot be encoded legally in a format
-     */
-    BitMatrix encode(String contents, int width, int height, ErrorCorrectionLevel level)
-            throws WriterException;
+    default BitMatrix encode(@NonNull String text) throws WriterException {
+        return encode(text, 1, 0, 0, 0, 0, ErrorCorrectionLevel.M, null);
+    }
+
+    default BitMatrix encode(@NonNull String text, ErrorCorrectionLevel level) throws WriterException {
+        return encode(text, 1, 0, 0, 0, 0, level, null);
+    }
+
+    default BitMatrix encode(@NonNull String text, @IntRange(from = 1, to = 100) int multiple, ErrorCorrectionLevel level) throws WriterException {
+        return encode(text, multiple, 0, 0, 0, 0, level, null);
+    }
+
+    default BitMatrix encode(@NonNull String text, @IntRange(from = 1, to = 100) int multiple, @IntRange(from = 0, to = Integer.MAX_VALUE) int margin, ErrorCorrectionLevel level) throws WriterException {
+        return encode(text, multiple, margin, margin, margin, margin, level, null);
+    }
+
+    default BitMatrix encode(@NonNull String text, @IntRange(from = 1, to = 100) int multiple, @IntRange(from = 0, to = Integer.MAX_VALUE) int margin, ErrorCorrectionLevel level, Map<EncodeHintType, ?> hints) throws WriterException {
+        return encode(text, multiple, margin, margin, margin, margin, level, hints);
+    }
 
     /**
-     * @param contents The contents to encode in the barcode
-     * @param width    The preferred width in pixels
-     * @param height   The preferred height in pixels
-     * @param hints    Additional parameters to supply to the encoder
-     * @return {@link BitMatrix} representing encoded barcode image
-     * @throws WriterException if contents cannot be encoded legally in a format
+     * @param text         二维码文字信息
+     * @param multiple     二维码放大倍数
+     * @param level        二维码容错等级
+     * @param marginLeft   左边距
+     * @param marginTop    上边距
+     * @param marginRight  右边距
+     * @param marginBottom 下边距
+     * @param level
+     * @param hints
+     * @return
      */
-    BitMatrix encode(String contents,
-                     int width,
-                     int height,
-                     Map<EncodeHintType, ?> hints, ErrorCorrectionLevel level)
-            throws WriterException;
-
+    BitMatrix encode(
+            @NonNull String text,
+            @IntRange(from = 1, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @NonNull ErrorCorrectionLevel level,
+            @Nullable Map<EncodeHintType, ?> hints) throws WriterException;
 }

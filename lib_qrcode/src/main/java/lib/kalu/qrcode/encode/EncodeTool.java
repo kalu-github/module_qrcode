@@ -9,9 +9,12 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.zxing.common.BitMatrix;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.barcode.QRCodeWriter;
 import com.google.zxing.barcode.decoder.ErrorCorrectionLevel;
+import com.google.zxing.common.BitMatrix;
+
+import java.util.Map;
 
 /**
  * description: 创建二维码
@@ -19,16 +22,76 @@ import com.google.zxing.barcode.decoder.ErrorCorrectionLevel;
  */
 public final class EncodeTool {
 
-    public static Bitmap createBitmapQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @Nullable Bitmap logo) {
+    public static Bitmap createBitmapQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable Bitmap logo) {
+        return createBitmapQrcode(context, text, 3, 0, 0, 0, 0, ErrorCorrectionLevel.M, null, logo);
+    }
 
-        if (null == context || null == message || message.length() == 0)
+    public static Bitmap createBitmapQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @Nullable Bitmap logo) {
+        return createBitmapQrcode(context, text, multiple, 0, 0, 0, 0, ErrorCorrectionLevel.M, null, logo);
+    }
+
+    public static Bitmap createBitmapQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
+            @Nullable Bitmap logo) {
+        return createBitmapQrcode(context, text, multiple, margin, margin, margin, margin, ErrorCorrectionLevel.M, null, logo);
+    }
+
+    public static Bitmap createBitmapQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable Bitmap logo) {
+        return createBitmapQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, ErrorCorrectionLevel.M, null, logo);
+    }
+
+    public static Bitmap createBitmapQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @NonNull ErrorCorrectionLevel level,
+            @Nullable Bitmap logo) {
+        return createBitmapQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, level, null, logo);
+    }
+
+    public static Bitmap createBitmapQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @NonNull ErrorCorrectionLevel level,
+            @Nullable Map<EncodeHintType, ?> hints,
+            @Nullable Bitmap logo) {
+
+        if (null == context || null == text || text.length() == 0)
             return null;
 
         try {
 
             QRCodeWriter writer = new QRCodeWriter();
-            BitMatrix bitMatrix = writer.encode(message, size, size, ErrorCorrectionLevel.L);
-//            BitMatrix bitMatrix = writer.encode(message, size, size, null == logo ? ErrorCorrectionLevel.L : ErrorCorrectionLevel.H);
+            BitMatrix bitMatrix = writer.encode(text, multiple, marginLeft, marginTop, marginRight, marginBottom, level, hints);
+
+            int size = bitMatrix.getWidth();
 
             // step2
             int[] pixels = new int[size * size];
@@ -83,7 +146,7 @@ public final class EncodeTool {
             return bitmap;
 
         } catch (Exception e) {
-            Log.e("Encode", "createBitmapQrcode => " + e.getMessage(), e);
+            Log.e("EncodeTool", "createBitmapQrcode => " + e.getMessage(), e);
             return null;
         }
     }

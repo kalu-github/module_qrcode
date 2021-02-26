@@ -626,5 +626,4 @@ public final class Encoder {
         // This is correct for values up to 127, which is all we need now.
         bits.appendBits(eci.getValue(), 8);
     }
-
 }

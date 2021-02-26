@@ -36,15 +36,276 @@ import lib.kalu.qrcode.encode.EncodeTool;
 @Keep
 public final class ZxingUtil {
 
+    /****************************** createQrcodeFromBase64 *************************************/
+
+    @Keep
+    public static String createQrcodeFromBase64(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable String base64) {
+
+        return createQrcodeFromBase64(context, text, 3, 0, 0, 0, 0, base64);
+    }
+
+    @Keep
+    public static String createQrcodeFromBase64(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @Nullable String base64) {
+
+        return createQrcodeFromBase64(context, text, multiple, 0, 0, 0, 0, base64);
+    }
+
+    @Keep
+    public static String createQrcodeFromBase64(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
+            @Nullable String base64) {
+
+        return createQrcodeFromBase64(context, text, multiple, margin, margin, margin, margin, base64);
+    }
+
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param url     logo-url网络图片地址
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param base64       二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcodeFromUrl(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String url) {
+    public static String createQrcodeFromBase64(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String base64) {
+
+        InputStream inputStream = null;
+        if (null != base64 && base64.length() > 0) {
+            inputStream = base64ToInputStream(base64);
+        }
+
+        String qrcode = createQrcodeFromInputStream(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, inputStream);
+
+        if (null != inputStream) {
+            try {
+                inputStream.close();
+                inputStream = null;
+            } catch (Exception e) {
+            }
+        }
+
+        return qrcode;
+    }
+
+    /****************************** createQrcodeFromBase64 *************************************/
+
+
+    /****************************** createQrcodeFromAssets *************************************/
+
+    @Keep
+    public static String createQrcodeFromAssets(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable String assets) {
+
+        return createQrcodeFromAssets(context, text, 4, 0, 0, 0, 0, assets);
+    }
+
+    @Keep
+    public static String createQrcodeFromAssets(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @Nullable String assets) {
+
+        return createQrcodeFromAssets(context, text, multiple, 0, 0, 0, 0, assets);
+    }
+
+    @Keep
+    public static String createQrcodeFromAssets(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
+            @Nullable String assets) {
+
+        return createQrcodeFromAssets(context, text, multiple, margin, margin, margin, margin, assets);
+    }
+
+    /**
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param assets       二维码中间logo
+     * @return
+     */
+    @Keep
+    public static String createQrcodeFromAssets(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String assets) {
+
+        if (null == context || null == assets || assets.length() == 0)
+            return null;
+
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getResources().getAssets().open(assets);
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "createQrcodeFromAssets => " + e.getMessage(), e);
+        }
+
+        String qrcode = createQrcodeFromInputStream(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, inputStream);
+        return qrcode;
+    }
+
+    /****************************** createQrcodeFromAssets *************************************/
+
+
+    /****************************** createQrcodeFromFile *************************************/
+
+    @Keep
+    public static String createQrcodeFromFile(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable String filePath) {
+        return createQrcodeFromFile(context, text, 3, 0, 0, 0, 0, filePath);
+    }
+
+    @Keep
+    public static String createQrcodeFromFile(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @Nullable String filePath) {
+        return createQrcodeFromFile(context, text, multiple, 0, 0, 0, 0, filePath);
+    }
+
+    @Keep
+    public static String createQrcodeFromFile(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
+            @Nullable String filePath) {
+        return createQrcodeFromFile(context, text, multiple, margin, margin, margin, margin, filePath);
+    }
+
+    /**
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param filePath     二维码中间logo
+     * @return
+     */
+    @Keep
+    public static String createQrcodeFromFile(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String filePath) {
+
+        Bitmap bitmap = null;
+
+        try {
+            bitmap = createBitmapLogoFromFile(context, filePath, 14, Color.WHITE);
+        } catch (Exception e) {
+            Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
+        }
+
+        String qrcode = createQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, bitmap);
+        if (null != bitmap) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+
+        return qrcode;
+    }
+
+    /****************************** createQrcodeFromFile *************************************/
+
+
+    /****************************** createQrcodeFromUrl *************************************/
+
+    @Keep
+    public static String createQrcodeFromUrl(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable String url) {
+
+        return createQrcodeFromUrl(context, text, 3, 0, 0, 0, 0, url);
+    }
+
+    @Keep
+    public static String createQrcodeFromUrl(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @Nullable String url) {
+
+        return createQrcodeFromUrl(context, text, multiple, 0, 0, 0, 0, url);
+    }
+
+    @Keep
+    public static String createQrcodeFromUrl(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
+            @Nullable String url) {
+
+        return createQrcodeFromUrl(context, text, multiple, margin, margin, margin, margin, url);
+    }
+
+    /**
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param url          二维码中间logo
+     * @return
+     */
+    @Keep
+    public static String createQrcodeFromUrl(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable String url) {
 
         // 检测当前线程是否是分线程
         if (Looper.getMainLooper() == Looper.myLooper())
@@ -72,123 +333,105 @@ public final class ZxingUtil {
             Log.e("ZxingUtil", "createQrcodeFromUrl => " + e.getMessage(), e);
         }
 
-        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
+        String qrcode = createQrcodeFromInputStream(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, inputStream);
         return qrcode;
     }
 
-    /**
-     * @param context  上下文
-     * @param message  二维码信息
-     * @param size     二维码大小
-     * @param filePath logo-本地图片地址
-     * @return
-     */
+    /****************************** createQrcodeFromUrl *************************************/
+
+    /****************************** createQrcodeFromRaw *************************************/
+
     @Keep
-    public static String createQrcodeFromFile(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String filePath) {
+    public static String createQrcodeFromRaw(
+            @NonNull Context context,
+            @NonNull String text,
+            @RawRes int raw) {
 
-        Bitmap bitmap = null;
-
-        try {
-            bitmap = createBitmapLogoFromFile(context, filePath, 14, Color.WHITE);
-        } catch (Exception e) {
-            Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
-        }
-
-        String qrcode = createQrcode(context, message, size, bitmap);
-        if (null != bitmap) {
-            bitmap.recycle();
-            bitmap = null;
-        }
-
-        return qrcode;
+        return createQrcodeFromRaw(context, text, 3, 0, 0, 0, 0, raw);
     }
 
-
-    /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param base64  logo-base64字符串
-     * @return
-     */
     @Keep
-    public static String createQrcodeFromBase64(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String base64) {
+    public static String createQrcodeFromRaw(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @RawRes int raw) {
 
-        InputStream inputStream = null;
-        if (null != base64 && base64.length() > 0) {
-            inputStream = base64ToInputStream(base64);
-        }
+        return createQrcodeFromRaw(context, text, multiple, 0, 0, 0, 0, raw);
+    }
 
-        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
+    @Keep
+    public static String createQrcodeFromRaw(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
+            @RawRes int raw) {
 
-        if (null != inputStream) {
-            try {
-                inputStream.close();
-                inputStream = null;
-            } catch (Exception e) {
-            }
-        }
-
-        return qrcode;
+        return createQrcodeFromRaw(context, text, multiple, margin, margin, margin, margin, raw);
     }
 
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param raw     logo-raw文件夹
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param raw          二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcodeFromRaw(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @RawRes int raw) {
+    public static String createQrcodeFromRaw(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @RawRes int raw) {
 
         if (null == context)
             return null;
 
         InputStream inputStream = context.getResources().openRawResource(raw);
-        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
+        String qrcode = createQrcodeFromInputStream(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, inputStream);
         return qrcode;
     }
 
+    /****************************** createQrcodeFromRaw *************************************/
+
+    /****************************** createQrcodeFromInputStream *************************************/
+
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param assets  logo-assets文件夹
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param inputStream  二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcodeFromAssets(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull String assets) {
-
-        if (null == context || null == assets || assets.length() == 0)
-            return null;
-
-        InputStream inputStream = null;
-        try {
-            inputStream = context.getResources().getAssets().open(assets);
-        } catch (Exception e) {
-            Log.e("ZxingUtil", "createQrcodeFromAssets => " + e.getMessage(), e);
-        }
-
-        String qrcode = createQrcodeFromInputStream(context, message, size, inputStream);
-        return qrcode;
-    }
-
-    /**
-     * @param context     上下文
-     * @param message     二维码信息
-     * @param size        二维码大小
-     * @param inputStream logo-inputStream流
-     * @return
-     */
-    @Keep
-    public static String createQrcodeFromInputStream(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @NonNull InputStream inputStream) {
+    private static String createQrcodeFromInputStream(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable InputStream inputStream) {
 
         if (null == context)
             return null;
 
         Bitmap logoBitmap = createBitmapLogo(context, inputStream, 14, Color.WHITE);
-        String qrcode = createQrcode(context, message, size, logoBitmap);
+        String qrcode = createQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, logoBitmap);
 
         if (null != logoBitmap) {
             logoBitmap.recycle();
@@ -198,33 +441,70 @@ public final class ZxingUtil {
         return qrcode;
     }
 
-    /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @return
-     */
-    @Keep
-    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size) {
+    /****************************** createQrcodeFromInputStream *************************************/
 
-        String qrcode = createQrcode(context, message, size, null);
-        return qrcode;
+    /****************************** createQrcode *************************************/
+
+    public static String createQrcode(
+            @NonNull Context context,
+            @NonNull String text) {
+
+        return createQrcode(context, text, 3, 0, 0, 0, 0, null);
+    }
+
+    public static String createQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable Bitmap logo) {
+
+        return createQrcode(context, text, 3, 0, 0, 0, 0, logo);
+    }
+
+    public static String createQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @Nullable Bitmap logo) {
+
+        return createQrcode(context, text, multiple, 0, 0, 0, 0, logo);
+    }
+
+    public static String createQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
+            @Nullable Bitmap logo) {
+
+        return createQrcode(context, text, multiple, margin, margin, margin, margin, logo);
     }
 
     /**
-     * @param context 上下文
-     * @param message 二维码信息
-     * @param size    二维码大小
-     * @param logo    logo-bitmap
+     * @param context      上下文context
+     * @param text         二维码信息
+     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param marginLeft   二维码白边左边距
+     * @param marginTop    二维码白边上边距
+     * @param marginRight  二维码白边右边距
+     * @param marginBottom 二维码白边下边距
+     * @param logo         二维码中间logo
      * @return
      */
     @Keep
-    public static String createQrcode(@NonNull Context context, @NonNull String message, @IntRange(from = 100, to = 4000) int size, @Nullable Bitmap logo) {
+    public static String createQrcode(
+            @NonNull Context context,
+            @NonNull String text,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+            @Nullable Bitmap logo) {
 
-        if (null == context || null == message || message.length() == 0)
+        if (null == context || null == text || text.length() == 0)
             return null;
 
-        Bitmap bitmapQrcode = EncodeTool.createBitmapQrcode(context, message, size, logo);
+        Bitmap bitmapQrcode = EncodeTool.createBitmapQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, logo);
         String saveBitmapLocal = saveBitmapLocal(context, bitmapQrcode);
 
         if (null != logo) {
@@ -234,6 +514,8 @@ public final class ZxingUtil {
 
         return saveBitmapLocal;
     }
+
+    /****************************** createQrcode *************************************/
 
     /**
      * 保存bitmap至本地
@@ -256,7 +538,7 @@ public final class ZxingUtil {
             }
 
             String parent = dir.getAbsolutePath();
-            String child = "temp_qrcode.png";
+            String child = "temp_qrcode_" + System.nanoTime() + ".png";
 
             File file = new File(parent, child);
             if (file.exists()) {
@@ -403,9 +685,9 @@ public final class ZxingUtil {
         }
 
         // 边框容错
-        int size = Math.min(options.outWidth, options.outHeight) / 10;
-        if (border > size) {
-            border = size;
+        int multiple = Math.min(options.outWidth, options.outHeight) / 10;
+        if (border > multiple) {
+            border = multiple;
         }
 
         int width = options.outWidth + 2 * border;

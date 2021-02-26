@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcode(getApplicationContext(), url, 400);
+                String qrcode = ZxingUtil.createQrcode(getApplicationContext(), url);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
 
-                        String qrcode = ZxingUtil.createQrcodeFromUrl(getApplicationContext(), url, 400, logo);
+                        String qrcode = ZxingUtil.createQrcodeFromUrl(getApplicationContext(), url, 3,4, 4, 7, 7, logo);
                         if (TextUtils.isEmpty(qrcode)) {
                             Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                             return;
@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromRaw(getApplicationContext(), url, 400, R.raw.logo);
+                String qrcode = ZxingUtil.createQrcodeFromRaw(getApplicationContext(), url, 3, 4, 4, 6, 6,R.raw.logo);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromAssets(getApplicationContext(), url, 400, "logo.jpg");
+                String qrcode = ZxingUtil.createQrcodeFromAssets(getApplicationContext(), url, 10, 2, 2, 8, 8,"logo.jpg");
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;

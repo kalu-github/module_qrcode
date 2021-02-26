@@ -27,7 +27,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
-import lib.kalu.qrcode.R;
+import lib.kalu.barcode.R;
 import lib.kalu.barcode.camera.CameraManager;
 
 /**
