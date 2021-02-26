@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -62,7 +63,9 @@ public class MainActivity extends Activity {
 
                         String qrcode = ZxingUtil.createQrcodeFromUrl(getApplicationContext(), url, 3,4, 4, 7, 7, logo);
                         if (TextUtils.isEmpty(qrcode)) {
+                            Looper.prepare();
                             Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
                             return;
                         }
 
@@ -86,7 +89,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromRaw(getApplicationContext(), url, 3, 4, 4, 6, 6,R.raw.logo);
+                String qrcode = ZxingUtil.createQrcodeFromRaw(getApplicationContext(), url, 3, 8, 8, 2, 2,R.raw.logo);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;

@@ -91,59 +91,86 @@ public final class EncodeTool {
             QRCodeWriter writer = new QRCodeWriter();
             BitMatrix bitMatrix = writer.encode(text, multiple, marginLeft, marginTop, marginRight, marginBottom, level, hints);
 
-            int size = bitMatrix.getWidth();
+            int matrixWidth = bitMatrix.getWidth();
+            int matrixHeight = bitMatrix.getHeight();
+            if (matrixWidth != matrixHeight)
+                return null;
 
-            // step2
-            int[] pixels = new int[size * size];
-            if (null == logo) {
-                for (int y = 0; y < size; y++) {
-                    for (int x = 0; x < size; x++) {
-                        if (bitMatrix.get(x, y)) {
-                            pixels[y * size + x] = 0xff000000;
-                        } else {
-                            pixels[y * size + x] = 0xffffffff;
-                        }
-                    }
+            // Bitmap颜色
+            int[] pixels = new int[matrixWidth * matrixHeight];
+
+            // logo范围
+            int minX = -1;
+            int maxX = -1;
+            int minY = -1;
+            int maxY = -1;
+
+            // 缩放logo
+            Bitmap scaleBitmap = null;
+
+            if (null != logo) {
+
+                // logo输出宽度
+                int logoOutWidth = matrixWidth / 5;
+                // logo输出高度
+                int logoOutHeight = matrixHeight / 5;
+
+                // logo范围计算
+                minX = Math.abs(matrixWidth - multiple * marginLeft - multiple * marginRight) / 2 - Math.abs(logoOutWidth) / 2;
+                minX += marginLeft * multiple;
+                maxX = minX + logoOutWidth;
+                minY = Math.abs(matrixHeight - multiple * marginTop - multiple * marginBottom) / 2 - Math.abs(logoOutWidth) / 2;
+                minY += marginTop * multiple;
+                maxY = minY + logoOutHeight;
+
+                // logo真实高度
+                int logoRealWidth = logo.getWidth();
+                int logoRealHeight = logo.getHeight();
+
+                // Matrix缩放至指定大小
+                Matrix matrix = new Matrix();
+                float sx = ((float) logoOutHeight) / logoRealWidth;
+                float sy = ((float) logoOutHeight) / logoRealHeight;
+                matrix.setScale(sx, sy);
+                scaleBitmap = Bitmap.createBitmap(logo, 0, 0, logoRealWidth, logoRealHeight, matrix, false);
+
+                if (null != logo && !logo.isRecycled()) {
+                    logo.recycle();
+                    logo = null;
                 }
-            } else {
+            }
 
-                int IMAGE_HALFWIDTH = size / 8;
-                int width = bitMatrix.getWidth();//矩阵高度
-                int height = bitMatrix.getHeight();//矩阵宽度
-                int halfW = width / 2;
-                int halfH = height / 2;
-                Matrix m = new Matrix();
-                float sx = 2f * IMAGE_HALFWIDTH / logo.getWidth();
-                float sy = 2f * IMAGE_HALFWIDTH / logo.getHeight();
-                m.setScale(sx, sy);
-                //设置缩放信息
-                //将logo图片按martix设置的信息缩放
-                logo = Bitmap.createBitmap(logo, 0, 0, logo.getWidth(), logo.getHeight(), m, false);
+            // 二维码合成颜色
+            for (int y = 0; y < matrixHeight; y++) {
 
-                for (int y = 0; y < size; y++) {
-                    for (int x = 0; x < size; x++) {
-                        if (x > halfW - IMAGE_HALFWIDTH && x < halfW + IMAGE_HALFWIDTH
-                                && y > halfH - IMAGE_HALFWIDTH
-                                && y < halfH + IMAGE_HALFWIDTH) {
-                            //该位置用于存放图片信息
-                            //记录图片每个像素信息
-                            pixels[y * width + x] = logo.getPixel(x - halfW + IMAGE_HALFWIDTH, y - halfH + IMAGE_HALFWIDTH);
-                        } else {
-                            if (bitMatrix.get(x, y)) {
-                                pixels[y * size + x] = 0xff000000;
-                            } else {
-                                pixels[y * size + x] = 0xffffffff;
-                            }
-                        }
+                for (int x = 0; x < matrixWidth; x++) {
+
+                    // LOGO图片
+                    if (null != scaleBitmap && x > minX && x < maxX && y > minY && y < maxY) {
+                        int pixel = scaleBitmap.getPixel(x - minX, y - minX);
+                        pixels[y * matrixHeight + x] = pixel;
+                    }
+                    // 黑色
+                    else if (bitMatrix.get(x, y)) {
+                        pixels[y * matrixHeight + x] = 0xff000000;
+                    }
+                    // 白色
+                    else {
+                        pixels[y * matrixHeight + x] = 0xffffffff;
                     }
                 }
             }
 
-            // step3
-            Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-            bitmap.setPixels(pixels, 0, size, 0, 0, size, size);
+            if (null != scaleBitmap && !scaleBitmap.isRecycled()) {
+                scaleBitmap.recycle();
+                scaleBitmap = null;
+            }
 
-            return bitmap;
+            // step3
+            Bitmap createBitmap = Bitmap.createBitmap(matrixWidth, matrixHeight, Bitmap.Config.ARGB_8888);
+            createBitmap.setPixels(pixels, 0, matrixWidth, 0, 0, matrixWidth, matrixHeight);
+
+            return createBitmap;
 
         } catch (Exception e) {
             Log.e("EncodeTool", "createBitmapQrcode => " + e.getMessage(), e);

@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import lib.kalu.qrcode.util.LogUtil;
+
 /**
  * Utility methods for configuring the Android camera.
  *
@@ -282,13 +284,12 @@ public final class CameraConfigurationUtils {
             return new Point(defaultSize.width, defaultSize.height);
         }
 
-        if (Log.isLoggable(TAG, Log.INFO)) {
-            StringBuilder previewSizesString = new StringBuilder();
-            for (Camera.Size size : rawSupportedSizes) {
-                previewSizesString.append(size.width).append('x').append(size.height).append(' ');
-            }
-            Log.i(TAG, "Supported preview sizes: " + previewSizesString);
+        StringBuilder previewSizesString = new StringBuilder();
+        for (Camera.Size size : rawSupportedSizes) {
+            LogUtil.log("findBestPreviewSizeValue => suppportWidth = " + size.width + ", suppportHeight = " + size.height);
+            previewSizesString.append(size.width).append('x').append(size.height).append(' ');
         }
+        Log.i(TAG, "Supported preview sizes: " + previewSizesString);
 
         double screenAspectRatio = screenResolution.x / (double) screenResolution.y;
 

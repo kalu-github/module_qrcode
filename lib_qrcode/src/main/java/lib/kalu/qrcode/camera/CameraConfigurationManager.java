@@ -27,6 +27,7 @@ import android.view.WindowManager;
 
 import lib.kalu.qrcode.camera.open.CameraFacing;
 import lib.kalu.qrcode.camera.open.OpenCamera;
+import lib.kalu.qrcode.util.LogUtil;
 
 /**
  * A class which deals with reading, parsing, and setting the camera parameters which are used to
@@ -110,6 +111,7 @@ final class CameraConfigurationManager {
         Point screenResolutionForCamera = new Point();
         screenResolutionForCamera.x = screenResolution.x;
         screenResolutionForCamera.y = screenResolution.y;
+        LogUtil.log("initFromCameraParameters => screenWidth = " + screenResolutionForCamera.x + "screenHeight = " + screenResolutionForCamera.y);
 
         if (screenResolution.x < screenResolution.y) {
             screenResolutionForCamera.x = screenResolution.y;
@@ -121,6 +123,7 @@ final class CameraConfigurationManager {
         Log.i(TAG, "Camera resolution: " + cameraResolution);
         bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolutionForCamera);
         Log.i(TAG, "Best available preview size: " + bestPreviewSize);
+        LogUtil.log("initFromCameraParameters => bestWidth = " + bestPreviewSize.x + ", bestHeight = " + bestPreviewSize.y);
 
         boolean isScreenPortrait = screenResolution.x < screenResolution.y;
         boolean isPreviewSizePortrait = bestPreviewSize.x < bestPreviewSize.y;
@@ -210,5 +213,4 @@ final class CameraConfigurationManager {
         }
         return false;
     }
-
 }
