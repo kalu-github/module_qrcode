@@ -43,7 +43,7 @@ https://github.com/zxing/zxing/releases
 ```
 
 #
-#### 生成二维码 => createQrcodeFromUrl
+#### 2.生成二维码 => createQrcodeFromUrl
 ```
     /**
      * @param context      上下文context
@@ -69,7 +69,7 @@ https://github.com/zxing/zxing/releases
 ```
 
 #
-#### 生成二维码 => createQrcodeFromRaw
+#### 3.生成二维码 => createQrcodeFromRaw
 ```
     /**
      * @param context      上下文context
@@ -95,7 +95,7 @@ https://github.com/zxing/zxing/releases
 ```
 
 #
-#### 生成二维码 => createQrcodeFromFile
+#### 4.生成二维码 => createQrcodeFromFile
 ```
     /**
      * @param context      上下文context
@@ -121,7 +121,7 @@ https://github.com/zxing/zxing/releases
 ```
 
 #
-#### 生成二维码 => createQrcodeFromAssets
+#### 5.生成二维码 => createQrcodeFromAssets
 ```
     /**
      * @param context      上下文context
@@ -147,7 +147,7 @@ https://github.com/zxing/zxing/releases
 ```
 
 #
-#### 生成二维码 => createQrcodeFromBase64
+#### 6.生成二维码 => createQrcodeFromBase64
 ```
     /**
      * @param context      上下文context
