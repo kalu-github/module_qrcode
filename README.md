@@ -22,7 +22,7 @@ https://github.com/zxing/zxing/releases
     /**
      * @param context      上下文context
      * @param text         二维码信息
-     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
@@ -48,7 +48,7 @@ https://github.com/zxing/zxing/releases
     /**
      * @param context      上下文context
      * @param text         二维码信息
-     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
@@ -74,7 +74,7 @@ https://github.com/zxing/zxing/releases
     /**
      * @param context      上下文context
      * @param text         二维码信息
-     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
@@ -100,7 +100,7 @@ https://github.com/zxing/zxing/releases
     /**
      * @param context      上下文context
      * @param text         二维码信息
-     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
@@ -126,7 +126,7 @@ https://github.com/zxing/zxing/releases
     /**
      * @param context      上下文context
      * @param text         二维码信息
-     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
@@ -152,7 +152,7 @@ https://github.com/zxing/zxing/releases
     /**
      * @param context      上下文context
      * @param text         二维码信息
-     * @param multiple     二维码方法倍数(from = 3, to = 100)
+     * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
