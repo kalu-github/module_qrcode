@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Looper;
 import android.util.Base64;
@@ -27,6 +28,7 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
+import lib.kalu.qrcode.decode.DecodeTool;
 import lib.kalu.qrcode.encode.EncodeTool;
 
 /**
@@ -35,6 +37,29 @@ import lib.kalu.qrcode.encode.EncodeTool;
  */
 @Keep
 public final class ZxingUtil {
+
+    /**
+     * @param filePath 二维码本地文件路径
+     * @return
+     */
+    @Keep
+    public static final String decodeQrcodeFromFile(@NonNull String filePath) {
+
+        return DecodeTool.decodeQrcodeFromFile(filePath);
+    }
+
+    /**
+     * @param context 上下文
+     * @param uri     二维码本地文件uri
+     * @return
+     */
+    @Keep
+    public static final String decodeQrcodeFromUrl(
+            @NonNull Context context,
+            @NonNull Uri uri) {
+
+        return DecodeTool.decodeQrcodeFromUri(context, uri);
+    }
 
     /****************************** createQrcodeFromBase64 *************************************/
 

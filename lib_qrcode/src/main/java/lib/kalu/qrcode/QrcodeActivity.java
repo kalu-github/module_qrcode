@@ -32,6 +32,7 @@ import lib.kalu.qrcode.handler.ParseHandler;
 import lib.kalu.qrcode.manager.BeepManager;
 import lib.kalu.qrcode.manager.InactivityTimer;
 import lib.kalu.qrcode.config.QrcodeConfig;
+import lib.kalu.qrcode.util.ZxingUtil;
 import lib.kalu.qrcode.view.ScansView;
 import lib.kalu.qrcode.view.SeeksBar;
 import lib.kalu.qrcode.view.ZxingView;
@@ -157,34 +158,24 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
                 btn_dialog_bg.setVisibility(View.GONE);
                 return;
             }
-            final Uri uri = data.getData();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //需要压缩图片
-                    Bitmap bitmapChoose = DecodeTool.decodeUriAsBitmap(QrcodeActivity.this, uri);
-                    if (bitmapChoose != null) {
-                        final String decodeQRCodeFromBitmap = DecodeTool.decode(bitmapChoose);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                btn_dialog_bg.setVisibility(View.GONE);
-                                Log.i(TAG, "decodeQRCode:" + decodeQRCodeFromBitmap);
-                                if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
-                                    Toast.makeText(QrcodeActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    finishSuccess(decodeQRCodeFromBitmap);
-                                }
+
+                    Uri uri = data.getData();
+                    String qrcodeFromUrl = ZxingUtil.decodeQrcodeFromUrl(QrcodeActivity.this, uri);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (TextUtils.isEmpty(qrcodeFromUrl)) {
+                                Toast.makeText(QrcodeActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
+                            } else {
+                                finishSuccess(qrcodeFromUrl);
                             }
-                        });
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                btn_dialog_bg.setVisibility(View.GONE);
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
             }).start();
         }

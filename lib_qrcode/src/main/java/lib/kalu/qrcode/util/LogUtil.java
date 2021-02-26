@@ -17,6 +17,11 @@ public final class LogUtil {
 
     public static final void log(@Nullable String info) {
 
+        log(info, null);
+    }
+
+    public static final void log(@Nullable String info, @Nullable Throwable throwable) {
+
         try {
 
             if (!BuildConfig.DEBUG)
@@ -28,7 +33,7 @@ public final class LogUtil {
             if (null == info || info.length() == 0)
                 return;
 
-            Log.d(MOULDE_ZXING_TAG, info);
+            Log.d(MOULDE_ZXING_TAG, info, throwable);
 
         } catch (Exception e) {
         }

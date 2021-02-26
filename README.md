@@ -171,3 +171,34 @@ https://github.com/zxing/zxing/releases
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
             @Nullable String base64)
 ```
+
+#
+#### 7.解析二维码 => decodeQrcodeFromUri
+```
+    /**
+     * @param context 上下文
+     * @param uri     二维码本地文件uri
+     * @return
+     */
+    @Keep
+    public static final String decodeQrcodeFromUrl(
+            @NonNull Context context,
+            @NonNull Uri uri) {
+
+        return DecodeTool.decodeQrcodeFromUri(context, uri);
+    }
+```
+
+#
+#### 8.解析二维码 => decodeQrcodeFromFile
+```
+    /**
+     * @param filePath 二维码本地文件路径
+     * @return
+     */
+    @Keep
+    public static final String decodeQrcodeFromFile(@NonNull String filePath) {
+
+        return DecodeTool.decodeQrcodeFromFile(filePath);
+    }
+```
