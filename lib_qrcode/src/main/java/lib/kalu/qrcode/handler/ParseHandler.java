@@ -56,7 +56,9 @@ public final class ParseHandler extends Handler {
 
         // Start ourselves capturing previews and decoding.
         this.cameraManager = cameraManager;
-        cameraManager.startPreview();
+
+
+        cameraManager.startPreview(activity.getApplicationContext());
         restartPreviewAndDecode();
     }
 

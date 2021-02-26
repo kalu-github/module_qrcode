@@ -3,39 +3,39 @@ package lib.kalu.qrcode;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Rect;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
 
 import com.google.zxing.Result;
+
 import lib.kalu.qrcode.camera.CameraManager;
-import lib.kalu.qrcode.decode.DecodeTool;
+import lib.kalu.qrcode.config.QrcodeConfig;
 import lib.kalu.qrcode.handler.ParseHandler;
+import lib.kalu.qrcode.listener.OnCameraBytesChangeListener;
 import lib.kalu.qrcode.manager.BeepManager;
 import lib.kalu.qrcode.manager.InactivityTimer;
-import lib.kalu.qrcode.config.QrcodeConfig;
+import lib.kalu.qrcode.util.LogUtil;
 import lib.kalu.qrcode.util.ZxingUtil;
-import lib.kalu.qrcode.view.ScansView;
-import lib.kalu.qrcode.view.SeeksBar;
-import lib.kalu.qrcode.view.ZxingView;
+import lib.kalu.qrcode.view.CameraView;
+import lib.kalu.qrcode.view.ScanView;
+import lib.kalu.qrcode.view.SeekBar;
 
 /**
  * description: 二维码扫描
@@ -44,40 +44,26 @@ import lib.kalu.qrcode.view.ZxingView;
 @Keep
 public final class QrcodeActivity extends Activity implements SurfaceHolder.Callback {
 
-    private static final String TAG = QrcodeActivity.class.getSimpleName();
-
     private CameraManager cameraManager;
     private ParseHandler handler;
-    private ScansView scannersView;
+    private ScanView scannersView;
     private Result lastResult;
     private boolean hasSurface;
     private String characterSet;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
 
-    private LinearLayout btn_scan_light;
-    private ImageView iv_scan_light;
-    private TextView tv_scan_light;
-    private LinearLayout btn_close;
-    private LinearLayout btn_photo;
-    private RelativeLayout btn_dialog_bg;
-    private ImageView ivScreenshot;
-
-    private ZxingView surfaceView;
+    private CameraView surfaceView;
     private ImageView mIvScanZoomIn;
     private ImageView mIvScanZoomOut;
-    private SeekBar mSeekBarZoom;
+    private android.widget.SeekBar mSeekBarZoom;
     private LinearLayout mLlRoomController;
-    private SeeksBar mSeekBarZoomVertical;
+    private SeekBar mSeekBarZoomVertical;
     private ImageView mIvScanZoomOutVertical;
     private LinearLayout mLlRoomControllerVertical;
     private ImageView mIvScanZoomInVertical;
 
     //传递数据
-    //闪光灯是否打开
-    private boolean is_light_on = false;
-    private boolean beepFlag = true;
-    private boolean vibrateFlag = true;
     private boolean zoomControllerFlag = true;
     private int exitAnime = 0;
     private QrcodeConfig.ZoomControllerLocation zoomControllerLocation;
@@ -91,61 +77,184 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    protected void onResume() {
+        super.onResume();
+//        // CameraManager must be initialized here, not in onCreate(). This is necessary because we don't
+//        // want to open the camera driver and measure the screen size if we're going to show the help on
+//        // first launch. That led to bugs where the scanning rectangle was the wrong size and partially
+//        // off screen.
+//        if (handler != null && cameraManager != null && cameraManager.isOpen()) {
+//            return;
+//        }
+//        cameraManager = new CameraManager(getApplication());
+//        scannersView.setCameraManager(cameraManager);
+//
+//        handler = null;
+//        lastResult = null;
+//
+//        resetStatusView();
+//
+//        beepManager.updatePrefs(beepFlag, vibrateFlag);
+//
+//        inactivityTimer.onResume();
+//        characterSet = null;
+//
+//        SurfaceHolder surfaceHolder = surfaceView.getHolder();
+//        if (hasSurface) {
+//            // 防止sdk8的设备初始化预览异常
+//            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+//            // The activity was paused but not stopped, so the surface still exists. Therefore
+//            // surfaceCreated() won't be called, so init the camera here.
+//            initCamera(surfaceHolder);
+//        } else {
+//            // Install the callback and wait for surfaceCreated() to init the camera.
+//            surfaceHolder.addCallback(this);
+//        }
+    }
+
+    @Override
+    protected void onPause() {
+//        if (handler != null) {
+//            handler.quitSynchronously();
+//            handler = null;
+//        }
+//        inactivityTimer.onPause();
+//        beepManager.close();
+//        cameraManager.closeDriver();
+//        //historyManager = null; // Keep for onActivityResult
+//        if (!hasSurface) {
+//            SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+//            SurfaceHolder surfaceHolder = surfaceView.getHolder();
+//            surfaceHolder.removeCallback(this);
+//        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // inactivityTimer.shutdown();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(QrcodeManager.RESULT_CANCLE);
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.lib_qrcode_activity_qrcode);
-        initView();
-        initIntent();
+        //  initView();
+        // initIntent();
+
+
+        // 相机
+        CameraView cameraView = findViewById(R.id.lib_qrcode_camera);
+        cameraView.setOnCameraBytesChangeListener(new OnCameraBytesChangeListener() {
+            @Override
+            public void onSucc(@NonNull String result) {
+
+                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+        });
+//        cameraView.setPreviewCallback(new Camera.PreviewCallback() {
+//
+//            @Override
+//            public void onPreviewFrame(byte[] data, Camera camera) {
+//
+//                CameraView cameraView1 = findViewById(R.id.lib_qrcode_camera);
+//                String praseBytes = cameraView1.praseBytes(data);
+//
+//                if (null == praseBytes || praseBytes.length() == 0)
+//                    return;
+//
+//
+//            }
+//        });
+
+
+        // 关闭
+        findViewById(R.id.lib_qrcode_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        // 相册
+        findViewById(R.id.lib_qrcode_album).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent();
+                /* 开启Pictures画面Type设定为image */
+                intent.setType("image/*");
+                /* 使用Intent.ACTION_GET_CONTENT这个Action */
+                // intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setAction(Intent.ACTION_PICK);
+                /* 取得相片后返回本画面 */
+                startActivityForResult(intent, 1000);
+            }
+        });
+
+        // 闪光灯
+        findViewById(R.id.lib_qrcode_light).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String string = getResources().getString(R.string.lib_qrcode_light_on);
+                TextView textView = findViewById(R.id.lib_qrcode_light);
+                CharSequence text = textView.getText();
+
+                // 显示打开
+                if (string.equals(text)) {
+                    CameraManager.getInstance().offLight();
+                    textView.setText(R.string.lib_qrcode_light_off);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_qrcode_ic_light_off, 0, 0);
+                }
+                // 显示关闭
+                else {
+                    CameraManager.getInstance().openLight();
+                    textView.setText(R.string.lib_qrcode_light_on);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_qrcode_ic_light_on, 0, 0);
+                }
+            }
+        });
     }
 
     private void initIntent() {
-        Intent intent = getIntent();
-
-        QrcodeConfig qrcodeConfig = (QrcodeConfig) intent.getSerializableExtra(QrcodeManager.INTENT_KEY_CONFIG_MODEL);
-
-
-        String hintText = qrcodeConfig.getScanHintText();
-        String scanColor = qrcodeConfig.getScanColor();
-        boolean photoFlag = qrcodeConfig.isShowPhotoAlbum();
-        beepFlag = qrcodeConfig.isShowBeep();
-        vibrateFlag = qrcodeConfig.isShowVibrate();
-        exitAnime = qrcodeConfig.getActivityExitAnime();
-        zoomControllerFlag = qrcodeConfig.isShowZoomController();
-        zoomControllerLocation = qrcodeConfig.getZoomControllerLocation();
-
-        if (!TextUtils.isEmpty(hintText)) {
-            scannersView.setHintText(hintText);
-        }
-        if (!TextUtils.isEmpty(scanColor)) {
-            scannersView.setScanLineColor(Color.parseColor(scanColor));
-        }
-        if (!photoFlag) {
-            btn_photo.setVisibility(View.GONE);
-        }
-        if (exitAnime == 0) {
-            exitAnime = R.anim.lib_qrcode_anim_bottom_out;
-        }
-    }
-
-    /**
-     * 获取相册中的图片
-     */
-    public void getImageFromAlbum() {
-        Intent intent = new Intent();
-        /* 开启Pictures画面Type设定为image */
-        intent.setType("image/*");
-        /* 使用Intent.ACTION_GET_CONTENT这个Action */
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setAction(Intent.ACTION_PICK);
-        /* 取得相片后返回本画面 */
-        startActivityForResult(intent, 1000);
-        //开始转Dialog
-        btn_dialog_bg.setVisibility(View.VISIBLE);
+//        Intent intent = getIntent();
+//
+//        QrcodeConfig qrcodeConfig = (QrcodeConfig) intent.getSerializableExtra(QrcodeManager.INTENT_KEY_CONFIG_MODEL);
+//
+//
+//        String hintText = qrcodeConfig.getScanHintText();
+//        String scanColor = qrcodeConfig.getScanColor();
+//        boolean photoFlag = qrcodeConfig.isShowPhotoAlbum();
+//        exitAnime = qrcodeConfig.getActivityExitAnime();
+//        zoomControllerFlag = qrcodeConfig.isShowZoomController();
+//        zoomControllerLocation = qrcodeConfig.getZoomControllerLocation();
+//
+//        if (!TextUtils.isEmpty(hintText)) {
+//            scannersView.setHintText(hintText);
+//        }
+//        if (!TextUtils.isEmpty(scanColor)) {
+//            scannersView.setScanLineColor(Color.parseColor(scanColor));
+//        }
+//        if (!photoFlag) {
+//            findViewById(R.id.lib_qrcode_album).setVisibility(View.GONE);
+//        }
+//        if (exitAnime == 0) {
+//            exitAnime = R.anim.lib_qrcode_anim_bottom_out;
+//        }
     }
 
     @Override
@@ -153,11 +262,6 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
         super.onActivityResult(requestCode, resultCode, data);
         //去相册选择图片
         if (requestCode == 1000) {
-            if (data == null) {
-                //隐藏Dialog
-                btn_dialog_bg.setVisibility(View.GONE);
-                return;
-            }
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -181,82 +285,12 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume");
-        // CameraManager must be initialized here, not in onCreate(). This is necessary because we don't
-        // want to open the camera driver and measure the screen size if we're going to show the help on
-        // first launch. That led to bugs where the scanning rectangle was the wrong size and partially
-        // off screen.
-        if (handler != null && cameraManager != null && cameraManager.isOpen()) {
-            return;
-        }
-        cameraManager = new CameraManager(getApplication());
-        scannersView.setCameraManager(cameraManager);
-
-        handler = null;
-        lastResult = null;
-
-        resetStatusView();
-
-        beepManager.updatePrefs(beepFlag, vibrateFlag);
-
-        inactivityTimer.onResume();
-        characterSet = null;
-
-        SurfaceHolder surfaceHolder = surfaceView.getHolder();
-        if (hasSurface) {
-            // 防止sdk8的设备初始化预览异常
-            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-            // The activity was paused but not stopped, so the surface still exists. Therefore
-            // surfaceCreated() won't be called, so init the camera here.
-            initCamera(surfaceHolder);
-        } else {
-            // Install the callback and wait for surfaceCreated() to init the camera.
-            surfaceHolder.addCallback(this);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        if (handler != null) {
-            handler.quitSynchronously();
-            handler = null;
-        }
-        inactivityTimer.onPause();
-        beepManager.close();
-        cameraManager.closeDriver();
-        //historyManager = null; // Keep for onActivityResult
-        if (!hasSurface) {
-            SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
-            SurfaceHolder surfaceHolder = surfaceView.getHolder();
-            surfaceHolder.removeCallback(this);
-        }
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        inactivityTimer.shutdown();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        //取消扫码
-        finishCancle();
-    }
-
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
         lastResult = rawResult;
         //播放声音和震动
         beepManager.playBeepSoundAndVibrate();
         //关闭页面
         finishSuccess(lastResult.getText());
-        //图片显示：测试才显示
-        ivScreenshot.setImageBitmap(barcode);
-
     }
 
     private void finishFailed(String errorMsg) {
@@ -264,11 +298,6 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
         intent.putExtra(QrcodeManager.INTENT_KEY_RESULT_ERROR, errorMsg);
         this.setResult(QrcodeManager.RESULT_FAIL, intent);
         this.finish();
-        finishFinal();
-    }
-
-    private void finishCancle() {
-        this.setResult(QrcodeManager.RESULT_CANCLE, null);
         finishFinal();
     }
 
@@ -287,9 +316,7 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (holder == null) {
-            Log.e(TAG, "*** WARNING *** surfaceCreated() gave us a null surface!");
-        }
+        LogUtil.log("surfaceCreated => holder = " + holder);
         if (!hasSurface) {
             hasSurface = true;
             initCamera(holder);
@@ -311,11 +338,11 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
             displayFrameworkBugMessageAndExit("SurfaceHolder 不存在");
         }
         if (cameraManager.isOpen()) {
-            Log.w(TAG, "initCamera() while already open -- late SurfaceView callback?");
+            LogUtil.log("initCamera => isOpen = true");
             return;
         }
         try {
-            cameraManager.openDriver(surfaceHolder);
+            cameraManager.openDriver(getApplicationContext(), surfaceHolder);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
             if (handler == null) {
                 handler = new ParseHandler(this, characterSet, cameraManager);
@@ -344,140 +371,94 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
     }
 
     public void drawViewfinder() {
-        scannersView.drawViewfinder();
+//        scannersView.drawViewfinder();
     }
 
-    private void initView() {
-        surfaceView = findViewById(R.id.preview_view);
-        scannersView = (ScansView) findViewById(R.id.viewfinder_view);
-        btn_scan_light = (LinearLayout) findViewById(R.id.btn_scan_light);
-        iv_scan_light = (ImageView) findViewById(R.id.iv_scan_light);
-        tv_scan_light = (TextView) findViewById(R.id.tv_scan_light);
-        btn_close = (LinearLayout) findViewById(R.id.btn_close);
-        btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
-        btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
-        ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
-        btn_dialog_bg.setVisibility(View.GONE);
-
-        hasSurface = false;
-        inactivityTimer = new InactivityTimer(this);
-        beepManager = new BeepManager(this);
-
-        //点击事件
-        btn_scan_light.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (is_light_on) {
-                    is_light_on = false;
-                    cameraManager.offLight();
-                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_off);
-                    tv_scan_light.setText("打开手电筒");
-                } else {
-                    is_light_on = true;
-                    cameraManager.openLight();
-                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_on);
-                    tv_scan_light.setText("关闭手电筒");
-                }
-            }
-        });
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishCancle();
-            }
-        });
-
-        btn_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getImageFromAlbum();
-            }
-        });
-
-        btn_dialog_bg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        mIvScanZoomIn = (ImageView) findViewById(R.id.iv_scan_zoom_in);
-        mIvScanZoomOut = (ImageView) findViewById(R.id.iv_scan_zoom_out);
-        mSeekBarZoom = (SeekBar) findViewById(R.id.seek_bar_zoom);
-        mLlRoomController = (LinearLayout) findViewById(R.id.ll_room_controller);
-
-        mSeekBarZoomVertical = (SeeksBar) findViewById(R.id.seek_bar_zoom_vertical);
-        mIvScanZoomOutVertical = (ImageView) findViewById(R.id.iv_scan_zoom_out_vertical);
-        mIvScanZoomInVertical = (ImageView) findViewById(R.id.iv_scan_zoom_in_vertical);
-        mLlRoomControllerVertical = (LinearLayout) findViewById(R.id.ll_room_controller_vertical);
-
-        mSeekBarZoomVertical.setMaxProgress(100);
-        mSeekBarZoomVertical.setProgress(0);
-        mSeekBarZoomVertical.setThumbSize(8, 8);
-        mSeekBarZoomVertical.setUnSelectColor(Color.parseColor("#b4b4b4"));
-        mSeekBarZoomVertical.setSelectColor(Color.parseColor("#FFFFFF"));
-
-        mIvScanZoomIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomIn(10);
-            }
-        });
-        mIvScanZoomOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomOut(10);
-            }
-        });
-        mIvScanZoomInVertical.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomIn(10);
-            }
-        });
-        mIvScanZoomOutVertical.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomOut(10);
-            }
-        });
-
-        mSeekBarZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                cameraManager.setZoom(progress);
-                mSeekBarZoomVertical.setProgress(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        mSeekBarZoomVertical.setOnSlideChangeListener(new SeeksBar.SlideChangeListener() {
-            @Override
-            public void onStart(SeeksBar slideView, int progress) {
-
-            }
-
-            @Override
-            public void onProgress(SeeksBar slideView, int progress) {
-                cameraManager.setZoom(progress);
-                mSeekBarZoom.setProgress(progress);
-            }
-
-            @Override
-            public void onStop(SeeksBar slideView, int progress) {
-
-            }
-        });
-    }
+//    private void initView() {
+//        surfaceView = findViewById(R.id.preview_view);
+//        scannersView = (ScanView) findViewById(R.id.viewfinder_view);
+//
+//        hasSurface = false;
+//        inactivityTimer = new InactivityTimer(this);
+//        beepManager = new BeepManager(this);
+//
+//        mIvScanZoomIn = (ImageView) findViewById(R.id.iv_scan_zoom_in);
+//        mIvScanZoomOut = (ImageView) findViewById(R.id.iv_scan_zoom_out);
+//        mSeekBarZoom = (android.widget.SeekBar) findViewById(R.id.seek_bar_zoom);
+//        mLlRoomController = (LinearLayout) findViewById(R.id.ll_room_controller);
+//
+//        mSeekBarZoomVertical = (SeekBar) findViewById(R.id.seek_bar_zoom_vertical);
+//        mIvScanZoomOutVertical = (ImageView) findViewById(R.id.iv_scan_zoom_out_vertical);
+//        mIvScanZoomInVertical = (ImageView) findViewById(R.id.iv_scan_zoom_in_vertical);
+//        mLlRoomControllerVertical = (LinearLayout) findViewById(R.id.ll_room_controller_vertical);
+//
+//        mSeekBarZoomVertical.setMaxProgress(100);
+//        mSeekBarZoomVertical.setProgress(0);
+//        mSeekBarZoomVertical.setThumbSize(8, 8);
+//        mSeekBarZoomVertical.setUnSelectColor(Color.parseColor("#b4b4b4"));
+//        mSeekBarZoomVertical.setSelectColor(Color.parseColor("#FFFFFF"));
+//
+//        mIvScanZoomIn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                zoomIn(10);
+//            }
+//        });
+//        mIvScanZoomOut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                zoomOut(10);
+//            }
+//        });
+//        mIvScanZoomInVertical.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                zoomIn(10);
+//            }
+//        });
+//        mIvScanZoomOutVertical.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                zoomOut(10);
+//            }
+//        });
+//
+//        mSeekBarZoom.setOnSeekBarChangeListener(new android.widget.SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(android.widget.SeekBar seekBar, int progress, boolean fromUser) {
+//                cameraManager.setZoom(progress);
+//                mSeekBarZoomVertical.setProgress(progress);
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(android.widget.SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(android.widget.SeekBar seekBar) {
+//
+//            }
+//        });
+//
+//        mSeekBarZoomVertical.setOnSlideChangeListener(new SeekBar.SlideChangeListener() {
+//            @Override
+//            public void onStart(SeekBar slideView, int progress) {
+//
+//            }
+//
+//            @Override
+//            public void onProgress(SeekBar slideView, int progress) {
+//                cameraManager.setZoom(progress);
+//                mSeekBarZoom.setProgress(progress);
+//            }
+//
+//            @Override
+//            public void onStop(SeekBar slideView, int progress) {
+//
+//            }
+//        });
+//    }
 
     private void zoomOut(int value) {
         int progress = mSeekBarZoom.getProgress() - value;

@@ -14,7 +14,7 @@
         <attr name="mn_linearProgress" format="boolean" />
     </declare-styleable>
 
-    <style name="MNScanAnimation">
+    <style name="QrcodeAnimation">
         <item name="android:activityOpenEnterAnimation">@null</item>
         <item name="android:activityOpenExitAnimation">@null</item>
         <item name="android:activityCloseEnterAnimation">@null</item>
@@ -30,8 +30,8 @@
     </style>
 
     <style name="QrcodeTheme" parent="android:Theme.Holo.NoActionBar">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@style/MNScanAnimation</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowAnimationStyle">@style/QrcodeAnimation</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>

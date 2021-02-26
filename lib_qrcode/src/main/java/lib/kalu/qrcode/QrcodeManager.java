@@ -41,6 +41,6 @@ public final class QrcodeManager {
         intent.putExtra(QrcodeManager.INTENT_KEY_CONFIG_MODEL, qrcodeConfig);
         ActResultRequest actResultRequest = new ActResultRequest(activity);
         actResultRequest.startForResult(intent, scanCallback);
-        activity.overridePendingTransition(qrcodeConfig.getActivityOpenAnime(), android.R.anim.fade_out);
+       // activity.overridePendingTransition(qrcodeConfig.getActivityOpenAnime(), android.R.anim.fade_out);
     }
 }

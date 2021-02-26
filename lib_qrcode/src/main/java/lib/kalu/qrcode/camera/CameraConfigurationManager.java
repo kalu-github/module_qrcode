@@ -25,6 +25,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+
 import lib.kalu.qrcode.camera.open.CameraFacing;
 import lib.kalu.qrcode.camera.open.OpenCamera;
 import lib.kalu.qrcode.util.LogUtil;
@@ -38,7 +40,7 @@ final class CameraConfigurationManager {
 
     private static final String TAG = "CameraConfiguration";
 
-    private final Context context;
+//    private final Context context;
     private int cwNeededRotation;
     private int cwRotationFromDisplayToCamera;
     private Point screenResolution;
@@ -46,14 +48,14 @@ final class CameraConfigurationManager {
     private Point bestPreviewSize;
     private Point previewSizeOnScreen;
 
-    CameraConfigurationManager(Context context) {
-        this.context = context;
+    CameraConfigurationManager() {
+//        this.context = context;
     }
 
     /**
      * Reads, one time, values from the camera that are needed by the app.
      */
-    public void initFromCameraParameters(OpenCamera camera) {
+    public void initFromCameraParameters(@NonNull Context context, @NonNull OpenCamera camera) {
         Camera.Parameters parameters = camera.getCamera().getParameters();
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
