@@ -2,6 +2,7 @@ package com.kalu.zxing;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import lib.kalu.qrcode.QrcodeActivity;
 import lib.kalu.qrcode.QrcodeManager;
 import lib.kalu.qrcode.config.QrcodeConfig;
 import lib.kalu.qrcode.listener.OnQrcodeScanChangeListener;
@@ -117,6 +119,23 @@ public class MainActivity extends Activity {
             }
         });
 
+
+        // 解析二维码
+        findViewById(R.id.decode_qr1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent();
+                /* 开启Pictures画面Type设定为image */
+                intent.setType("image/*");
+                /* 使用Intent.ACTION_GET_CONTENT这个Action */
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setAction(Intent.ACTION_PICK);
+                /* 取得相片后返回本画面 */
+                startActivityForResult(intent, 1000);
+            }
+        });
+
         // 默认扫描
         findViewById(R.id.scan_normal).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,6 +213,34 @@ public class MainActivity extends Activity {
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.CAMERA}, 10010);
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //去相册选择图片
+        if (requestCode == 1000 && data != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    Uri uri = data.getData();
+                    String qrcodeFromUrl = ZxingUtil.decodeQrcodeFromUrl(getApplicationContext(), uri);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (TextUtils.isEmpty(qrcodeFromUrl)) {
+                                Toast.makeText(getApplicationContext(), "未发现二维码", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), qrcodeFromUrl, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }).start();
         }
     }
 }
