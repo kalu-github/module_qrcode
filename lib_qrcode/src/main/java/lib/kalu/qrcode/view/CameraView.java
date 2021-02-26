@@ -32,6 +32,7 @@ import lib.kalu.qrcode.util.LogUtil;
  */
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, GestureDetector.OnGestureListener {
 
+    private boolean isCall = true;
     private Camera mCamera = null;
     private OnCameraBytesChangeListener onCameraBytesChangeListener;
     private final GestureDetector mGestureDetector = new GestureDetector(this);
@@ -174,6 +175,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, G
                     if (null == data)
                         return;
 
+                    if (isCall) {
+                        if (null != onCameraBytesChangeListener) {
+                            onCameraBytesChangeListener.onOpen();
+                        }
+                    }
+                    isCall = false;
+
                     PlanarYUVLuminanceSource source = QRCodeReader.obtain().source(rect, data, width, height);
                     Result result = QRCodeReader.obtain().decode(source);
                     LogUtil.log("surfaceCreated => result = " + result);
@@ -298,5 +306,26 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, G
 
     public void setOnCameraBytesChangeListener(@NonNull OnCameraBytesChangeListener listener) {
         this.onCameraBytesChangeListener = listener;
+    }
+
+
+    public void openLight() {
+
+        if (null == mCamera)
+            return;
+
+        Camera.Parameters parameter = mCamera.getParameters();
+        parameter.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        mCamera.setParameters(parameter);
+    }
+
+    public void offLight() {
+
+        if (null == mCamera)
+            return;
+
+        Camera.Parameters parameter = mCamera.getParameters();
+        parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+        mCamera.setParameters(parameter);
     }
 }

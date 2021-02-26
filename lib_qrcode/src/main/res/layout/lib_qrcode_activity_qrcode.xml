@@ -14,13 +14,12 @@
 
     <!--扫描框-->
     <lib.kalu.qrcode.view.ScanView
-        android:id="@+id/viewfinder_view"
+        android:id="@+id/lib_qrcode_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
-        android:text="@string/lib_qrcode_tip"
         android:textColor="@android:color/black"
         android:textSize="14sp" />
 
@@ -35,7 +34,7 @@
         android:text="@string/lib_qrcode_album"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <!--关闭-->
     <ImageView
@@ -46,24 +45,24 @@
         android:layout_marginTop="24dp"
         android:scaleType="centerInside"
         android:src="@drawable/lib_qrcode_ic_close"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <!--闪光灯-->
     <TextView
         android:id="@+id/lib_qrcode_light"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="24dp"
         android:drawableTop="@drawable/lib_qrcode_ic_light_off"
-        android:drawablePadding="8dp"
+        android:drawablePadding="4dp"
         android:gravity="center"
         android:text="@string/lib_qrcode_light_on"
         android:textColor="@android:color/white"
         android:textSize="12sp"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <!--    &lt;!&ndash;菜单&ndash;&gt;-->
     <!--    <RelativeLayout-->

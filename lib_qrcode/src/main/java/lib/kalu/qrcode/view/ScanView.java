@@ -103,20 +103,20 @@ public final class ScanView extends TextView {
         canvas.drawRect(right - rectW, bottom - rectH, right + 1, bottom + 1, paint);
         canvas.drawRect(right - rectH, bottom - rectW, right + 1, bottom + 1, paint);
 
+        CharSequence text = getText();
+        if (null == text || text.length() == 0)
+            return;
+
         // 扫描动画, 局部刷新
-        lineDisplacement += 14;
-        if (lineDisplacement + 14 <= top) {
+        lineDisplacement += 18;
+        if (lineDisplacement + 18 <= top) {
             lineDisplacement = top;
-        } else if (lineDisplacement + 14 >= bottom) {
+        } else if (lineDisplacement + 18 >= bottom) {
             lineDisplacement = top;
         }
         paint.setColor(Color.parseColor("#ffffff"));
         canvas.drawRect(left + lineMargin, lineDisplacement, right - lineMargin, lineDisplacement + lineHeight, paint);
-        autoPostInvalidateDelayed(36, (int) left, (int) top, (int) right, (int) bottom);
+        postInvalidateDelayed(10, (int) left, (int) top, (int) right, (int) bottom);
         LogUtil.log("onDraw[二维码扫描框] => lineDisplacement = " + lineDisplacement);
-    }
-
-    private void autoPostInvalidateDelayed(long delayMilliseconds, int left, int top, int right, int bottom) {
-        postInvalidateDelayed(delayMilliseconds, left, top, right, bottom);
     }
 }

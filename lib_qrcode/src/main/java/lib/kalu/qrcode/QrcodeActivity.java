@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -164,22 +163,13 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
                 Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
-        });
-//        cameraView.setPreviewCallback(new Camera.PreviewCallback() {
-//
-//            @Override
-//            public void onPreviewFrame(byte[] data, Camera camera) {
-//
-//                CameraView cameraView1 = findViewById(R.id.lib_qrcode_camera);
-//                String praseBytes = cameraView1.praseBytes(data);
-//
-//                if (null == praseBytes || praseBytes.length() == 0)
-//                    return;
-//
-//
-//            }
-//        });
 
+            @Override
+            public void onOpen() {
+                ScanView scanView = findViewById(R.id.lib_qrcode_scan);
+                scanView.setText(R.string.lib_qrcode_tip);
+            }
+        });
 
         // 关闭
         findViewById(R.id.lib_qrcode_close).setOnClickListener(new View.OnClickListener() {
@@ -216,13 +206,18 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
 
                 // 显示打开
                 if (string.equals(text)) {
-                    CameraManager.getInstance().offLight();
+
+                    CameraView cameraView1 = findViewById(R.id.lib_qrcode_camera);
+                    cameraView1.offLight();
+
                     textView.setText(R.string.lib_qrcode_light_off);
                     textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_qrcode_ic_light_off, 0, 0);
                 }
                 // 显示关闭
                 else {
-                    CameraManager.getInstance().openLight();
+                    CameraView cameraView1 = findViewById(R.id.lib_qrcode_camera);
+                    cameraView1.openLight();
+
                     textView.setText(R.string.lib_qrcode_light_on);
                     textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_qrcode_ic_light_on, 0, 0);
                 }

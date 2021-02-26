@@ -11,4 +11,6 @@ import androidx.annotation.NonNull;
 public interface OnCameraBytesChangeListener {
 
     void onSucc(@NonNull String result);
+
+    void onOpen();
 }
