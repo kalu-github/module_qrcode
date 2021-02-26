@@ -1,19 +1,19 @@
 #
 #### demo
 
-![image](https://github.com/153437803/moudle_zxing/blob/master/logo.gif )
+![image](https://github.com/153437803/moudle_zxing/blob/master/image20210226105226.gif )
 
 #
 #### 说明
 ```
-zxing-3.4.1
-https://github.com/zxing/zxing/releases
-
 二维码模块
 lib_qrcode
 
 条形码模块
 lib_barcode
+
+zxing-3.4.1
+https://github.com/zxing/zxing/releases
 ```
 
 #
