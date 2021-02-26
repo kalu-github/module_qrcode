@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromAssets(getApplicationContext(), url, 10, 2, 2, 8, 8,"logo.jpg");
+                String qrcode = ZxingUtil.createQrcodeFromAssets(getApplicationContext(), url, 20, 2, 2, 8, 8,"logo.jpg");
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;

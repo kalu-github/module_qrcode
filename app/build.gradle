@@ -36,6 +36,6 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     // qrcode
-//    implementation(name: 'lib_qrcode_release_20210224', ext: 'aar')
-     implementation project(':lib_qrcode')
+    implementation(name: 'lib_qrcode_release_20210226', ext: 'aar')
+//     implementation project(':lib_qrcode')
 }

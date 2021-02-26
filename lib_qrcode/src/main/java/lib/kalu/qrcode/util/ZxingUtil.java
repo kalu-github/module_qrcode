@@ -530,7 +530,9 @@ public final class ZxingUtil {
             return null;
 
         Bitmap bitmapQrcode = EncodeTool.createBitmapQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, logo);
-        String saveBitmapLocal = saveBitmapLocal(context, bitmapQrcode);
+
+        int hashcode = text.hashCode();
+        String saveBitmapLocal = saveBitmapLocal(context, bitmapQrcode, hashcode);
 
         if (null != logo) {
             logo.recycle();
@@ -545,32 +547,42 @@ public final class ZxingUtil {
     /**
      * 保存bitmap至本地
      *
-     * @param context
-     * @param bitmap
+     * @param context  上下文
+     * @param bitmap   bitmap
+     * @param hashcode 文件名hashcode
      * @return
      */
     @Keep
-    private static String saveBitmapLocal(@NonNull Context context, @NonNull Bitmap bitmap) {
+    private static String saveBitmapLocal(@NonNull Context context, @NonNull Bitmap bitmap, @NonNull int hashcode) {
 
         if (null == context || null == bitmap)
             return null;
 
         try {
 
-            File dir = context.getFilesDir();
-            if (!dir.exists() || !dir.isDirectory()) {
-                dir.mkdir();
+            String root = context.getFilesDir().getAbsolutePath() + File.separatorChar + "qrcode";
+            File dir = new File(root);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            } else if (dir.isFile()) {
+                dir.delete();
+                dir.mkdirs();
             }
 
-            String parent = dir.getAbsolutePath();
-            String child = "temp_qrcode_" + System.nanoTime() + ".png";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("temp_qrcode_");
+            stringBuilder.append(hashcode);
+            stringBuilder.append(".png");
 
-            File file = new File(parent, child);
+            String child = stringBuilder.toString();
+
+            File file = new File(dir, child);
             if (file.exists()) {
                 file.delete();
             }
-
             file.createNewFile();
+            Log.e("ZxingUtil", "saveBitmapLocal =>  path = " + file.getAbsolutePath());
+
             FileOutputStream fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
 
@@ -581,7 +593,7 @@ public final class ZxingUtil {
                 bitmap.recycle();
             }
 
-            return parent + File.separator + child;
+            return root + File.separator + child;
 
         } catch (Exception e) {
             Log.e("ZxingUtil", "saveBitmapLocal => " + e.getMessage(), e);
