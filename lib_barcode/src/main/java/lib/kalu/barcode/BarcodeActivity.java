@@ -1,4 +1,4 @@
-package lib.kalu.qrcode;
+package lib.kalu.barcode;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,24 +24,24 @@ import androidx.annotation.NonNull;
 
 import com.google.zxing.Result;
 
-import lib.kalu.qrcode.camera.CameraManager;
-import lib.kalu.qrcode.config.QrcodeConfig;
-import lib.kalu.qrcode.handler.ParseHandler;
-import lib.kalu.qrcode.listener.OnCameraBytesChangeListener;
-import lib.kalu.qrcode.manager.BeepManager;
-import lib.kalu.qrcode.manager.InactivityTimer;
-import lib.kalu.qrcode.util.LogUtil;
-import lib.kalu.qrcode.util.ZxingUtil;
-import lib.kalu.qrcode.widget.CameraView;
-import lib.kalu.qrcode.widget.ScanView;
-import lib.kalu.qrcode.widget.SeekBar;
+import lib.kalu.barcode.camera.CameraManager;
+import lib.kalu.barcode.config.QrcodeConfig;
+import lib.kalu.barcode.handler.ParseHandler;
+import lib.kalu.barcode.listener.OnCameraBytesChangeListener;
+import lib.kalu.barcode.manager.BeepManager;
+import lib.kalu.barcode.manager.InactivityTimer;
+import lib.kalu.barcode.util.LogUtil;
+import lib.kalu.barcode.util.ZxingUtil;
+import lib.kalu.barcode.widget.CameraView;
+import lib.kalu.barcode.widget.ScanView;
+import lib.kalu.barcode.widget.SeekBar;
 
 /**
- * description: 二维码扫描
+ * description: 条形码扫描
  * created by kalu on 2021-02-24
  */
 @Keep
-public final class QrcodeActivity extends Activity implements SurfaceHolder.Callback {
+public final class BarcodeActivity extends Activity implements SurfaceHolder.Callback {
 
     private CameraManager cameraManager;
     private ParseHandler handler;
@@ -137,7 +137,7 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
 
     @Override
     public void onBackPressed() {
-        setResult(QrcodeManager.RESULT_CANCLE);
+        setResult(BarcodeManager.RESULT_CANCLE);
         super.onBackPressed();
     }
 
@@ -149,13 +149,13 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.lib_qrcode_activity_qrcode);
+        setContentView(R.layout.lib_barcode_activity_barcode);
         //  initView();
         // initIntent();
 
 
         // 相机
-        CameraView cameraView = findViewById(R.id.lib_qrcode_camera);
+        CameraView cameraView = findViewById(R.id.lib_barcode_camera);
         cameraView.setOnCameraBytesChangeListener(new OnCameraBytesChangeListener() {
             @Override
             public void onSucc(@NonNull String result) {
@@ -166,13 +166,13 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
 
             @Override
             public void onOpen() {
-                ScanView scanView = findViewById(R.id.lib_qrcode_scan);
-                scanView.setText(R.string.lib_qrcode_tip);
+                ScanView scanView = findViewById(R.id.lib_barcode_scan);
+                scanView.setText(R.string.lib_barcode_tip);
             }
         });
 
         // 关闭
-        findViewById(R.id.lib_qrcode_close).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.lib_barcode_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -180,7 +180,7 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
         });
 
         // 相册
-        findViewById(R.id.lib_qrcode_album).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.lib_barcode_album).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -196,30 +196,30 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
         });
 
         // 闪光灯
-        findViewById(R.id.lib_qrcode_light).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.lib_barcode_light).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String string = getResources().getString(R.string.lib_qrcode_light_on);
-                TextView textView = findViewById(R.id.lib_qrcode_light);
+                String string = getResources().getString(R.string.lib_barcode_light_on);
+                TextView textView = findViewById(R.id.lib_barcode_light);
                 CharSequence text = textView.getText();
 
                 // 显示打开
                 if (string.equals(text)) {
 
-                    CameraView cameraView1 = findViewById(R.id.lib_qrcode_camera);
+                    CameraView cameraView1 = findViewById(R.id.lib_barcode_camera);
                     cameraView1.offLight();
 
-                    textView.setText(R.string.lib_qrcode_light_off);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_qrcode_ic_light_off, 0, 0);
+                    textView.setText(R.string.lib_barcode_light_off);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_barcode_ic_light_off, 0, 0);
                 }
                 // 显示关闭
                 else {
-                    CameraView cameraView1 = findViewById(R.id.lib_qrcode_camera);
+                    CameraView cameraView1 = findViewById(R.id.lib_barcode_camera);
                     cameraView1.openLight();
 
-                    textView.setText(R.string.lib_qrcode_light_on);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_qrcode_ic_light_on, 0, 0);
+                    textView.setText(R.string.lib_barcode_light_on);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lib_barcode_ic_light_on, 0, 0);
                 }
             }
         });
@@ -245,10 +245,10 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
 //            scannersView.setScanLineColor(Color.parseColor(scanColor));
 //        }
 //        if (!photoFlag) {
-//            findViewById(R.id.lib_qrcode_album).setVisibility(View.GONE);
+//            findViewById(R.id.lib_barcode_album).setVisibility(View.GONE);
 //        }
 //        if (exitAnime == 0) {
-//            exitAnime = R.anim.lib_qrcode_anim_bottom_out;
+//            exitAnime = R.anim.lib_barcode_anim_bottom_out;
 //        }
     }
 
@@ -262,14 +262,14 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
                 public void run() {
 
                     Uri uri = data.getData();
-                    String qrcodeFromUrl = ZxingUtil.decodeQrcodeFromUrl(QrcodeActivity.this, uri);
+                    String qrcodeFromUrl = ZxingUtil.decodeQrcodeFromUrl(BarcodeActivity.this, uri);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
                             if (TextUtils.isEmpty(qrcodeFromUrl)) {
-                                Toast.makeText(QrcodeActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(BarcodeActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
                             } else {
                                 finishSuccess(qrcodeFromUrl);
                             }
@@ -290,16 +290,16 @@ public final class QrcodeActivity extends Activity implements SurfaceHolder.Call
 
     private void finishFailed(String errorMsg) {
         Intent intent = new Intent();
-        intent.putExtra(QrcodeManager.INTENT_KEY_RESULT_ERROR, errorMsg);
-        this.setResult(QrcodeManager.RESULT_FAIL, intent);
+        intent.putExtra(BarcodeManager.INTENT_KEY_RESULT_ERROR, errorMsg);
+        this.setResult(BarcodeManager.RESULT_FAIL, intent);
         this.finish();
         finishFinal();
     }
 
     private void finishSuccess(String result) {
         Intent intent = new Intent();
-        intent.putExtra(QrcodeManager.INTENT_KEY_RESULT_SUCCESS, result);
-        this.setResult(QrcodeManager.RESULT_SUCCESS, intent);
+        intent.putExtra(BarcodeManager.INTENT_KEY_RESULT_SUCCESS, result);
+        this.setResult(BarcodeManager.RESULT_SUCCESS, intent);
         finishFinal();
     }
 

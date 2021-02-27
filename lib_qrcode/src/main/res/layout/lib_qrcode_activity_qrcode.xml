@@ -5,7 +5,7 @@
     android:background="@android:color/transparent">
 
     <!--相机-->
-    <lib.kalu.qrcode.view.CameraView
+    <lib.kalu.qrcode.widget.CameraView
         android:id="@+id/lib_qrcode_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,7 +13,7 @@
         android:background="@android:color/transparent" />
 
     <!--扫描框-->
-    <lib.kalu.qrcode.view.ScanView
+    <lib.kalu.qrcode.widget.ScanView
         android:id="@+id/lib_qrcode_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

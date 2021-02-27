@@ -1,4 +1,4 @@
-package lib.kalu.qrcode.view;
+package lib.kalu.barcode.widget;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -22,9 +22,9 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.barcode.QRCodeReader;
 
-import lib.kalu.qrcode.R;
-import lib.kalu.qrcode.listener.OnCameraBytesChangeListener;
-import lib.kalu.qrcode.util.LogUtil;
+import lib.kalu.barcode.R;
+import lib.kalu.barcode.listener.OnCameraBytesChangeListener;
+import lib.kalu.barcode.util.LogUtil;
 
 /**
  * description: 相机预览
@@ -102,7 +102,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, G
         PackageManager packageManager = context.getPackageManager();
         boolean hasSystemFeature = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA);
         if (!hasSystemFeature) {
-            Toast.makeText(context, R.string.lib_qrcode_warning, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.lib_barcode_warning, Toast.LENGTH_SHORT).show();
             return;
         }
 

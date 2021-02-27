@@ -14,29 +14,34 @@
  * limitations under the License.
  */
 
-package lib.kalu.qrcode.view;
+package lib.kalu.barcode.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import lib.kalu.qrcode.util.LogUtil;
+import lib.kalu.barcode.util.LogUtil;
 
 /**
- * description: 二维码扫描框
+ * description: 条形码扫描框 - 商品条形码的标准尺寸是37.29mmx26.26mm
  * created by kalu on 2021-02-26
  */
 public final class ScanView extends TextView {
 
+    // 颜色
+    private final int COLOR_BACKGROUND = Color.parseColor("#66000000");
+    private final int COLOR_LINE = Color.parseColor("#ffffff");
+
     // 位移
     private float lineDisplacement = 0f;
-    private int lineMargin = 10;
-    private int lineHeight = 4;
+    private final PorterDuffXfermode porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
     public ScanView(Context context) {
         super(context);
@@ -63,34 +68,38 @@ public final class ScanView extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
 
         float height = getHeight();
         float width = getWidth();
-        float min = Math.min(height, width) * 0.56f;
+        float minW = Math.min(height, width) * 0.8f;
+//        float minH = minW * 2626 / 3729;
+        float minH = minW * 1 / 3;
 
-        float left = width * 0.5f - min * 0.5f;
-        float top = height * 0.5f - min * 0.5f;
-        float right = left + min;
-        float bottom = top + min;
+        float left = width * 0.5f - minW * 0.5f;
+        float top = height * 0.5f - minW * 0.5f;
+        float right = left + minW;
+        float bottom = top + minH;
 
         // 画笔
         TextPaint paint = getPaint();
         paint.setAntiAlias(true);
 
+        paint.setXfermode(null);
+        paint.setColor(COLOR_BACKGROUND);
+        canvas.drawRect(0, 0, width, height, paint);
+
         // 背景
-        paint.setColor(Color.parseColor("#aa000000"));
-        canvas.drawRect(0, 0, width, top, paint);
-        canvas.drawRect(0, bottom, width, height, paint);
-        canvas.drawRect(0, top, left, bottom, paint);
-        canvas.drawRect(right, top, width, bottom, paint);
+        paint.setXfermode(porterDuffXfermode);
+        paint.setColor(Color.TRANSPARENT);
+        canvas.drawRect(left, top, right, bottom, paint);
 
         // 直角
         int rectH = (int) (2 * 4 + 0.5f);
         int rectW = (int) (14 * 4 + 0.5f);
 
         //左上角
-        paint.setColor(Color.parseColor("#000000"));
+        paint.setXfermode(null);
+        paint.setColor(Color.BLACK);
         canvas.drawRect(left, top, left + rectW, top + rectH, paint);
         canvas.drawRect(left, top, left + rectH, top + rectW, paint);
         //右上角
@@ -103,19 +112,31 @@ public final class ScanView extends TextView {
         canvas.drawRect(right - rectW, bottom - rectH, right + 1, bottom + 1, paint);
         canvas.drawRect(right - rectH, bottom - rectW, right + 1, bottom + 1, paint);
 
+        // 文字
+        paint.setXfermode(null);
+        paint.setColor(Color.BLACK);
+        super.onDraw(canvas);
+
         CharSequence text = getText();
         if (null == text || text.length() == 0)
             return;
 
         // 扫描动画, 局部刷新
-        lineDisplacement += 18;
-        if (lineDisplacement + 18 <= top) {
-            lineDisplacement = top;
-        } else if (lineDisplacement + 18 >= bottom) {
-            lineDisplacement = top;
+        lineDisplacement += 10f;
+        float margin = Math.abs(right - left) * 0.1f;
+        float lineHeight = margin * 0.05f;
+        paint.setColor(COLOR_LINE);
+        float rectLeft = left + margin;
+        float rectTop = top + margin + lineDisplacement;
+        float rectRight = right - margin;
+        float rectBottom = rectTop + lineHeight;
+        if (rectBottom + margin > bottom) {
+            lineDisplacement = 0f;
+            rectTop = top + margin;
+            rectBottom = rectTop + lineHeight;
         }
-        paint.setColor(Color.parseColor("#ffffff"));
-        canvas.drawRect(left + lineMargin, lineDisplacement, right - lineMargin, lineDisplacement + lineHeight, paint);
+
+        canvas.drawRect(rectLeft, rectTop, rectRight, rectBottom, paint);
         postInvalidateDelayed(10, (int) left, (int) top, (int) right, (int) bottom);
         LogUtil.log("onDraw[二维码扫描框] => lineDisplacement = " + lineDisplacement);
     }

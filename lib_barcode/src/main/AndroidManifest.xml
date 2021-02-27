@@ -21,10 +21,10 @@
         android:allowBackup="false"
         android:extractNativeLibs="true">
         <activity
-            android:name=".QrcodeActivity"
+            android:name="lib.kalu.barcode.BarcodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/QrcodeTheme"
+            android:theme="@style/BarcodeTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 

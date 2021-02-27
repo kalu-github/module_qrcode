@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
 
-import lib.kalu.barcode.QrcodeManager;
+import lib.kalu.barcode.BarcodeManager;
 import lib.kalu.barcode.listener.OnQrcodeScanChangeListener;
 
 /**
@@ -44,15 +44,15 @@ public class OnActResultEventDispatcherFragment extends Fragment {
             return;
 
         switch (resultCode) {
-            case QrcodeManager.RESULT_SUCCESS:
-                String result = data.getStringExtra(QrcodeManager.INTENT_KEY_RESULT_SUCCESS);
+            case BarcodeManager.RESULT_SUCCESS:
+                String result = data.getStringExtra(BarcodeManager.INTENT_KEY_RESULT_SUCCESS);
                 callback.onSucc(result);
                 break;
-            case QrcodeManager.RESULT_FAIL:
-                String message = data.getStringExtra(QrcodeManager.INTENT_KEY_RESULT_ERROR);
+            case BarcodeManager.RESULT_FAIL:
+                String message = data.getStringExtra(BarcodeManager.INTENT_KEY_RESULT_ERROR);
                 callback.onFail(message);
                 break;
-            case QrcodeManager.RESULT_CANCLE:
+            case BarcodeManager.RESULT_CANCLE:
                 callback.onCancle();
                 break;
         }

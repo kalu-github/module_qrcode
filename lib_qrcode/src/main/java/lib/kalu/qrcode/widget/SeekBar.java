@@ -1,4 +1,4 @@
-package lib.kalu.qrcode.view;
+package lib.kalu.qrcode.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;

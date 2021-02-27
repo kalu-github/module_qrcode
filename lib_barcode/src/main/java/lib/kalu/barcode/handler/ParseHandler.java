@@ -24,7 +24,7 @@ import android.os.Message;
 
 import com.google.zxing.Result;
 
-import lib.kalu.barcode.QrcodeActivity;
+import lib.kalu.barcode.BarcodeActivity;
 import lib.kalu.barcode.R;
 import lib.kalu.barcode.camera.CameraManager;
 import lib.kalu.barcode.decode.DecodeThread;
@@ -35,7 +35,7 @@ import lib.kalu.barcode.decode.DecodeThread;
  */
 public final class ParseHandler extends Handler {
 
-    private final QrcodeActivity activity;
+    private final BarcodeActivity activity;
     private final DecodeThread decodeThread;
     private State state;
     private final CameraManager cameraManager;
@@ -46,7 +46,7 @@ public final class ParseHandler extends Handler {
         DONE
     }
 
-    public ParseHandler(QrcodeActivity activity,
+    public ParseHandler(BarcodeActivity activity,
                         String characterSet,
                         CameraManager cameraManager) {
         this.activity = activity;
@@ -56,7 +56,9 @@ public final class ParseHandler extends Handler {
 
         // Start ourselves capturing previews and decoding.
         this.cameraManager = cameraManager;
-        cameraManager.startPreview();
+
+
+        cameraManager.startPreview(activity.getApplicationContext());
         restartPreviewAndDecode();
     }
 

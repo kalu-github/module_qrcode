@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import lib.kalu.qrcode.QrcodeActivity;
 import lib.kalu.qrcode.QrcodeManager;
 import lib.kalu.qrcode.config.QrcodeConfig;
 import lib.kalu.qrcode.listener.OnQrcodeScanChangeListener;

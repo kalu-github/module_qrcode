@@ -16,14 +16,17 @@
 
 package com.google.zxing.barcode;
 
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.Writer;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.google.zxing.barcode.decoder.ErrorCorrectionLevel;
 import com.google.zxing.barcode.encoder.ByteMatrix;
 import com.google.zxing.barcode.encoder.Encoder;
 import com.google.zxing.barcode.encoder.QRCode;
+import com.google.zxing.common.BitMatrix;
 
 import java.util.Map;
 
@@ -34,69 +37,82 @@ import java.util.Map;
  */
 public final class QRCodeWriter implements Writer {
 
-    private static final int QUIET_ZONE_SIZE = 4;
-
     @Override
-    public BitMatrix encode(String contents, int width, int height, ErrorCorrectionLevel level)
-            throws WriterException {
+    public BitMatrix encode(@NonNull String text,
+                            @IntRange(from = 3, to = 100) int multiple,
+                            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+                            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+                            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+                            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
+                            ErrorCorrectionLevel level, Map<EncodeHintType, ?> hints) throws WriterException {
 
-        return encode(contents, width, height, null, level);
-    }
+        if (null == text || text.length() == 0)
+            throw new IllegalArgumentException("error -> text null");
 
-    @Override
-    public BitMatrix encode(String contents,
-                            int width,
-                            int height,
-                            Map<EncodeHintType, ?> hints, ErrorCorrectionLevel level) throws WriterException {
+        if (multiple < 3)
+            throw new IllegalArgumentException("error -> multiple < 3");
 
-        if (contents.isEmpty()) {
-            throw new IllegalArgumentException("Found empty contents");
-        }
+        if (marginLeft < 0)
+            throw new IllegalArgumentException("error -> marginLeft < 0");
 
-        if (width < 0 || height < 0) {
-            throw new IllegalArgumentException("Requested dimensions are too small: " + width + 'x' +
-                    height);
-        }
+        if (marginTop < 0)
+            throw new IllegalArgumentException("error -> marginTop < 0");
 
-        ErrorCorrectionLevel errorCorrectionLevel = level;
-//        int quietZone = QUIET_ZONE_SIZE;
-//        if (hints != null) {
-//            if (hints.containsKey(EncodeHintType.ERROR_CORRECTION)) {
-//                errorCorrectionLevel = ErrorCorrectionLevel.valueOf(hints.get(EncodeHintType.ERROR_CORRECTION).toString());
-//            }
-//            if (hints.containsKey(EncodeHintType.MARGIN)) {
-//                quietZone = Integer.parseInt(hints.get(EncodeHintType.MARGIN).toString());
-//            }
-//        }
+        if (marginRight < 0)
+            throw new IllegalArgumentException("error -> marginRight < 0");
 
-        QRCode code = Encoder.encode(contents, errorCorrectionLevel, hints);
-        return renderResult(code, width, height, 0);
+        if (marginBottom < 0)
+            throw new IllegalArgumentException("error -> marginBottom < 0");
+
+
+        QRCode code = Encoder.encode(text, level, hints);
+        return createBitMatrix(code, multiple, marginLeft, marginTop, marginRight, marginBottom);
     }
 
     // Note that the input matrix uses 0 == white, 1 == black, while the output matrix uses
     // 0 == black, 255 == white (i.e. an 8 bit greyscale bitmap).
-    private static BitMatrix renderResult(QRCode code, int width, int height, int quietZone) {
+
+    /**
+     * @param code         二维码二位数据, 由二维码具体text生成
+     * @param multiple     二维码放大倍数
+     * @param marginLeft   左边距
+     * @param marginTop    上边距
+     * @param marginRight  右边距
+     * @param marginBottom 下边距
+     * @return
+     */
+    private static final BitMatrix createBitMatrix(
+            @NonNull QRCode code,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom) {
+
         ByteMatrix input = code.getMatrix();
         if (input == null) {
             throw new IllegalStateException();
         }
         int inputWidth = input.getWidth();
         int inputHeight = input.getHeight();
-        int qrWidth = inputWidth + (quietZone * 2);
-        int qrHeight = inputHeight + (quietZone * 2);
-        int outputWidth = Math.max(width, qrWidth);
-        int outputHeight = Math.max(height, qrHeight);
+//        int qrWidth = inputWidth + (quietZone * 2);
+//        int qrHeight = inputHeight + (quietZone * 2);
+//        int outputWidth = Math.max(width, qrWidth);
+//        int outputHeight = Math.max(height, qrHeight);
+        int outputWidth = (inputWidth + marginLeft + marginRight) * multiple;
+        int outputHeight = (inputHeight + marginTop + marginBottom) * multiple;
 
-        int multiple = Math.min(outputWidth / qrWidth, outputHeight / qrHeight);
         // Padding includes both the quiet zone and the extra white pixels to accommodate the requested
         // dimensions. For example, if input is 25x25 the QR will be 33x33 including the quiet zone.
         // If the requested size is 200x160, the multiple will be 4, for a QR of 132x132. These will
         // handle all the padding from 100x100 (the actual QR) up to 200x160.
-        int leftPadding = (outputWidth - (inputWidth * multiple)) / 2;
-        int topPadding = (outputHeight - (inputHeight * multiple)) / 2;
+
+//        int leftPadding = (outputWidth - (inputWidth * multiple)) / 2;
+//        int topPadding = (outputHeight - (inputHeight * multiple)) / 2;
+        int leftPadding = marginLeft * multiple;
+        int topPadding = marginTop * multiple;
 
         BitMatrix output = new BitMatrix(outputWidth, outputHeight);
-
         for (int inputY = 0, outputY = topPadding; inputY < inputHeight; inputY++, outputY += multiple) {
             // Write the contents of this row of the barcode
             for (int inputX = 0, outputX = leftPadding; inputX < inputWidth; inputX++, outputX += multiple) {

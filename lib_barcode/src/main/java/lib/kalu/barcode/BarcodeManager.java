@@ -5,16 +5,16 @@ import android.content.Intent;
 
 import androidx.annotation.Keep;
 
-import lib.kalu.barcode.other.ActResultRequest;
 import lib.kalu.barcode.listener.OnQrcodeScanChangeListener;
 import lib.kalu.barcode.config.QrcodeConfig;
+import lib.kalu.barcode.other.ActResultRequest;
 
 /**
- * description: 二维码扫描
+ * description: 条形码扫描
  * created by kalu on 2021-02-24
  */
 @Keep
-public final class QrcodeManager {
+public final class BarcodeManager {
 
     //常量
     public static final int RESULT_SUCCESS = 0;
@@ -36,11 +36,11 @@ public final class QrcodeManager {
         if (qrcodeConfig == null) {
             qrcodeConfig = new QrcodeConfig.Builder().builder();
         }
-        Intent intent = new Intent(activity.getApplicationContext(), QrcodeActivity.class);
+        Intent intent = new Intent(activity.getApplicationContext(), BarcodeActivity.class);
         //传递数据
-        intent.putExtra(QrcodeManager.INTENT_KEY_CONFIG_MODEL, qrcodeConfig);
+        intent.putExtra(BarcodeManager.INTENT_KEY_CONFIG_MODEL, qrcodeConfig);
         ActResultRequest actResultRequest = new ActResultRequest(activity);
         actResultRequest.startForResult(intent, scanCallback);
-        activity.overridePendingTransition(qrcodeConfig.getActivityOpenAnime(), android.R.anim.fade_out);
+       // activity.overridePendingTransition(qrcodeConfig.getActivityOpenAnime(), android.R.anim.fade_out);
     }
 }

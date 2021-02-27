@@ -19,7 +19,7 @@ package lib.kalu.barcode.decode;
 import android.os.Handler;
 import android.os.Looper;
 
-import lib.kalu.barcode.QrcodeActivity;
+import lib.kalu.barcode.BarcodeActivity;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -33,11 +33,11 @@ public class DecodeThread extends Thread {
     public static final String BARCODE_BITMAP = "barcode_bitmap";
     public static final String BARCODE_SCALED_FACTOR = "barcode_scaled_factor";
 
-    private final QrcodeActivity activity;
+    private final BarcodeActivity activity;
     private Handler handler;
     private final CountDownLatch handlerInitLatch;
 
-    public DecodeThread(QrcodeActivity activity, String characterSet) {
+    public DecodeThread(BarcodeActivity activity, String characterSet) {
 
         this.activity = activity;
         handlerInitLatch = new CountDownLatch(1);

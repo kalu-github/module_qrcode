@@ -1,4 +1,4 @@
-package lib.kalu.barcode.view;
+package lib.kalu.barcode.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,14 +10,14 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import lib.kalu.qrcode.R;
+import lib.kalu.barcode.R;
 
 /**
- * description: seekbar
- * create by kalu on 2019/1/25 17:10
+ * description: 拖动进度
+ * created by kalu on 2021-02-26
  */
-public class SeeksBar extends View {
-    private Context context;
+public class SeekBar extends View {
+
     private int height;
     private int width;
     private Paint paint;
@@ -94,7 +94,7 @@ public class SeeksBar extends View {
      */
     public void setmInnerProgressWidth(int mInnerProgressWidth) {
         this.mInnerProgressWidth = mInnerProgressWidth;
-        float scale = context.getResources().getDisplayMetrics().density;
+        float scale = getResources().getDisplayMetrics().density;
         mInnerProgressWidthPx = (int) (mInnerProgressWidth * scale + 0.5f);
     }
 
@@ -120,7 +120,7 @@ public class SeeksBar extends View {
      * @param height
      */
     public void setThumbSize(int width, int height) {
-        float scale = context.getResources().getDisplayMetrics().density;
+        float scale = getResources().getDisplayMetrics().density;
         setThumbSizePx((int) (width * scale + 0.5f), (int) (height * scale + 0.5f));
     }
 
@@ -145,9 +145,9 @@ public class SeeksBar extends View {
      * @param context The Context the view is running in, through which it can
      *                access the current theme, resources, etc.
      */
-    public SeeksBar(Context context) {
+    public SeekBar(Context context) {
         super(context);
-        init(context, null, 0);
+        init(null, 0);
     }
 
     /**
@@ -165,9 +165,9 @@ public class SeeksBar extends View {
      *                access the current theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
      */
-    public SeeksBar(Context context, AttributeSet attrs) {
+    public SeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs, 0);
+        init(attrs, 0);
     }
 
     /**
@@ -186,29 +186,26 @@ public class SeeksBar extends View {
      *                     reference to a style resource that supplies default values for
      *                     the view. Can be 0 to not look for defaults.
      */
-    public SeeksBar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SeekBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
+        init(attrs, defStyleAttr);
     }
 
     /**
      * 初始化控件
      *
-     * @param context
      * @param attrs
      * @param defStyleAttr
      */
-    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        this.context = context;
+    private void init(AttributeSet attrs, int defStyleAttr) {
         paint = new Paint();
-        mThumb = BitmapFactory.decodeResource(getResources(), R.drawable.mn_scan_icon_thumb);
+        mThumb = BitmapFactory.decodeResource(getResources(), R.drawable.lib_barcode_ic_thumb);
         intrinsicHeight = mThumb.getHeight();
         intrinsicWidth = mThumb.getWidth();
         mDestRect = new RectF(0, 0, intrinsicWidth, intrinsicHeight);
-        float scale = context.getResources().getDisplayMetrics().density;
+        float scale = getResources().getDisplayMetrics().density;
         mInnerProgressWidthPx = (int) (mInnerProgressWidth * scale + 0.5f);
     }
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -346,7 +343,7 @@ public class SeeksBar extends View {
          * @param slideView
          * @param progress
          */
-        void onStart(SeeksBar slideView, int progress);
+        void onStart(SeekBar slideView, int progress);
 
         /**
          * 滑动过程中
@@ -354,7 +351,7 @@ public class SeeksBar extends View {
          * @param slideView
          * @param progress
          */
-        void onProgress(SeeksBar slideView, int progress);
+        void onProgress(SeekBar slideView, int progress);
 
         /**
          * 停止滑动
@@ -362,7 +359,7 @@ public class SeeksBar extends View {
          * @param slideView
          * @param progress
          */
-        void onStop(SeeksBar slideView, int progress);
+        void onStop(SeekBar slideView, int progress);
     }
 
 }

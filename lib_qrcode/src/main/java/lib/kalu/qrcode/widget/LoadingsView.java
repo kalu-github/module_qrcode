@@ -1,4 +1,4 @@
-package lib.kalu.barcode.view;
+package lib.kalu.qrcode.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;

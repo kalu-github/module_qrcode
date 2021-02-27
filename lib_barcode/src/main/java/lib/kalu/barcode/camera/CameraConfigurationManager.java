@@ -25,8 +25,11 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+
 import lib.kalu.barcode.camera.open.CameraFacing;
 import lib.kalu.barcode.camera.open.OpenCamera;
+import lib.kalu.barcode.util.LogUtil;
 
 /**
  * A class which deals with reading, parsing, and setting the camera parameters which are used to
@@ -37,7 +40,7 @@ final class CameraConfigurationManager {
 
     private static final String TAG = "CameraConfiguration";
 
-    private final Context context;
+//    private final Context context;
     private int cwNeededRotation;
     private int cwRotationFromDisplayToCamera;
     private Point screenResolution;
@@ -45,14 +48,14 @@ final class CameraConfigurationManager {
     private Point bestPreviewSize;
     private Point previewSizeOnScreen;
 
-    CameraConfigurationManager(Context context) {
-        this.context = context;
+    CameraConfigurationManager() {
+//        this.context = context;
     }
 
     /**
      * Reads, one time, values from the camera that are needed by the app.
      */
-    public void initFromCameraParameters(OpenCamera camera) {
+    public void initFromCameraParameters(@NonNull Context context, @NonNull OpenCamera camera) {
         Camera.Parameters parameters = camera.getCamera().getParameters();
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
@@ -110,6 +113,7 @@ final class CameraConfigurationManager {
         Point screenResolutionForCamera = new Point();
         screenResolutionForCamera.x = screenResolution.x;
         screenResolutionForCamera.y = screenResolution.y;
+        LogUtil.log("initFromCameraParameters => screenWidth = " + screenResolutionForCamera.x + "screenHeight = " + screenResolutionForCamera.y);
 
         if (screenResolution.x < screenResolution.y) {
             screenResolutionForCamera.x = screenResolution.y;
@@ -121,6 +125,7 @@ final class CameraConfigurationManager {
         Log.i(TAG, "Camera resolution: " + cameraResolution);
         bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolutionForCamera);
         Log.i(TAG, "Best available preview size: " + bestPreviewSize);
+        LogUtil.log("initFromCameraParameters => bestWidth = " + bestPreviewSize.x + ", bestHeight = " + bestPreviewSize.y);
 
         boolean isScreenPortrait = screenResolution.x < screenResolution.y;
         boolean isPreviewSizePortrait = bestPreviewSize.x < bestPreviewSize.y;
@@ -210,5 +215,4 @@ final class CameraConfigurationManager {
         }
         return false;
     }
-
 }

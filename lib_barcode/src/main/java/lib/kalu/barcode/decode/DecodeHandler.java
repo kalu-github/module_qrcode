@@ -26,8 +26,7 @@ import android.util.Log;
 
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Result;
-
-import lib.kalu.barcode.QrcodeActivity;
+import lib.kalu.barcode.BarcodeActivity;
 import lib.kalu.barcode.R;
 
 import com.google.zxing.barcode.QRCodeReader;
@@ -39,10 +38,10 @@ public class DecodeHandler extends Handler {
 
     private static final String TAG = DecodeHandler.class.getSimpleName();
 
-    private final QrcodeActivity activity;
+    private final BarcodeActivity activity;
     private boolean running = true;
 
-    public DecodeHandler(QrcodeActivity activity) {
+    public DecodeHandler(BarcodeActivity activity) {
         this.activity = activity;
     }
 

@@ -24,12 +24,15 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import androidx.annotation.NonNull;
+
 import com.google.zxing.PlanarYUVLuminanceSource;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import lib.kalu.barcode.camera.open.OpenCamera;
 import lib.kalu.barcode.camera.open.OpenCameraInterface;
-
-import java.io.IOException;
 
 /**
  * This object wraps the Camera service object and expects to be the only one talking to it. The
@@ -48,7 +51,6 @@ public final class CameraManager {
     private static final int MAX_FRAME_WIDTH = 675;
     private static final int MAX_FRAME_HEIGHT = 675;
 
-    private final Context context;
     private final CameraConfigurationManager configManager;
     private OpenCamera camera;
     private AutoFocusManager autoFocusManager;
@@ -65,10 +67,104 @@ public final class CameraManager {
      */
     private final PreviewCallback previewCallback;
 
-    public CameraManager(Context context) {
-        this.context = context;
-        this.configManager = new CameraConfigurationManager(context);
+    private CameraManager() {
+        this.configManager = new CameraConfigurationManager();
         previewCallback = new PreviewCallback(configManager);
+    }
+
+    public static final class Holder {
+        static final CameraManager cameraManager = new CameraManager();
+    }
+
+    public static final CameraManager getInstance() {
+        return Holder.cameraManager;
+    }
+
+    private WeakReference<Camera> cameraWeakReference = null;
+
+    public final void setCamera(@NonNull Camera camera) {
+
+        if (null == camera)
+            return;
+
+        cameraWeakReference = new WeakReference<>(camera);
+    }
+
+    public final void releaseCamera() {
+
+        if (null == cameraWeakReference)
+            return;
+
+        Camera camera = cameraWeakReference.get();
+        cameraWeakReference = null;
+
+        if (null == camera)
+            return;
+
+        camera.setPreviewCallback(null);
+        camera.stopPreview();
+        camera.release();
+        camera = null;
+    }
+
+    public final Camera.Parameters getParameters() {
+
+        if (null == cameraWeakReference)
+            return null;
+
+        Camera camera = cameraWeakReference.get();
+        return camera.getParameters();
+    }
+
+    public final void setParameters(@NonNull Camera.Parameters parameters) {
+
+        if (null == parameters)
+            return;
+
+        if (null == cameraWeakReference)
+            return;
+
+        Camera camera = cameraWeakReference.get();
+        camera.setParameters(parameters);
+    }
+
+    public final void setDisplayOrientation(int degrees) {
+
+        if (null == cameraWeakReference)
+            return;
+
+        Camera camera = cameraWeakReference.get();
+        camera.setDisplayOrientation(degrees);
+    }
+
+    public final void setPreviewDisplay(@NonNull SurfaceHolder surfaceHolder) {
+
+        if (null == cameraWeakReference)
+            return;
+
+        try {
+            Camera camera = cameraWeakReference.get();
+            camera.setPreviewDisplay(surfaceHolder);
+        } catch (Exception e) {
+        }
+    }
+
+    public final void startPreview() {
+
+        if (null == cameraWeakReference)
+            return;
+
+        Camera camera = cameraWeakReference.get();
+        camera.startPreview();
+    }
+
+    public final void setPreviewCallback(@NonNull Camera.PreviewCallback cb) {
+
+        if (null == cameraWeakReference)
+            return;
+
+        Camera camera = cameraWeakReference.get();
+        camera.setPreviewCallback(cb);
     }
 
     /**
@@ -77,7 +173,7 @@ public final class CameraManager {
      * @param holder The surface object which the camera will draw preview frames into.
      * @throws IOException Indicates the camera driver failed to open.
      */
-    public synchronized void openDriver(SurfaceHolder holder) throws IOException {
+    public synchronized void openDriver(Context context, SurfaceHolder holder) throws IOException {
         OpenCamera theCamera = camera;
         if (theCamera == null) {
             theCamera = OpenCameraInterface.open(requestedCameraId);
@@ -89,7 +185,7 @@ public final class CameraManager {
 
         if (!initialized) {
             initialized = true;
-            configManager.initFromCameraParameters(theCamera);
+            configManager.initFromCameraParameters(context, theCamera);
             if (requestedFramingRectWidth > 0 && requestedFramingRectHeight > 0) {
                 setManualFramingRect(requestedFramingRectWidth, requestedFramingRectHeight);
                 requestedFramingRectWidth = 0;
@@ -175,7 +271,7 @@ public final class CameraManager {
     /**
      * Asks the camera hardware to begin drawing preview frames to the screen.
      */
-    public synchronized void startPreview() {
+    public synchronized void startPreview(@NonNull Context context) {
         OpenCamera theCamera = camera;
         if (theCamera != null && !previewing) {
             theCamera.getCamera().startPreview();
@@ -200,19 +296,23 @@ public final class CameraManager {
     }
 
     public void openLight() {
-        if (camera != null && camera.getCamera() != null) {
-            Camera.Parameters parameter = camera.getCamera().getParameters();
-            parameter.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            camera.getCamera().setParameters(parameter);
-        }
+
+        if (null == camera || null == camera.getCamera())
+            return;
+
+        Camera.Parameters parameter = camera.getCamera().getParameters();
+        parameter.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        camera.getCamera().setParameters(parameter);
     }
 
     public void offLight() {
-        if (camera != null && camera.getCamera() != null) {
-            Camera.Parameters parameter = camera.getCamera().getParameters();
-            parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-            camera.getCamera().setParameters(parameter);
-        }
+
+        if (null == camera || null == camera.getCamera())
+            return;
+
+        Camera.Parameters parameter = camera.getCamera().getParameters();
+        parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+        camera.getCamera().setParameters(parameter);
     }
 
     /**

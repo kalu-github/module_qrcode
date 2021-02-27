@@ -1,2 +1,3 @@
 include ':app'
 include ':lib_qrcode'
+include ':lib_barcode'

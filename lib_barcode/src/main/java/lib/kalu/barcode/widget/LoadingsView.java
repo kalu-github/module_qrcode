@@ -1,4 +1,4 @@
-package lib.kalu.qrcode.view;
+package lib.kalu.barcode.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 
-import lib.kalu.qrcode.R;
+import lib.kalu.barcode.R;
 
 /**
  * A Material style progress wheel, compatible up to 2.2.

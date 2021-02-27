@@ -26,7 +26,6 @@ repositories {
         dirs 'libs'
     }
 }
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
@@ -35,7 +34,12 @@ dependencies {
     implementation 'androidx.fragment:fragment:1.2.5'
     implementation 'androidx.annotation:annotation:1.1.0'
 
-    // qrcode
-//    implementation(name: 'lib_qrcode_release_20210226', ext: 'aar')
-     implementation project(':lib_qrcode')
+    // 二维码
+    implementation project(':lib_qrcode')
+    // implementation(name: 'lib_qrcode_release_20210226', ext: 'aar')
+
+
+    // 条形码
+//    implementation project(':lib_barcode')
 }
+

@@ -5,14 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
-import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.barcode.QRCodeReader;
+import com.google.zxing.common.HybridBinarizer;
 
-import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.Charset;
+
+import lib.kalu.barcode.util.LogUtil;
 
 /**
  * description: zxingutil
@@ -20,72 +25,97 @@ import java.nio.charset.Charset;
  */
 public class DecodeTool {
 
-    public static String decode(String path) {
+    public static String decodeQrcodeFromFile(@NonNull String filePath) {
+
+        if (null == filePath || filePath.length() == 0)
+            return null;
+
+        File file = new File(filePath);
+        if (!file.exists() || !file.isFile())
+            return null;
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
+        BitmapFactory.decodeFile(filePath, options);
         int sampleSize = options.outHeight / 400;
         if (sampleSize <= 0)
             sampleSize = 1;
         options.inSampleSize = sampleSize;
         options.inJustDecodeBounds = false;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-        return decode(bitmap);
-    }
-
-    public static String decode(final Bitmap bitmap) {
-
-        try {
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            int[] pixels = new int[width * height];
-            bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-            RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
-            Result result = QRCodeReader.obtain().decode(new BinaryBitmap(new HybridBinarizer(source)));
-            if (result != null) {
-
-                String str = result.getText();
-                boolean ISO = Charset.forName("ISO-8859-1").newEncoder().canEncode(str);
-                if (ISO) {
-                    return new String(str.getBytes("ISO-8859-1"), "GB2312");
-                } else {
-                    return str;
-                }
-            } else {
-                return null;
-            }
-
-        } catch (Exception e) {
-            return null;
-        }
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
+        return decodeQrcodeFromBitmap(bitmap);
     }
 
     /**
      * @param uri：图片的本地url地址
      * @return Bitmap；
      */
-    public static Bitmap decodeUriAsBitmap(Context context, Uri uri) {
-        Bitmap bitmap = null;
+    public static String decodeQrcodeFromUri(@NonNull Context context, @NonNull Uri uri) {
+
         try {
-//            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
-            //压缩图片
-            final BitmapFactory.Options options = new BitmapFactory.Options();
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
             options.inSampleSize = calculateInSampleSize(options, 720, 1280);
             options.inJustDecodeBounds = false;
-            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+            return decodeQrcodeFromBitmap(bitmap);
+        } catch (Exception e) {
+            LogUtil.log("decodeQrcodeFromUri => " + e.getMessage(), e);
             return null;
         }
-        return bitmap;
+    }
+
+
+    /**
+     * @param bitmap
+     * @return
+     */
+    private static String decodeQrcodeFromBitmap(@NonNull Bitmap bitmap) {
+
+        if (null == bitmap || bitmap.isRecycled())
+            return null;
+
+        try {
+            int bitmapWidth = bitmap.getWidth();
+            int bitmapHeight = bitmap.getHeight();
+            int[] pixels = new int[bitmapWidth * bitmapHeight];
+            bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+
+            if (null != bitmap || !bitmap.isRecycled()) {
+                bitmap.recycle();
+                bitmap = null;
+            }
+
+            RGBLuminanceSource source = new RGBLuminanceSource(bitmapWidth, bitmapHeight, pixels);
+
+            Result result = QRCodeReader.obtain().decode(new BinaryBitmap(new HybridBinarizer(source)));
+            if (null == result)
+                return null;
+
+            String text = result.getText();
+            if (null == text || text.length() == 0)
+                return null;
+
+            boolean ISO = Charset.forName("ISO-8859-1").newEncoder().canEncode(text);
+            if (ISO) {
+                return new String(text.getBytes("ISO-8859-1"), "GB2312");
+            } else {
+                return text;
+            }
+
+        } catch (Exception e) {
+            LogUtil.log("decodeQrcodeFromBitmap => " + e.getMessage(), e);
+            return null;
+        }
     }
 
     //计算图片的缩放值
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;

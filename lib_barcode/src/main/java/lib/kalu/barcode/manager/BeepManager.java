@@ -23,15 +23,14 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.util.Log;
-
-import lib.kalu.barcode.QrcodeActivity;
-import lib.kalu.qrcode.R;
+import lib.kalu.barcode.BarcodeActivity;
+import lib.kalu.barcode.R;
 
 import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Manages beeps and vibrations for {@link QrcodeActivity}.
+ * Manages beeps and vibrations for {@link BarcodeActivity}.
  */
 public final class BeepManager implements MediaPlayer.OnErrorListener, Closeable {
 
@@ -74,7 +73,7 @@ public final class BeepManager implements MediaPlayer.OnErrorListener, Closeable
 
     private MediaPlayer buildMediaPlayer(Context activity) {
         MediaPlayer mediaPlayer = new MediaPlayer();
-        try (AssetFileDescriptor file = activity.getResources().openRawResourceFd(R.raw.lib_qrcode_raw_beep)) {
+        try (AssetFileDescriptor file = activity.getResources().openRawResourceFd(R.raw.lib_barcode_raw_beep)) {
             mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
             mediaPlayer.setOnErrorListener(this);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
