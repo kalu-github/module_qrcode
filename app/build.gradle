@@ -35,8 +35,8 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     // 二维码
-    implementation project(':lib_qrcode')
-    // implementation(name: 'lib_qrcode_release_20210226', ext: 'aar')
+    // implementation project(':lib_qrcode')
+    implementation(name: 'lib_qrcode_release_20210227', ext: 'aar')
 
 
     // 条形码
