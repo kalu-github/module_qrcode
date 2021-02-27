@@ -1,7 +1,7 @@
 #
 #### demo
 
-![image](https://github.com/153437803/moudle_zxing/blob/master/image20210227130234.gif )
+![image](https://github.com/153437803/moudle_zxing/blob/master/image20210227132200.gif )
 ![image](https://github.com/153437803/moudle_zxing/blob/master/image20210227130300.gif )
 
 #

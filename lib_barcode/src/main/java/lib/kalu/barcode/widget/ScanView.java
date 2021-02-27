@@ -76,7 +76,7 @@ public final class ScanView extends TextView {
         float minH = minW * 1 / 3;
 
         float left = width * 0.5f - minW * 0.5f;
-        float top = height * 0.5f - minW * 0.5f;
+        float top = height * 0.5f - minH * 0.5f;
         float right = left + minW;
         float bottom = top + minH;
 
