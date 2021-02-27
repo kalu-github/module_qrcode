@@ -40,6 +40,7 @@ dependencies {
 
 
     // 条形码
-//    implementation project(':lib_barcode')
+    // implementation project(':lib_barcode')
+    implementation(name: 'lib_barcode_release_20210227', ext: 'aar')
 }
 

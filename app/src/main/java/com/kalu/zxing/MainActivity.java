@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import lib.kalu.barcode.BarcodeActivity;
+import lib.kalu.barcode.BarcodeManager;
 import lib.kalu.qrcode.QrcodeManager;
 import lib.kalu.qrcode.config.QrcodeConfig;
 import lib.kalu.qrcode.listener.OnQrcodeScanChangeListener;
@@ -132,6 +134,18 @@ public class MainActivity extends Activity {
                 intent.setAction(Intent.ACTION_PICK);
                 /* 取得相片后返回本画面 */
                 startActivityForResult(intent, 1000);
+            }
+        });
+
+        // 默认扫描
+        findViewById(R.id.scan_barcode1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                requestCameraPerm();
+
+                Intent intent = new Intent(getApplicationContext(), BarcodeActivity.class);
+                startActivity(intent);
             }
         });
 

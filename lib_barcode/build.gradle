@@ -24,14 +24,14 @@ android {
             zipAlignEnabled false
             shrinkResources false
             multiDexEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard/proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard/proguard-rules2.pro'
         }
         debug {
             minifyEnabled true
             zipAlignEnabled false
             shrinkResources false
             multiDexEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard/proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard/proguard-rules2.pro'
         }
     }
 

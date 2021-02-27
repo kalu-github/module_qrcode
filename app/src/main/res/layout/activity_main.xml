@@ -21,6 +21,39 @@
             android:background="#eeeeee" />
 
         <Button
+            android:id="@+id/scan_barcode1"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="10dp"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:text="条形码：默认扫描"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/scan_normal"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="10dp"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:text="二维码：默认扫描"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/scan_custom"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="10dp"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:text="二维码：自定义扫描"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <Button
             android:id="@+id/create_qr1"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -72,28 +105,6 @@
             android:background="#eeeeee"
             android:gravity="center"
             android:text="解析二维码"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/scan_normal"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="默认扫描"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/scan_custom"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="自定义扫描"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
