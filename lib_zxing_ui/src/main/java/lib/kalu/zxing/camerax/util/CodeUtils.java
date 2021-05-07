@@ -48,9 +48,9 @@ import lib.kalu.zxing.camerax.DecodeFormatManager;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * @author Jenly <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:56
  */
 public final class CodeUtils {
 

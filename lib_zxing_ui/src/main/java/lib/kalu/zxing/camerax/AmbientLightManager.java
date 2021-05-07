@@ -24,7 +24,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 /**
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:56
  */
 public class AmbientLightManager implements SensorEventListener {
 

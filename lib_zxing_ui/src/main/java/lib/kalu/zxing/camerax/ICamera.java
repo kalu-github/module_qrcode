@@ -4,8 +4,10 @@ package lib.kalu.zxing.camerax;
 import androidx.annotation.Nullable;
 import androidx.camera.core.Camera;
 
+
 /**
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:55
  */
 public interface ICamera {
 

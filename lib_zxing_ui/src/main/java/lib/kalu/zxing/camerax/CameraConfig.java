@@ -6,8 +6,8 @@ import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 
 /**
- * 相机配置：主要用于提供相机预览时可自定义一些配置，便于扩展
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description: 相机配置：主要用于提供相机预览时可自定义一些配置，便于扩展
+ * @date:  2021-05-07 14:55
  */
 public class CameraConfig {
 

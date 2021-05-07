@@ -38,7 +38,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 /**
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:55
  */
 public class DefaultCameraScan extends CameraScan {
 

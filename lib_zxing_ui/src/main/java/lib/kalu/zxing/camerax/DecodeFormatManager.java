@@ -13,7 +13,8 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 
 /**
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:55
  */
 public final class DecodeFormatManager {
 

@@ -20,7 +20,8 @@ package lib.kalu.zxing.camerax.util;
 import android.util.Log;
 
 /**
- * @author Jenly <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:56
  */
 public class LogUtils {
 

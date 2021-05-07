@@ -15,7 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.camera.core.CameraSelector;
 
 /**
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:55
  */
 public abstract class CameraScan implements ICamera,ICameraControl {
 

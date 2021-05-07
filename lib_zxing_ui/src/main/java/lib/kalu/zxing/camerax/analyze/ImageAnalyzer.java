@@ -14,8 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
 
 /**
- * 图像分析器
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description: 图像分析器
+ * @date:  2021-05-07 14:57
  */
 public abstract class ImageAnalyzer implements Analyzer {
 

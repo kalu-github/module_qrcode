@@ -8,8 +8,8 @@ import androidx.camera.core.ImageProxy;
 import android.content.res.Configuration;
 
 /**
- * 分析器
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description: 分析器
+ * @date:  2021-05-07 14:56
  */
 public interface Analyzer {
 

@@ -17,7 +17,8 @@ import java.util.Map;
 import androidx.annotation.Nullable;
 
 /**
- * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
+ * @description:
+ * @date:  2021-05-07 14:57
  */
 public class MultiFormatAnalyzer extends AreaRectAnalyzer {
 
