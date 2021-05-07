@@ -8,3 +8,5 @@
 /captures
 /.idea
 /.gradle
+/lib_zxing_core/build
+/lib_zxing_ui/build

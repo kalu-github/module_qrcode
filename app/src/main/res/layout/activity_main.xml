@@ -21,90 +21,79 @@
             android:background="#eeeeee" />
 
         <Button
-            android:id="@+id/scan_barcode1"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="条形码：默认扫描"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/scan_normal"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="二维码：默认扫描"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/scan_custom"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="二维码：自定义扫描"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
             android:id="@+id/create_qr1"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="#eeeeee"
             android:gravity="center"
-            android:text="生成二维码, 无LOGO"
+            android:text="编码: 生成二维码无LOGO"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/create_qr2"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="#eeeeee"
             android:gravity="center"
-            android:text="生成二维码, 有LOGO, Url"
+            android:text="编码: 生成二维码有LOGOUrl"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/create_qr3"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="#eeeeee"
             android:gravity="center"
-            android:text="生成二维码, 有LOGO, RAW"
+            android:text="编码: 生成二维码有LOGORAW"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/create_qr4"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="#eeeeee"
             android:gravity="center"
-            android:text="生成二维码, 有LOGO, Asset"
+            android:text="编码: 生成二维码有LOGOAsset"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/decode_qr1"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="#eeeeee"
             android:gravity="center"
-            android:text="解析二维码"
+            android:text="解码: 二维码图片"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/decode_qr2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:text="解码: 扫描二维码"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/decode_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:text="解码: 扫描条形码"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 

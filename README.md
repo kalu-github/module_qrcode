@@ -7,14 +7,20 @@
 #
 #### 说明
 ```
-二维码模块
-lib_qrcode
+zxing-moudle
+lib_zxing_core
 
-条形码模块
-lib_barcode
+ui-moudle
+lib_zxing_ui
+
+cameraX
+https://developer.android.google.cn/jetpack/androidx/releases/camera
+https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/camera/
 
 zxing-3.4.1
 https://github.com/zxing/zxing/releases
+https://mvnrepository.com/artifact/com.google.zxing/core
+https://mvnrepository.com/artifact/com.google.zxing/android-core
 ```
 
 #

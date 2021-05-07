@@ -30,17 +30,18 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // 依赖
-    implementation 'androidx.activity:activity:1.1.0'
-    implementation 'androidx.fragment:fragment:1.2.5'
+    implementation "androidx.appcompat:appcompat:1.1.0"
     implementation 'androidx.annotation:annotation:1.1.0'
 
+    // camerax
+    implementation "androidx.camera:camera-core:1.0.0-rc05"
+    implementation "androidx.camera:camera-camera2:1.0.0-rc05"
+    implementation "androidx.camera:camera-lifecycle:1.0.0-rc05"
+    implementation "androidx.camera:camera-view:1.0.0-alpha24"
+    implementation "androidx.camera:camera-extensions:1.0.0-alpha24"
+
     // 二维码
-    // implementation project(':lib_qrcode')
-    implementation(name: 'lib_qrcode_release_20210227', ext: 'aar')
-
-
-    // 条形码
-    // implementation project(':lib_barcode')
-    implementation(name: 'lib_barcode_release_20210227', ext: 'aar')
+    implementation project(':lib_zxing_ui')
 }
+
 
