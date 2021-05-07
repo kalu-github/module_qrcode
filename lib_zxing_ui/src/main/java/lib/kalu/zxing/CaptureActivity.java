@@ -98,17 +98,29 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
 
                     TextView textView = findViewById(R.id.lib_zxing_ui_id_flashlight);
                     textView.setCompoundDrawablesWithIntrinsicBounds(0, !isTorch ? R.drawable.lib_zxing_ui_ic_flashlight_on : R.drawable.lib_zxing_ui_ic_flashlight_off, 0, 0);
-                    textView.setText(!isTorch ? R.string.lib_zxing_string_light_on : R.string.lib_zxing_string_light_off);
+                    textView.setText(!isTorch ? R.string.lib_zxing_string_light_off : R.string.lib_zxing_string_light_on);
                 } catch (Exception e) {
                 }
             }
         });
 
-        // 相机
+        // 预览
         initCamera();
 
-        // 预览
+        // 相机
         startCamera();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        startCamera();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopCamera();
     }
 
     /**
@@ -135,6 +147,15 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
     }
 
     /**
+     * 暂停相机预览
+     */
+    public void stopCamera() {
+        if (mCameraScan != null) {
+            mCameraScan.stopCamera();
+        }
+    }
+
+    /**
      * 释放相机
      */
     private void releaseCamera() {
@@ -154,7 +175,7 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        LogUtil.log("onActivityResult => requestCode = " + requestCode + ", resultCode = " + resultCode + ", data = " + data + ", uri = " + data.getData());
+        LogUtil.log("onActivityResult => requestCode = " + requestCode + ", resultCode = " + resultCode + ", data = " + data + ", uri = " + (null == data ? "null" : data.getData()));
         if (null == data || null == data.getData() || requestCode != 0X87)
             return;
 

@@ -19,17 +19,17 @@ import lib.kalu.zxing.util.LogUtil;
  * description: 二维码扫描框
  * created by kalu on 2021-02-26
  */
-public final class QrcodeViewfinderView extends AppCompatTextView {
+public final class FinderView extends AppCompatTextView {
 
-    public QrcodeViewfinderView(Context context) {
+    public FinderView(Context context) {
         super(context);
     }
 
-    public QrcodeViewfinderView(Context context, @Nullable AttributeSet attrs) {
+    public FinderView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public QrcodeViewfinderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public FinderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -82,7 +82,6 @@ public final class QrcodeViewfinderView extends AppCompatTextView {
         // canvas.drawRect(right - rectH, top + rectH, width, bottom - rectH, paint);
 
         //左上角
-        paint.setXfermode(null);
         paint.setColor(Color.BLACK);
         canvas.drawRect(left, top, left + rectW, top + rectH, paint);
         canvas.drawRect(left, top, left + rectH, top + rectW, paint);

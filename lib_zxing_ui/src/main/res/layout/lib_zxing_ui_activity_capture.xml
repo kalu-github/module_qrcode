@@ -13,7 +13,7 @@
         android:background="@android:color/transparent" />
 
     <!--扫描框-->
-    <lib.kalu.zxing.widget.QrcodeViewfinderView
+    <lib.kalu.zxing.widget.FinderView
         android:id="@+id/lib_zxing_ui_id_viewfinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
