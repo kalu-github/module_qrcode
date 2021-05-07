@@ -10,7 +10,7 @@
 zxing-moudle
 lib_zxing_core
 
-ui-moudle
+zxing-ui-moudle
 lib_zxing_ui
 
 cameraX
