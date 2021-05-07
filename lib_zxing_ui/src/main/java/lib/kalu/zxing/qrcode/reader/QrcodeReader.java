@@ -270,5 +270,4 @@ public class QrcodeReader implements Reader {
         }
         return (x - leftTopBlack[0]) / 7.0f;
     }
-
 }
