@@ -82,7 +82,7 @@ public class DefaultCameraScan extends CameraScan {
 
     private MutableLiveData<Result> mResultLiveData;
 
-    private OnScanResultCallback mOnScanResultCallback;
+    private OnCameraScanChangeListener mOnScanResultCallback;
 
     private BeepManager mBeepManager;
     private AmbientLightManager mAmbientLightManager;
@@ -297,7 +297,7 @@ public class DefaultCameraScan extends CameraScan {
     }
 
     private void scanResultCallback(Result result){
-        if(mOnScanResultCallback != null && mOnScanResultCallback.onScanResultCallback(result)){
+        if(mOnScanResultCallback != null && mOnScanResultCallback.onResult(result)){
             //如果拦截了结果，则重置分析结果状态，直接可以连扫
             isAnalyzeResult = false;
             return;
@@ -444,12 +444,6 @@ public class DefaultCameraScan extends CameraScan {
         return this;
     }
 
-    @Override
-    public CameraScan setOnScanResultCallback(OnScanResultCallback callback) {
-        this.mOnScanResultCallback = callback;
-        return this;
-    }
-
     @Nullable
     @Override
     public Camera getCamera(){
@@ -493,4 +487,9 @@ public class DefaultCameraScan extends CameraScan {
         return this;
     }
 
+    @Override
+    public CameraScan setOnCameraScanChangeListener(OnCameraScanChangeListener callback) {
+        this.mOnScanResultCallback = callback;
+        return this;
+    }
 }

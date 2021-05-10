@@ -10,6 +10,10 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -41,7 +45,7 @@ dependencies {
     implementation "androidx.camera:camera-extensions:1.0.0-alpha24"
 
     // 二维码
-    implementation(name: 'lib_zxing_release_20210507', ext: 'aar')
+    implementation(name: 'lib_zxing_release_20210510', ext: 'aar')
     // implementation project(':lib_zxing_ui')
 }
 

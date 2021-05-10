@@ -1,0 +1,495 @@
+com/google/zxing/client/result/VINResultParser.java
+ com.google.zxing.client.result.VINResultParser
+com/google/zxing/InvertedLuminanceSource.java
+ com.google.zxing.InvertedLuminanceSource
+com/google/zxing/LuminanceSource.java
+ com.google.zxing.LuminanceSource
+com/google/zxing/client/result/AddressBookParsedResult.java
+ com.google.zxing.client.result.AddressBookParsedResult
+com/google/zxing/datamatrix/encoder/X12Encoder.java
+ com.google.zxing.datamatrix.encoder.X12Encoder
+com/google/zxing/BinaryBitmap.java
+ com.google.zxing.BinaryBitmap
+com/google/zxing/pdf417/decoder/BoundingBox.java
+ com.google.zxing.pdf417.decoder.BoundingBox
+com/google/zxing/client/result/VCardResultParser.java
+ com.google.zxing.client.result.VCardResultParser
+com/google/zxing/common/BitSource.java
+ com.google.zxing.common.BitSource
+com/google/zxing/oned/rss/expanded/decoders/DecodedInformation.java
+ com.google.zxing.oned.rss.expanded.decoders.DecodedInformation
+com/google/zxing/ResultMetadataType.java
+ com.google.zxing.ResultMetadataType
+com/google/zxing/pdf417/encoder/BarcodeMatrix.java
+ com.google.zxing.pdf417.encoder.BarcodeMatrix
+com/google/zxing/qrcode/detector/FinderPatternInfo.java
+ com.google.zxing.qrcode.detector.FinderPatternInfo
+com/google/zxing/oned/CodaBarReader.java
+ com.google.zxing.oned.CodaBarReader
+com/google/zxing/oned/rss/DataCharacter.java
+ com.google.zxing.oned.rss.DataCharacter
+com/google/zxing/oned/UPCEReader.java
+ com.google.zxing.oned.UPCEReader
+com/google/zxing/multi/MultipleBarcodeReader.java
+ com.google.zxing.multi.MultipleBarcodeReader
+com/google/zxing/oned/rss/expanded/decoders/AnyAIDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AnyAIDecoder
+com/google/zxing/datamatrix/encoder/ErrorCorrection.java
+ com.google.zxing.datamatrix.encoder.ErrorCorrection
+com/google/zxing/oned/rss/RSS14Reader.java
+ com.google.zxing.oned.rss.RSS14Reader
+com/google/zxing/oned/rss/expanded/decoders/AI013x0x1xDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI013x0x1xDecoder
+com/google/zxing/ResultPoint.java
+ com.google.zxing.ResultPoint
+com/google/zxing/oned/rss/Pair.java
+ com.google.zxing.oned.rss.Pair
+com/google/zxing/client/result/URIParsedResult.java
+ com.google.zxing.client.result.URIParsedResult
+com/google/zxing/common/BitMatrix.java
+ com.google.zxing.common.BitMatrix
+com/google/zxing/client/result/BookmarkDoCoMoResultParser.java
+ com.google.zxing.client.result.BookmarkDoCoMoResultParser
+com/google/zxing/oned/rss/expanded/ExpandedPair.java
+ com.google.zxing.oned.rss.expanded.ExpandedPair
+com/google/zxing/pdf417/decoder/ec/ModulusPoly.java
+ com.google.zxing.pdf417.decoder.ec.ModulusPoly
+com/google/zxing/client/result/WifiResultParser.java
+ com.google.zxing.client.result.WifiResultParser
+com/google/zxing/oned/rss/expanded/decoders/DecodedChar.java
+ com.google.zxing.oned.rss.expanded.decoders.DecodedChar
+com/google/zxing/client/result/TextParsedResult.java
+ com.google.zxing.client.result.TextParsedResult
+com/google/zxing/datamatrix/encoder/DataMatrixSymbolInfo144.java
+ com.google.zxing.datamatrix.encoder.DataMatrixSymbolInfo144
+com/google/zxing/client/result/GeoParsedResult.java
+ com.google.zxing.client.result.GeoParsedResult
+com/google/zxing/NotFoundException.java
+ com.google.zxing.NotFoundException
+com/google/zxing/oned/UPCEWriter.java
+ com.google.zxing.oned.UPCEWriter
+com/google/zxing/datamatrix/encoder/ASCIIEncoder.java
+ com.google.zxing.datamatrix.encoder.ASCIIEncoder
+com/google/zxing/multi/ByQuadrantReader.java
+ com.google.zxing.multi.ByQuadrantReader
+com/google/zxing/RGBLuminanceSource.java
+ com.google.zxing.RGBLuminanceSource
+com/google/zxing/pdf417/PDF417Common.java
+ com.google.zxing.pdf417.PDF417Common
+com/google/zxing/qrcode/encoder/MaskUtil.java
+ com.google.zxing.qrcode.encoder.MaskUtil
+com/google/zxing/aztec/encoder/AztecCode.java
+ com.google.zxing.aztec.encoder.AztecCode
+com/google/zxing/qrcode/decoder/BitMatrixParser.java
+ com.google.zxing.qrcode.decoder.BitMatrixParser
+com/google/zxing/pdf417/PDF417Reader.java
+ com.google.zxing.pdf417.PDF417Reader
+com/google/zxing/qrcode/decoder/Version.java
+ com.google.zxing.qrcode.decoder.Version
+ com.google.zxing.qrcode.decoder.Version$ECB
+ com.google.zxing.qrcode.decoder.Version$ECBlocks
+com/google/zxing/client/result/TelResultParser.java
+ com.google.zxing.client.result.TelResultParser
+com/google/zxing/common/GlobalHistogramBinarizer.java
+ com.google.zxing.common.GlobalHistogramBinarizer
+com/google/zxing/FormatException.java
+ com.google.zxing.FormatException
+com/google/zxing/oned/EAN8Writer.java
+ com.google.zxing.oned.EAN8Writer
+com/google/zxing/multi/qrcode/detector/MultiFinderPatternFinder.java
+ com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder
+ com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder$1
+ com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder$ModuleSizeComparator
+com/google/zxing/client/result/AbstractDoCoMoResultParser.java
+ com.google.zxing.client.result.AbstractDoCoMoResultParser
+com/google/zxing/oned/OneDimensionalCodeWriter.java
+ com.google.zxing.oned.OneDimensionalCodeWriter
+com/google/zxing/pdf417/decoder/BarcodeMetadata.java
+ com.google.zxing.pdf417.decoder.BarcodeMetadata
+com/google/zxing/oned/EANManufacturerOrgSupport.java
+ com.google.zxing.oned.EANManufacturerOrgSupport
+com/google/zxing/oned/ITFReader.java
+ com.google.zxing.oned.ITFReader
+com/google/zxing/aztec/encoder/Token.java
+ com.google.zxing.aztec.encoder.Token
+com/google/zxing/client/result/EmailDoCoMoResultParser.java
+ com.google.zxing.client.result.EmailDoCoMoResultParser
+com/google/zxing/common/reedsolomon/ReedSolomonException.java
+ com.google.zxing.common.reedsolomon.ReedSolomonException
+com/google/zxing/pdf417/decoder/BarcodeValue.java
+ com.google.zxing.pdf417.decoder.BarcodeValue
+com/google/zxing/client/result/SMSParsedResult.java
+ com.google.zxing.client.result.SMSParsedResult
+com/google/zxing/datamatrix/decoder/DecodedBitStreamParser.java
+ com.google.zxing.datamatrix.decoder.DecodedBitStreamParser
+ com.google.zxing.datamatrix.decoder.DecodedBitStreamParser$1
+ com.google.zxing.datamatrix.decoder.DecodedBitStreamParser$Mode
+com/google/zxing/oned/rss/expanded/decoders/AI01decoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI01decoder
+com/google/zxing/oned/UPCAWriter.java
+ com.google.zxing.oned.UPCAWriter
+com/google/zxing/datamatrix/encoder/SymbolInfo.java
+ com.google.zxing.datamatrix.encoder.SymbolInfo
+com/google/zxing/oned/EAN13Reader.java
+ com.google.zxing.oned.EAN13Reader
+com/google/zxing/qrcode/detector/Detector.java
+ com.google.zxing.qrcode.detector.Detector
+com/google/zxing/qrcode/decoder/QRCodeDecoderMetaData.java
+ com.google.zxing.qrcode.decoder.QRCodeDecoderMetaData
+com/google/zxing/oned/rss/expanded/decoders/GeneralAppIdDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.GeneralAppIdDecoder
+com/google/zxing/common/detector/MonochromeRectangleDetector.java
+ com.google.zxing.common.detector.MonochromeRectangleDetector
+com/google/zxing/oned/UPCEANWriter.java
+ com.google.zxing.oned.UPCEANWriter
+com/google/zxing/client/result/ResultParser.java
+ com.google.zxing.client.result.ResultParser
+com/google/zxing/aztec/decoder/Decoder.java
+ com.google.zxing.aztec.decoder.Decoder
+ com.google.zxing.aztec.decoder.Decoder$1
+ com.google.zxing.aztec.decoder.Decoder$Table
+com/google/zxing/client/result/ExpandedProductResultParser.java
+ com.google.zxing.client.result.ExpandedProductResultParser
+com/google/zxing/client/result/AddressBookDoCoMoResultParser.java
+ com.google.zxing.client.result.AddressBookDoCoMoResultParser
+com/google/zxing/pdf417/decoder/Codeword.java
+ com.google.zxing.pdf417.decoder.Codeword
+com/google/zxing/maxicode/decoder/DecodedBitStreamParser.java
+ com.google.zxing.maxicode.decoder.DecodedBitStreamParser
+com/google/zxing/client/result/SMSMMSResultParser.java
+ com.google.zxing.client.result.SMSMMSResultParser
+com/google/zxing/datamatrix/decoder/Version.java
+ com.google.zxing.datamatrix.decoder.Version
+ com.google.zxing.datamatrix.decoder.Version$1
+ com.google.zxing.datamatrix.decoder.Version$ECB
+ com.google.zxing.datamatrix.decoder.Version$ECBlocks
+com/google/zxing/oned/rss/expanded/RSSExpandedReader.java
+ com.google.zxing.oned.rss.expanded.RSSExpandedReader
+com/google/zxing/oned/CodaBarWriter.java
+ com.google.zxing.oned.CodaBarWriter
+com/google/zxing/maxicode/decoder/Decoder.java
+ com.google.zxing.maxicode.decoder.Decoder
+com/google/zxing/oned/rss/AbstractRSSReader.java
+ com.google.zxing.oned.rss.AbstractRSSReader
+com/google/zxing/qrcode/QRCodeReader.java
+ com.google.zxing.qrcode.QRCodeReader
+com/google/zxing/WriterException.java
+ com.google.zxing.WriterException
+com/google/zxing/MultiFormatReader.java
+ com.google.zxing.MultiFormatReader
+com/google/zxing/client/result/ProductResultParser.java
+ com.google.zxing.client.result.ProductResultParser
+com/google/zxing/common/StringUtils.java
+ com.google.zxing.common.StringUtils
+com/google/zxing/datamatrix/encoder/TextEncoder.java
+ com.google.zxing.datamatrix.encoder.TextEncoder
+com/google/zxing/oned/rss/expanded/decoders/AI01393xDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI01393xDecoder
+com/google/zxing/qrcode/decoder/DecodedBitStreamParser.java
+ com.google.zxing.qrcode.decoder.DecodedBitStreamParser
+ com.google.zxing.qrcode.decoder.DecodedBitStreamParser$1
+com/google/zxing/datamatrix/decoder/DataBlock.java
+ com.google.zxing.datamatrix.decoder.DataBlock
+com/google/zxing/oned/rss/expanded/ExpandedRow.java
+ com.google.zxing.oned.rss.expanded.ExpandedRow
+com/google/zxing/Result.java
+ com.google.zxing.Result
+com/google/zxing/client/result/EmailAddressResultParser.java
+ com.google.zxing.client.result.EmailAddressResultParser
+com/google/zxing/pdf417/encoder/PDF417ErrorCorrection.java
+ com.google.zxing.pdf417.encoder.PDF417ErrorCorrection
+com/google/zxing/aztec/AztecDetectorResult.java
+ com.google.zxing.aztec.AztecDetectorResult
+com/google/zxing/BarcodeFormat.java
+ com.google.zxing.BarcodeFormat
+com/google/zxing/pdf417/encoder/Compaction.java
+ com.google.zxing.pdf417.encoder.Compaction
+com/google/zxing/pdf417/decoder/DetectionResultRowIndicatorColumn.java
+ com.google.zxing.pdf417.decoder.DetectionResultRowIndicatorColumn
+com/google/zxing/common/PerspectiveTransform.java
+ com.google.zxing.common.PerspectiveTransform
+com/google/zxing/common/reedsolomon/GenericGFPoly.java
+ com.google.zxing.common.reedsolomon.GenericGFPoly
+com/google/zxing/multi/GenericMultipleBarcodeReader.java
+ com.google.zxing.multi.GenericMultipleBarcodeReader
+com/google/zxing/pdf417/decoder/ec/ErrorCorrection.java
+ com.google.zxing.pdf417.decoder.ec.ErrorCorrection
+com/google/zxing/qrcode/encoder/BlockPair.java
+ com.google.zxing.qrcode.encoder.BlockPair
+com/google/zxing/datamatrix/detector/Detector.java
+ com.google.zxing.datamatrix.detector.Detector
+com/google/zxing/multi/qrcode/detector/MultiDetector.java
+ com.google.zxing.multi.qrcode.detector.MultiDetector
+com/google/zxing/oned/Code39Writer.java
+ com.google.zxing.oned.Code39Writer
+com/google/zxing/ResultPointCallback.java
+ com.google.zxing.ResultPointCallback
+com/google/zxing/qrcode/decoder/Decoder.java
+ com.google.zxing.qrcode.decoder.Decoder
+com/google/zxing/oned/Code93Reader.java
+ com.google.zxing.oned.Code93Reader
+com/google/zxing/oned/rss/expanded/decoders/AI01AndOtherAIs.java
+ com.google.zxing.oned.rss.expanded.decoders.AI01AndOtherAIs
+com/google/zxing/pdf417/decoder/DecodedBitStreamParser.java
+ com.google.zxing.pdf417.decoder.DecodedBitStreamParser
+ com.google.zxing.pdf417.decoder.DecodedBitStreamParser$1
+ com.google.zxing.pdf417.decoder.DecodedBitStreamParser$Mode
+com/google/zxing/pdf417/encoder/Dimensions.java
+ com.google.zxing.pdf417.encoder.Dimensions
+com/google/zxing/oned/UPCEANExtension5Support.java
+ com.google.zxing.oned.UPCEANExtension5Support
+com/google/zxing/oned/rss/expanded/decoders/DecodedNumeric.java
+ com.google.zxing.oned.rss.expanded.decoders.DecodedNumeric
+com/google/zxing/oned/rss/FinderPattern.java
+ com.google.zxing.oned.rss.FinderPattern
+com/google/zxing/oned/UPCEANExtension2Support.java
+ com.google.zxing.oned.UPCEANExtension2Support
+com/google/zxing/qrcode/detector/AlignmentPattern.java
+ com.google.zxing.qrcode.detector.AlignmentPattern
+com/google/zxing/aztec/encoder/BinaryShiftToken.java
+ com.google.zxing.aztec.encoder.BinaryShiftToken
+com/google/zxing/oned/Code39Reader.java
+ com.google.zxing.oned.Code39Reader
+com/google/zxing/client/result/WifiParsedResult.java
+ com.google.zxing.client.result.WifiParsedResult
+com/google/zxing/qrcode/encoder/ByteMatrix.java
+ com.google.zxing.qrcode.encoder.ByteMatrix
+com/google/zxing/aztec/encoder/HighLevelEncoder.java
+ com.google.zxing.aztec.encoder.HighLevelEncoder
+ com.google.zxing.aztec.encoder.HighLevelEncoder$1
+com/google/zxing/oned/MultiFormatOneDReader.java
+ com.google.zxing.oned.MultiFormatOneDReader
+com/google/zxing/oned/rss/expanded/decoders/AI01320xDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI01320xDecoder
+com/google/zxing/qrcode/decoder/Mode.java
+ com.google.zxing.qrcode.decoder.Mode
+com/google/zxing/common/CharacterSetECI.java
+ com.google.zxing.common.CharacterSetECI
+com/google/zxing/qrcode/decoder/FormatInformation.java
+ com.google.zxing.qrcode.decoder.FormatInformation
+com/google/zxing/common/reedsolomon/ReedSolomonDecoder.java
+ com.google.zxing.common.reedsolomon.ReedSolomonDecoder
+com/google/zxing/oned/UPCEANExtensionSupport.java
+ com.google.zxing.oned.UPCEANExtensionSupport
+com/google/zxing/aztec/encoder/SimpleToken.java
+ com.google.zxing.aztec.encoder.SimpleToken
+com/google/zxing/client/result/SMTPResultParser.java
+ com.google.zxing.client.result.SMTPResultParser
+com/google/zxing/qrcode/encoder/Encoder.java
+ com.google.zxing.qrcode.encoder.Encoder
+ com.google.zxing.qrcode.encoder.Encoder$1
+com/google/zxing/datamatrix/DataMatrixReader.java
+ com.google.zxing.datamatrix.DataMatrixReader
+com/google/zxing/oned/Code93Writer.java
+ com.google.zxing.oned.Code93Writer
+com/google/zxing/ChecksumException.java
+ com.google.zxing.ChecksumException
+com/google/zxing/MultiFormatWriter.java
+ com.google.zxing.MultiFormatWriter
+ com.google.zxing.MultiFormatWriter$1
+com/google/zxing/oned/rss/expanded/decoders/AbstractExpandedDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AbstractExpandedDecoder
+com/google/zxing/common/DecoderResult.java
+ com.google.zxing.common.DecoderResult
+com/google/zxing/datamatrix/encoder/EncoderContext.java
+ com.google.zxing.datamatrix.encoder.EncoderContext
+com/google/zxing/pdf417/decoder/DetectionResult.java
+ com.google.zxing.pdf417.decoder.DetectionResult
+com/google/zxing/datamatrix/encoder/C40Encoder.java
+ com.google.zxing.datamatrix.encoder.C40Encoder
+com/google/zxing/oned/rss/RSSUtils.java
+ com.google.zxing.oned.rss.RSSUtils
+com/google/zxing/datamatrix/encoder/HighLevelEncoder.java
+ com.google.zxing.datamatrix.encoder.HighLevelEncoder
+com/google/zxing/common/reedsolomon/ReedSolomonEncoder.java
+ com.google.zxing.common.reedsolomon.ReedSolomonEncoder
+com/google/zxing/aztec/detector/Detector.java
+ com.google.zxing.aztec.detector.Detector
+ com.google.zxing.aztec.detector.Detector$Point
+com/google/zxing/qrcode/decoder/DataBlock.java
+ com.google.zxing.qrcode.decoder.DataBlock
+com/google/zxing/client/result/ExpandedProductParsedResult.java
+ com.google.zxing.client.result.ExpandedProductParsedResult
+com/google/zxing/aztec/AztecWriter.java
+ com.google.zxing.aztec.AztecWriter
+com/google/zxing/qrcode/detector/AlignmentPatternFinder.java
+ com.google.zxing.qrcode.detector.AlignmentPatternFinder
+com/google/zxing/client/result/SMSTOMMSTOResultParser.java
+ com.google.zxing.client.result.SMSTOMMSTOResultParser
+com/google/zxing/client/result/VEventResultParser.java
+ com.google.zxing.client.result.VEventResultParser
+com/google/zxing/oned/rss/expanded/BitArrayBuilder.java
+ com.google.zxing.oned.rss.expanded.BitArrayBuilder
+com/google/zxing/DecodeHintType.java
+ com.google.zxing.DecodeHintType
+com/google/zxing/common/detector/WhiteRectangleDetector.java
+ com.google.zxing.common.detector.WhiteRectangleDetector
+com/google/zxing/oned/rss/expanded/decoders/AI01weightDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI01weightDecoder
+com/google/zxing/qrcode/detector/FinderPatternFinder.java
+ com.google.zxing.qrcode.detector.FinderPatternFinder
+ com.google.zxing.qrcode.detector.FinderPatternFinder$1
+ com.google.zxing.qrcode.detector.FinderPatternFinder$EstimatedModuleComparator
+com/google/zxing/qrcode/decoder/ErrorCorrectionLevel.java
+ com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+com/google/zxing/client/result/ISBNParsedResult.java
+ com.google.zxing.client.result.ISBNParsedResult
+com/google/zxing/pdf417/detector/Detector.java
+ com.google.zxing.pdf417.detector.Detector
+com/google/zxing/client/result/URLTOResultParser.java
+ com.google.zxing.client.result.URLTOResultParser
+com/google/zxing/oned/rss/expanded/decoders/AI01392xDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI01392xDecoder
+com/google/zxing/common/DetectorResult.java
+ com.google.zxing.common.DetectorResult
+com/google/zxing/common/HybridBinarizer.java
+ com.google.zxing.common.HybridBinarizer
+com/google/zxing/Reader.java
+ com.google.zxing.Reader
+com/google/zxing/aztec/AztecReader.java
+ com.google.zxing.aztec.AztecReader
+com/google/zxing/datamatrix/encoder/EdifactEncoder.java
+ com.google.zxing.datamatrix.encoder.EdifactEncoder
+com/google/zxing/multi/qrcode/QRCodeMultiReader.java
+ com.google.zxing.multi.qrcode.QRCodeMultiReader
+ com.google.zxing.multi.qrcode.QRCodeMultiReader$1
+ com.google.zxing.multi.qrcode.QRCodeMultiReader$SAComparator
+com/google/zxing/oned/rss/expanded/decoders/AI013103decoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI013103decoder
+com/google/zxing/client/result/GeoResultParser.java
+ com.google.zxing.client.result.GeoResultParser
+com/google/zxing/Dimension.java
+ com.google.zxing.Dimension
+com/google/zxing/oned/Code128Writer.java
+ com.google.zxing.oned.Code128Writer
+ com.google.zxing.oned.Code128Writer$CType
+com/google/zxing/client/result/ParsedResultType.java
+ com.google.zxing.client.result.ParsedResultType
+com/google/zxing/common/DefaultGridSampler.java
+ com.google.zxing.common.DefaultGridSampler
+com/google/zxing/oned/rss/expanded/decoders/AI013x0xDecoder.java
+ com.google.zxing.oned.rss.expanded.decoders.AI013x0xDecoder
+com/google/zxing/datamatrix/DataMatrixWriter.java
+ com.google.zxing.datamatrix.DataMatrixWriter
+com/google/zxing/pdf417/decoder/PDF417CodewordDecoder.java
+ com.google.zxing.pdf417.decoder.PDF417CodewordDecoder
+com/google/zxing/client/result/TelParsedResult.java
+ com.google.zxing.client.result.TelParsedResult
+com/google/zxing/pdf417/decoder/ec/ModulusGF.java
+ com.google.zxing.pdf417.decoder.ec.ModulusGF
+com/google/zxing/oned/UPCAReader.java
+ com.google.zxing.oned.UPCAReader
+com/google/zxing/oned/rss/expanded/decoders/FieldParser.java
+ com.google.zxing.oned.rss.expanded.decoders.FieldParser
+com/google/zxing/Binarizer.java
+ com.google.zxing.Binarizer
+com/google/zxing/datamatrix/encoder/Encoder.java
+ com.google.zxing.datamatrix.encoder.Encoder
+com/google/zxing/maxicode/decoder/BitMatrixParser.java
+ com.google.zxing.maxicode.decoder.BitMatrixParser
+com/google/zxing/oned/EAN13Writer.java
+ com.google.zxing.oned.EAN13Writer
+com/google/zxing/oned/OneDReader.java
+ com.google.zxing.oned.OneDReader
+com/google/zxing/ReaderException.java
+ com.google.zxing.ReaderException
+com/google/zxing/client/result/VINParsedResult.java
+ com.google.zxing.client.result.VINParsedResult
+com/google/zxing/aztec/encoder/State.java
+ com.google.zxing.aztec.encoder.State
+com/google/zxing/pdf417/encoder/PDF417HighLevelEncoder.java
+ com.google.zxing.pdf417.encoder.PDF417HighLevelEncoder
+ com.google.zxing.pdf417.encoder.PDF417HighLevelEncoder$1
+com/google/zxing/datamatrix/encoder/Base256Encoder.java
+ com.google.zxing.datamatrix.encoder.Base256Encoder
+com/google/zxing/Writer.java
+ com.google.zxing.Writer
+com/google/zxing/oned/ITFWriter.java
+ com.google.zxing.oned.ITFWriter
+com/google/zxing/qrcode/decoder/DataMask.java
+ com.google.zxing.qrcode.decoder.DataMask
+ com.google.zxing.qrcode.decoder.DataMask$1
+ com.google.zxing.qrcode.decoder.DataMask$2
+ com.google.zxing.qrcode.decoder.DataMask$3
+ com.google.zxing.qrcode.decoder.DataMask$4
+ com.google.zxing.qrcode.decoder.DataMask$5
+ com.google.zxing.qrcode.decoder.DataMask$6
+ com.google.zxing.qrcode.decoder.DataMask$7
+ com.google.zxing.qrcode.decoder.DataMask$8
+com/google/zxing/client/result/CalendarParsedResult.java
+ com.google.zxing.client.result.CalendarParsedResult
+com/google/zxing/client/result/ISBNResultParser.java
+ com.google.zxing.client.result.ISBNResultParser
+com/google/zxing/pdf417/encoder/BarcodeRow.java
+ com.google.zxing.pdf417.encoder.BarcodeRow
+com/google/zxing/pdf417/PDF417Writer.java
+ com.google.zxing.pdf417.PDF417Writer
+com/google/zxing/common/GridSampler.java
+ com.google.zxing.common.GridSampler
+com/google/zxing/oned/MultiFormatUPCEANReader.java
+ com.google.zxing.oned.MultiFormatUPCEANReader
+com/google/zxing/qrcode/encoder/MatrixUtil.java
+ com.google.zxing.qrcode.encoder.MatrixUtil
+com/google/zxing/datamatrix/decoder/BitMatrixParser.java
+ com.google.zxing.datamatrix.decoder.BitMatrixParser
+com/google/zxing/datamatrix/encoder/SymbolShapeHint.java
+ com.google.zxing.datamatrix.encoder.SymbolShapeHint
+com/google/zxing/client/result/URIResultParser.java
+ com.google.zxing.client.result.URIResultParser
+com/google/zxing/client/result/AddressBookAUResultParser.java
+ com.google.zxing.client.result.AddressBookAUResultParser
+com/google/zxing/common/reedsolomon/GenericGF.java
+ com.google.zxing.common.reedsolomon.GenericGF
+com/google/zxing/EncodeHintType.java
+ com.google.zxing.EncodeHintType
+com/google/zxing/datamatrix/encoder/DefaultPlacement.java
+ com.google.zxing.datamatrix.encoder.DefaultPlacement
+com/google/zxing/client/result/BizcardResultParser.java
+ com.google.zxing.client.result.BizcardResultParser
+com/google/zxing/datamatrix/decoder/Decoder.java
+ com.google.zxing.datamatrix.decoder.Decoder
+com/google/zxing/client/result/EmailAddressParsedResult.java
+ com.google.zxing.client.result.EmailAddressParsedResult
+com/google/zxing/aztec/encoder/Encoder.java
+ com.google.zxing.aztec.encoder.Encoder
+com/google/zxing/pdf417/encoder/PDF417.java
+ com.google.zxing.pdf417.encoder.PDF417
+com/google/zxing/oned/rss/expanded/decoders/BlockParsedResult.java
+ com.google.zxing.oned.rss.expanded.decoders.BlockParsedResult
+com/google/zxing/pdf417/decoder/DetectionResultColumn.java
+ com.google.zxing.pdf417.decoder.DetectionResultColumn
+com/google/zxing/client/result/ParsedResult.java
+ com.google.zxing.client.result.ParsedResult
+com/google/zxing/oned/Code128Reader.java
+ com.google.zxing.oned.Code128Reader
+com/google/zxing/common/detector/MathUtils.java
+ com.google.zxing.common.detector.MathUtils
+com/google/zxing/qrcode/QRCodeWriter.java
+ com.google.zxing.qrcode.QRCodeWriter
+com/google/zxing/maxicode/MaxiCodeReader.java
+ com.google.zxing.maxicode.MaxiCodeReader
+com/google/zxing/qrcode/detector/FinderPattern.java
+ com.google.zxing.qrcode.detector.FinderPattern
+com/google/zxing/oned/EAN8Reader.java
+ com.google.zxing.oned.EAN8Reader
+com/google/zxing/pdf417/detector/PDF417DetectorResult.java
+ com.google.zxing.pdf417.detector.PDF417DetectorResult
+com/google/zxing/pdf417/decoder/PDF417ScanningDecoder.java
+ com.google.zxing.pdf417.decoder.PDF417ScanningDecoder
+com/google/zxing/oned/rss/expanded/decoders/DecodedObject.java
+ com.google.zxing.oned.rss.expanded.decoders.DecodedObject
+com/google/zxing/qrcode/encoder/QRCode.java
+ com.google.zxing.qrcode.encoder.QRCode
+com/google/zxing/pdf417/PDF417ResultMetadata.java
+ com.google.zxing.pdf417.PDF417ResultMetadata
+com/google/zxing/oned/rss/expanded/decoders/CurrentParsingState.java
+ com.google.zxing.oned.rss.expanded.decoders.CurrentParsingState
+ com.google.zxing.oned.rss.expanded.decoders.CurrentParsingState$State
+com/google/zxing/common/BitArray.java
+ com.google.zxing.common.BitArray
+com/google/zxing/client/result/ProductParsedResult.java
+ com.google.zxing.client.result.ProductParsedResult
+com/google/zxing/oned/UPCEANReader.java
+ com.google.zxing.oned.UPCEANReader
+com/google/zxing/PlanarYUVLuminanceSource.java
+ com.google.zxing.PlanarYUVLuminanceSource

@@ -51,8 +51,9 @@ dependencies {
     // implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:1.1.0"
 
-    // lib_zxing_core.jar
-    api files('libs/lib_zxing_core.jar')
+    // lib_zxing_source_qrcode.jar
+    api files('libs/lib_zxing_source_qrcode.jar')
+    // implementation project(':lib_zxing_source_qrcode')
 
     // camerax
     implementation "androidx.camera:camera-core:1.0.0-rc05"

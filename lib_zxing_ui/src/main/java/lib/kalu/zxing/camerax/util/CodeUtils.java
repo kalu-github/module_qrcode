@@ -416,46 +416,6 @@ public final class CodeUtils {
     /**
      * 生成条形码
      * @param content
-     * @param desiredWidth
-     * @param desiredHeight
-     * @return
-     */
-    public static Bitmap createBarCode(String content, int desiredWidth, int desiredHeight) {
-        return createBarCode(content,BarcodeFormat.CODE_128,desiredWidth,desiredHeight,null);
-    }
-
-    /**
-     * 生成条形码
-     * @param content
-     * @param format
-     * @param desiredWidth
-     * @param desiredHeight
-     * @return
-     */
-    public static Bitmap createBarCode(String content,BarcodeFormat format, int desiredWidth, int desiredHeight) {
-        return createBarCode(content,format,desiredWidth,desiredHeight,null);
-    }
-
-    public static Bitmap createBarCode(String content, int desiredWidth, int desiredHeight, boolean isShowText) {
-        return createBarCode(content,BarcodeFormat.CODE_128,desiredWidth,desiredHeight,null,isShowText,40,Color.BLACK);
-    }
-
-    /**
-     * 生成条形码
-     * @param content
-     * @param desiredWidth
-     * @param desiredHeight
-     * @param isShowText
-     * @param codeColor
-     * @return
-     */
-    public static Bitmap createBarCode(String content, int desiredWidth, int desiredHeight, boolean isShowText,@ColorInt int codeColor) {
-        return createBarCode(content,BarcodeFormat.CODE_128,desiredWidth,desiredHeight,null,isShowText,40,codeColor);
-    }
-
-    /**
-     * 生成条形码
-     * @param content
      * @param format
      * @param desiredWidth
      * @param desiredHeight

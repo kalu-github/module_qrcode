@@ -1,9 +1,11 @@
 package lib.kalu.zxing;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +34,7 @@ import androidx.camera.view.PreviewView;
  * @date: 2021-05-07 10:50
  */
 @Keep
-public final class CaptureActivity extends AppCompatActivity implements CameraScan.OnScanResultCallback {
+public final class CaptureActivity extends AppCompatActivity implements CameraScan.OnCameraScanChangeListener {
 
     private static final String INTENT_DATA = "intent_data";
     private static final int RESULT_SUCC = 10890001;
@@ -129,7 +131,7 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
     public void initCamera() {
         PreviewView previewView = findViewById(R.id.lib_zxing_ui_id_preview);
         mCameraScan = new DefaultCameraScan(this, previewView);
-        mCameraScan.setOnScanResultCallback(this);
+        mCameraScan.setOnCameraScanChangeListener(this);
     }
 
     /**
@@ -234,10 +236,19 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
      * @return 返回true表示拦截，将不自动执行后续逻辑，为false表示不拦截，默认不拦截
      */
     @Override
-    public boolean onScanResultCallback(Result result) {
+    public boolean onResult(Result result) {
         if (null != result && null != result.getText() && result.getText().length() > 0) {
             LogUtil.log("onScanResultCallback => text = " + result.getText());
             releaseCamera();
+
+            // 震动
+            try {
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(40);
+            } catch (Exception e) {
+                LogUtil.log("onScanResultCallback => msg = " + e.getMessage(), e);
+            }
+
             Intent intent = new Intent();
             intent.putExtra(INTENT_DATA, result.getText());
             setResult(RESULT_SUCC, intent);

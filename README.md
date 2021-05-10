@@ -12,8 +12,11 @@
 #
 #### 说明
 ```
-zxing-moudle
-lib_zxing_core
+zxing源码
+lib_zxing_source_all
+
+zxing源码-仅保留解析二维码
+lib_zxing_source_qrcode
 
 zxing-ui-moudle
 lib_zxing_ui

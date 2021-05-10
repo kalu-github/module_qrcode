@@ -23,10 +23,6 @@ public final class DecodeFormatManager {
      */
     public static final Map<DecodeHintType,Object> ALL_HINTS = new EnumMap<>(DecodeHintType.class);
     /**
-     * CODE_128 (最常用的一维码)
-     */
-    public static final Map<DecodeHintType,Object> CODE_128_HINTS = createDecodeHint(BarcodeFormat.CODE_128);
-    /**
      * QR_CODE (最常用的二维码)
      */
     public static final Map<DecodeHintType,Object> QR_CODE_HINTS = createDecodeHint(BarcodeFormat.QR_CODE);
@@ -61,76 +57,28 @@ public final class DecodeFormatManager {
      */
     private static List<BarcodeFormat> getAllFormats(){
         List<BarcodeFormat> list = new ArrayList<>();
-        list.add(BarcodeFormat.AZTEC);
-        list.add(BarcodeFormat.CODABAR);
-        list.add(BarcodeFormat.CODE_39);
-        list.add(BarcodeFormat.CODE_93);
-        list.add(BarcodeFormat.CODE_128);
-        list.add(BarcodeFormat.DATA_MATRIX);
-        list.add(BarcodeFormat.EAN_8);
-        list.add(BarcodeFormat.EAN_13);
-        list.add(BarcodeFormat.ITF);
-        list.add(BarcodeFormat.MAXICODE);
-        list.add(BarcodeFormat.PDF_417);
         list.add(BarcodeFormat.QR_CODE);
-        list.add(BarcodeFormat.RSS_14);
-        list.add(BarcodeFormat.RSS_EXPANDED);
-        list.add(BarcodeFormat.UPC_A);
-        list.add(BarcodeFormat.UPC_E);
-        list.add(BarcodeFormat.UPC_EAN_EXTENSION);
         return list;
     }
 
     /**
      * 二维码
      * 包括如下几种格式：
-     *  {@link BarcodeFormat#CODABAR}
-     *  {@link BarcodeFormat#CODE_39}
-     *  {@link BarcodeFormat#CODE_93}
-     *  {@link BarcodeFormat#CODE_128}
-     *  {@link BarcodeFormat#EAN_8}
-     *  {@link BarcodeFormat#EAN_13}
-     *  {@link BarcodeFormat#ITF}
-     *  {@link BarcodeFormat#RSS_14}
-     *  {@link BarcodeFormat#RSS_EXPANDED}
-     *  {@link BarcodeFormat#UPC_A}
-     *  {@link BarcodeFormat#UPC_E}
-     *  {@link BarcodeFormat#UPC_EAN_EXTENSION}
      * @return
      */
     private static List<BarcodeFormat> getOneDimensionalFormats(){
         List<BarcodeFormat> list = new ArrayList<>();
-        list.add(BarcodeFormat.CODABAR);
-        list.add(BarcodeFormat.CODE_39);
-        list.add(BarcodeFormat.CODE_93);
-        list.add(BarcodeFormat.CODE_128);
-        list.add(BarcodeFormat.EAN_8);
-        list.add(BarcodeFormat.EAN_13);
-        list.add(BarcodeFormat.ITF);
-        list.add(BarcodeFormat.RSS_14);
-        list.add(BarcodeFormat.RSS_EXPANDED);
-        list.add(BarcodeFormat.UPC_A);
-        list.add(BarcodeFormat.UPC_E);
-        list.add(BarcodeFormat.UPC_EAN_EXTENSION);
         return list;
     }
 
     /**
      * 二维码
      * 包括如下几种格式：
-     *  {@link BarcodeFormat#AZTEC}
-     *  {@link BarcodeFormat#DATA_MATRIX}
-     *  {@link BarcodeFormat#MAXICODE}
-     *  {@link BarcodeFormat#PDF_417}
      *  {@link BarcodeFormat#QR_CODE}
      * @return
      */
     private static List<BarcodeFormat> getTwoDimensionalFormats(){
         List<BarcodeFormat> list = new ArrayList<>();
-        list.add(BarcodeFormat.AZTEC);
-        list.add(BarcodeFormat.DATA_MATRIX);
-        list.add(BarcodeFormat.MAXICODE);
-        list.add(BarcodeFormat.PDF_417);
         list.add(BarcodeFormat.QR_CODE);
         return list;
     }
@@ -139,17 +87,11 @@ public final class DecodeFormatManager {
      * 默认支持的格式
      * 包括如下几种格式：
      *  {@link BarcodeFormat#QR_CODE}
-     *  {@link BarcodeFormat#UPC_A}
-     *  {@link BarcodeFormat#EAN_13}
-     *  {@link BarcodeFormat#CODE_128}
      * @return
      */
     private static List<BarcodeFormat> getDefaultFormats(){
         List<BarcodeFormat> list = new ArrayList<>();
         list.add(BarcodeFormat.QR_CODE);
-        list.add(BarcodeFormat.UPC_A);
-        list.add(BarcodeFormat.EAN_13);
-        list.add(BarcodeFormat.CODE_128);
         return list;
     }
 
