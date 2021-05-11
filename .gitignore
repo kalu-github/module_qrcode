@@ -1,12 +1,7 @@
-*.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
 /.idea
 /.gradle
-/lib_zxing_core/build
+/app/build
 /lib_zxing_ui/build
+/lib_zxing_source_all/build
+/lib_zxing_source_qrcode/build
+/local.properties
