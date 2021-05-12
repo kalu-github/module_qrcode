@@ -144,7 +144,7 @@ public final class FinderView extends AppCompatTextView {
             setHint(String.valueOf(-displacement));
         }
         // 顶部
-        else if (rectTop + margin < top) {
+        else if (rectTop - margin < top) {
             setHint(String.valueOf(displacement));
         }
 
