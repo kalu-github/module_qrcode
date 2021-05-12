@@ -107,10 +107,15 @@ public final class FinderView extends AppCompatTextView {
         float displacement;
         try {
             CharSequence hint = getHint();
-            displacement = Float.parseFloat(hint.toString());
+            float parseFloat = Float.parseFloat(hint.toString());
+            displacement = Math.abs(parseFloat);
 
-            displacement += 5f;
-            setHint(String.valueOf(displacement));
+            if (parseFloat < 0) {
+                displacement -= 5f;
+            } else {
+                displacement += 5f;
+            }
+            setHint(String.valueOf(parseFloat < 0 ? -displacement : displacement));
 
         } catch (Exception e) {
             displacement = 5f;
@@ -124,10 +129,23 @@ public final class FinderView extends AppCompatTextView {
         float rectTop = top + margin + displacement;
         float rectRight = right - margin;
         float rectBottom = rectTop + lineHeight;
+
+        // 下移
+        if (null == getHint() || !getHint().toString().startsWith("-")) {
+            displacement += 5f;
+        }
+        // 上移
+        else {
+            displacement -= 5f;
+        }
+
+        // 底部
         if (rectBottom + margin > bottom) {
-            setHint(String.valueOf(0f));
-            rectTop = top + margin;
-            rectBottom = rectTop + lineHeight;
+            setHint(String.valueOf(-displacement));
+        }
+        // 顶部
+        else if (rectTop + margin < top) {
+            setHint(String.valueOf(displacement));
         }
 
         canvas.drawRect(rectLeft, rectTop, rectRight, rectBottom, paint);
