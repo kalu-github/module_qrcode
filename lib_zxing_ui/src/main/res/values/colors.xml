@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="moudle_zxing_color_66000000">#66000000</color>
+    <color name="moudle_zxing_color_000000">#000000</color>
 </resources>
