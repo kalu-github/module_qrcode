@@ -194,7 +194,7 @@ public final class FinderView extends AppCompatTextView {
             paint.setStyle(Paint.Style.FILL);
             paint.setPathEffect(null);
             paint.setTextAlign(Paint.Align.CENTER);
-            StaticLayout layout = new StaticLayout(mTextTip, paint, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
+            StaticLayout layout = new StaticLayout(mTextTip, paint, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.4F, 0.0F, true);
             canvas.save();
             canvas.translate(width / 2, height / 2 - layout.getHeight() / 2);
             layout.draw(canvas);
