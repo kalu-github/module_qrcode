@@ -114,6 +114,9 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
     protected void onRestart() {
         super.onRestart();
         startCamera();
+        TextView textView = findViewById(R.id.lib_zxing_ui_id_flashlight);
+        textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.moudle_zxing_ic_flashlight_off, 0, 0);
+        textView.setText(R.string.moudle_zxing_string_light_on);
     }
 
     @Override
