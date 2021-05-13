@@ -18,7 +18,7 @@
 
     <application android:allowBackup="false">
         <activity
-            android:name="lib.kalu.zxing.CaptureActivity"
+            android:name="lib.kalu.zxing.QrcodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/QrcodeTheme" />

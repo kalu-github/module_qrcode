@@ -5,10 +5,15 @@ import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -23,14 +28,17 @@ public final class FinderView extends AppCompatTextView {
 
     public FinderView(Context context) {
         super(context);
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
     }
 
     public FinderView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
     }
 
     public FinderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
     }
 
     @Override
@@ -56,6 +64,9 @@ public final class FinderView extends AppCompatTextView {
         // 画笔
         TextPaint paint = getPaint();
         paint.setAntiAlias(true);
+        paint.setStrokeWidth(0);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setPathEffect(null);
 
         // 直角
         int rectH = (int) (2 * 4 + 0.5f);
@@ -96,7 +107,10 @@ public final class FinderView extends AppCompatTextView {
         canvas.drawRect(right - rectH, bottom - rectW, right + 1, bottom + 1, paint);
 
         // 文字
+        paint.setStrokeWidth(0);
         paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setPathEffect(null);
         super.onDraw(canvas);
 
         CharSequence text = getText();
@@ -124,7 +138,6 @@ public final class FinderView extends AppCompatTextView {
 
         float margin = Math.abs(right - left) * 0.1f;
         float lineHeight = margin * 0.05f;
-        paint.setColor(Color.BLACK);
         float rectLeft = left + margin;
         float rectTop = top + margin + displacement;
         float rectRight = right - margin;
@@ -148,9 +161,15 @@ public final class FinderView extends AppCompatTextView {
             setHint(String.valueOf(displacement));
         }
 
-        canvas.drawRect(rectLeft, rectTop, rectRight, rectBottom, paint);
+        paint.setStrokeWidth(0);
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+        canvas.drawLine(rectLeft, rectTop, rectRight, rectBottom, paint);
+//        canvas.drawRect(rectLeft, rectTop, rectRight, rectBottom, paint);
         postInvalidateDelayed(20, (int) left, (int) top, (int) right, (int) bottom);
-        LogUtil.log("onDraw[二维码扫描框] => lineDisplacement = " + getHint());
+        // LogUtil.log("onDraw[二维码扫描框] => lineDisplacement = " + getHint());
     }
 
     /***************/

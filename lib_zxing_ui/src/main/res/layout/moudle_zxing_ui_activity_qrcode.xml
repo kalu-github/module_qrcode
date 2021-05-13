@@ -21,15 +21,9 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
-        android:text="@string/lib_zxing_string_tip"
+        android:text="@string/moudle_zxing_string_tip"
         android:textColor="@android:color/black"
         android:textSize="14sp" />
-
-    <!--    <lib.kalu.zxing.widget.ViewfinderView-->
-    <!--        android:id="@+id/viewfinderView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_centerInParent="true" />-->
 
     <!--相册-->
     <TextView
@@ -39,7 +33,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="@string/lib_zxing_string_album"
+        android:text="@string/moudle_zxing_string_album"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:visibility="visible" />
@@ -52,7 +46,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
         android:scaleType="centerInside"
-        android:src="@drawable/lib_zxing_ui_ic_close"
+        android:src="@drawable/moudle_zxing_ic_close"
         android:visibility="visible" />
 
     <!--闪光灯-->
@@ -63,12 +57,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
-        android:drawableTop="@drawable/lib_zxing_ui_ic_flashlight_off"
+        android:drawableTop="@drawable/moudle_zxing_ic_flashlight_off"
         android:drawablePadding="8dp"
         android:gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:text="@string/lib_zxing_string_light_on"
+        android:text="@string/moudle_zxing_string_light_on"
         android:textColor="@android:color/white"
         android:textSize="12sp"
         android:visibility="visible" />

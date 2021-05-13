@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,7 +16,6 @@ import com.google.zxing.Result;
 
 import lib.kalu.zxing.camerax.CameraScan;
 import lib.kalu.zxing.camerax.DefaultCameraScan;
-import lib.kalu.zxing.camerax.util.LogUtils;
 import lib.kalu.zxing.camerax.util.PermissionUtils;
 import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.util.ZxingUtil;
@@ -34,7 +31,7 @@ import androidx.camera.view.PreviewView;
  * @date: 2021-05-07 10:50
  */
 @Keep
-public final class CaptureActivity extends AppCompatActivity implements CameraScan.OnCameraScanChangeListener {
+public final class QrcodeActivity extends AppCompatActivity implements CameraScan.OnCameraScanChangeListener {
 
     private static final String INTENT_DATA = "intent_data";
     private static final int RESULT_SUCC = 10890001;
@@ -62,7 +59,7 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.lib_zxing_ui_activity_capture);
+        setContentView(R.layout.moudle_zxing_ui_activity_qrcode);
 
         // 关闭
         findViewById(R.id.lib_zxing_ui_id_close).setOnClickListener(new View.OnClickListener() {
@@ -99,8 +96,8 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
                     mCameraScan.enableTorch(!isTorch);
 
                     TextView textView = findViewById(R.id.lib_zxing_ui_id_flashlight);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(0, !isTorch ? R.drawable.lib_zxing_ui_ic_flashlight_on : R.drawable.lib_zxing_ui_ic_flashlight_off, 0, 0);
-                    textView.setText(!isTorch ? R.string.lib_zxing_string_light_off : R.string.lib_zxing_string_light_on);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(0, !isTorch ? R.drawable.moudle_zxing_ic_flashlight_on : R.drawable.moudle_zxing_ic_flashlight_off, 0, 0);
+                    textView.setText(!isTorch ? R.string.moudle_zxing_string_light_off : R.string.moudle_zxing_string_light_on);
                 } catch (Exception e) {
                 }
             }
@@ -183,13 +180,13 @@ public final class CaptureActivity extends AppCompatActivity implements CameraSc
 
         Uri uri = data.getData();
         if (null == uri) {
-            Toast.makeText(getApplicationContext(), R.string.lib_zxing_string_null, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.moudle_zxing_string_null, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String s = ZxingUtil.decodeQrcodeFromUrl(getApplicationContext(), uri);
         if (null == s || s.length() == 0) {
-            Toast.makeText(getApplicationContext(), R.string.lib_zxing_string_null, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.moudle_zxing_string_null, Toast.LENGTH_SHORT).show();
             return;
         }
 

@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import lib.kalu.zxing.CaptureActivity;
+import lib.kalu.zxing.QrcodeActivity;
 import lib.kalu.zxing.util.ZxingUtil;
 
 public class MainActivity extends Activity {
@@ -137,7 +137,7 @@ public class MainActivity extends Activity {
 
                 requestCameraPerm();
 
-                Intent intent = new Intent(getApplicationContext(), CaptureActivity.class);
+                Intent intent = new Intent(getApplicationContext(), QrcodeActivity.class);
                 startActivity(intent);
             }
         });
