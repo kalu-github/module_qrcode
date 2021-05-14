@@ -27,8 +27,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
-import lib.kalu.zxing.qrcode.decode.DecodeTool;
-import lib.kalu.zxing.qrcode.encode.EncodeTool;
+import lib.kalu.zxing.qrcode.DecodeTool;
+import lib.kalu.zxing.qrcode.EncodeTool;
 
 /**
  * description: 创建二维码

@@ -6,13 +6,8 @@ import android.view.View;
 import com.google.zxing.Result;
 import com.google.zxing.qrcode.QRCodeReader;
 
-import lib.kalu.zxing.camerax.analyze.Analyzer;
-import lib.kalu.zxing.camerax.analyze.AreaRectAnalyzer;
-import lib.kalu.zxing.camerax.analyze.BarcodeFormatAnalyzer;
-import lib.kalu.zxing.camerax.analyze.ImageAnalyzer;
-import lib.kalu.zxing.camerax.analyze.MultiFormatAnalyzer;
+import lib.kalu.zxing.camerax.analyze.AnalyzerImpl;
 
-import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.camera.core.CameraSelector;
 
@@ -100,16 +95,12 @@ public abstract class CameraScan implements ICamera, ICameraControl {
     public abstract CameraScan setAnalyzeImage(boolean analyze);
 
     /**
-     * 设置分析器，内置了一些{@link Analyzer}的实现类如下
+     * 设置分析器，内置了一些{@link AnalyzerImpl}的实现类如下
      *
      * @param analyzer
-     * @see {@link MultiFormatAnalyzer}
-     * @see {@link AreaRectAnalyzer}
-     * @see {@link ImageAnalyzer}
-     * @see {@link BarcodeFormatAnalyzer}
      * @see {@link QRCodeReader}
      */
-    public abstract CameraScan setAnalyzer(Analyzer analyzer);
+    public abstract CameraScan setAnalyzer(AnalyzerImpl analyzer);
 
     /**
      * 设置是否震动

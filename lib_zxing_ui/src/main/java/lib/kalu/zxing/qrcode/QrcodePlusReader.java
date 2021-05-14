@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package lib.kalu.zxing.qrcode.reader;
+package lib.kalu.zxing.qrcode;
 
 import android.graphics.Rect;
 
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Sean Owen
  */
-public class QrcodeReader implements Reader {
+public class QrcodePlusReader implements Reader {
 
     private static final ResultPoint[] NO_POINTS = new ResultPoint[0];
 
@@ -56,14 +56,14 @@ public class QrcodeReader implements Reader {
         return decoder;
     }
 
-    private QrcodeReader() {
+    private QrcodePlusReader() {
     }
 
     private static class Holder {
-        private static final QrcodeReader qrCodeReader = new QrcodeReader();
+        private static final QrcodePlusReader qrCodeReader = new QrcodePlusReader();
     }
 
-    public static final QrcodeReader getInstance() {
+    public static final QrcodePlusReader getInstance() {
         return Holder.qrCodeReader;
     }
 

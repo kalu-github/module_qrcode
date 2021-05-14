@@ -11,7 +11,7 @@ import android.content.res.Configuration;
  * @description: 分析器
  * @date:  2021-05-07 14:56
  */
-public interface Analyzer {
+public interface AnalyzerImpl {
 
     /**
      * Analyzes an image to produce a result.

@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 
 import com.google.zxing.Result;
-import lib.kalu.zxing.camerax.util.LogUtils;
 
 import java.nio.ByteBuffer;
 
@@ -13,11 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
 
+import lib.kalu.zxing.camerax.util.LogUtil;
+
 /**
  * @description: 图像分析器
  * @date:  2021-05-07 14:57
  */
-public abstract class ImageAnalyzer implements Analyzer {
+public abstract class ImageAnalyzer implements AnalyzerImpl {
 
     /**
      * 分析图像数据
@@ -48,7 +49,7 @@ public abstract class ImageAnalyzer implements Analyzer {
             }
             return analyze(data,width,height);
         }
-        LogUtils.w("imageFormat: " + image.getFormat());
+        LogUtil.w("imageFormat: " + image.getFormat());
         return null;
     }
 

@@ -21,20 +21,24 @@ import android.util.Log;
 
 /**
  * @description:
- * @date:  2021-05-07 14:56
+ * @date: 2021-05-07 14:56
  */
-public class LogUtils {
+public class LogUtil {
 
-    public static final String TAG = "ZXingLite";
+    public static final String TAG = "moudle_zxing";
 
     public static final String COLON = ":";
 
     public static final String VERTICAL = "|";
 
-    /** 是否显示Log日志 */
+    /**
+     * 是否显示Log日志
+     */
     private static boolean isShowLog = true;
 
-    /** Log日志优先权 */
+    /**
+     * Log日志优先权
+     */
     private static int priority = 1;
 
     /**
@@ -74,13 +78,13 @@ public class LogUtils {
 
     public static final String TAG_FORMAT = "%s.%s(L:%d)";
 
-    private LogUtils(){
+    private LogUtil() {
         throw new AssertionError();
     }
 
     public static void setShowLog(boolean isShowLog) {
 
-        LogUtils.isShowLog = isShowLog;
+        LogUtil.isShowLog = isShowLog;
     }
 
     public static boolean isShowLog() {
@@ -95,29 +99,30 @@ public class LogUtils {
 
     public static void setPriority(int priority) {
 
-        LogUtils.priority = priority;
+        LogUtil.priority = priority;
     }
 
     /**
      * 根据堆栈生成TAG
+     *
      * @return TAG|className.methodName(L:lineNumber)
      */
     private static String generateTag(StackTraceElement caller) {
         String tag = TAG_FORMAT;
         String callerClazzName = caller.getClassName();
         callerClazzName = callerClazzName.substring(callerClazzName.lastIndexOf(".") + 1);
-        tag = String.format(tag,new Object[] { callerClazzName, caller.getMethodName(),Integer.valueOf(caller.getLineNumber()) });
+        tag = String.format(tag, new Object[]{callerClazzName, caller.getMethodName(), Integer.valueOf(caller.getLineNumber())});
         return new StringBuilder().append(TAG).append(VERTICAL).append(tag).toString();
     }
 
     /**
      * 获取堆栈
-     * @param n
-     * 		n=0		VMStack
-     * 		n=1		Thread
-     * 		n=3		CurrentStack
-     * 		n=4		CallerStack
-     * 		...
+     *
+     * @param n n=0		VMStack
+     *          n=1		Thread
+     *          n=3		CurrentStack
+     *          n=4		CallerStack
+     *          ...
      * @return
      */
     public static StackTraceElement getStackTraceElement(int n) {
@@ -126,18 +131,18 @@ public class LogUtils {
 
     /**
      * 获取调用方的堆栈TAG
+     *
      * @return
      */
-    private static String getCallerStackLogTag(){
+    private static String getCallerStackLogTag() {
         return generateTag(getStackTraceElement(5));
     }
 
     /**
-     *
      * @param t
      * @return
      */
-    private static String getStackTraceString(Throwable t){
+    private static String getStackTraceString(Throwable t) {
         return Log.getStackTraceString(t);
     }
 
@@ -145,6 +150,7 @@ public class LogUtils {
 
     /**
      * Log.v
+     *
      * @param msg
      */
     public static void v(String msg) {
@@ -158,7 +164,7 @@ public class LogUtils {
             Log.v(getCallerStackLogTag(), getStackTraceString(t));
     }
 
-    public static void v(String msg,Throwable t) {
+    public static void v(String msg, Throwable t) {
         if (isShowLog && priority <= VERBOSE)
             Log.v(getCallerStackLogTag(), String.valueOf(msg), t);
     }
@@ -167,6 +173,7 @@ public class LogUtils {
 
     /**
      * Log.d
+     *
      * @param msg
      */
     public static void d(String msg) {
@@ -179,7 +186,7 @@ public class LogUtils {
             Log.d(getCallerStackLogTag(), getStackTraceString(t));
     }
 
-    public static void d(String msg,Throwable t) {
+    public static void d(String msg, Throwable t) {
         if (isShowLog && priority <= DEBUG)
             Log.d(getCallerStackLogTag(), String.valueOf(msg), t);
     }
@@ -188,6 +195,7 @@ public class LogUtils {
 
     /**
      * Log.i
+     *
      * @param msg
      */
     public static void i(String msg) {
@@ -200,7 +208,7 @@ public class LogUtils {
             Log.i(getCallerStackLogTag(), getStackTraceString(t));
     }
 
-    public static void i(String msg,Throwable t) {
+    public static void i(String msg, Throwable t) {
         if (isShowLog && priority <= INFO)
             Log.i(getCallerStackLogTag(), String.valueOf(msg), t);
     }
@@ -209,6 +217,7 @@ public class LogUtils {
 
     /**
      * Log.w
+     *
      * @param msg
      */
     public static void w(String msg) {
@@ -221,7 +230,7 @@ public class LogUtils {
             Log.w(getCallerStackLogTag(), getStackTraceString(t));
     }
 
-    public static void w(String msg,Throwable t) {
+    public static void w(String msg, Throwable t) {
         if (isShowLog && priority <= WARN)
             Log.w(getCallerStackLogTag(), String.valueOf(msg), t);
     }
@@ -230,6 +239,7 @@ public class LogUtils {
 
     /**
      * Log.e
+     *
      * @param msg
      */
     public static void e(String msg) {
@@ -242,7 +252,7 @@ public class LogUtils {
             Log.e(getCallerStackLogTag(), getStackTraceString(t));
     }
 
-    public static void e(String msg,Throwable t) {
+    public static void e(String msg, Throwable t) {
         if (isShowLog && priority <= ERROR)
             Log.e(getCallerStackLogTag(), String.valueOf(msg), t);
     }
@@ -251,6 +261,7 @@ public class LogUtils {
 
     /**
      * Log.wtf
+     *
      * @param msg
      */
     public static void wtf(String msg) {
@@ -263,7 +274,7 @@ public class LogUtils {
             Log.wtf(getCallerStackLogTag(), getStackTraceString(t));
     }
 
-    public static void wtf(String msg,Throwable t) {
+    public static void wtf(String msg, Throwable t) {
         if (isShowLog && priority <= ASSERT)
             Log.wtf(getCallerStackLogTag(), String.valueOf(msg), t);
     }

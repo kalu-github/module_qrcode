@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class QRCodeWriter implements Writer {
+public class QRCodeWriter implements Writer {
 
     private static final int QUIET_ZONE_SIZE = 4;
 

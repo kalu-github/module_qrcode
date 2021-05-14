@@ -1,4 +1,4 @@
-package lib.kalu.zxing.qrcode.decode;
+package lib.kalu.zxing.qrcode;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import lib.kalu.zxing.qrcode.reader.QrcodeReader;
 import lib.kalu.zxing.util.LogUtil;
 
 /**
@@ -92,7 +91,7 @@ public class DecodeTool {
 
             RGBLuminanceSource source = new RGBLuminanceSource(bitmapWidth, bitmapHeight, pixels);
             BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
-            Result result = QrcodeReader.getInstance().decode(binaryBitmap);
+            Result result = QrcodePlusReader.getInstance().decode(binaryBitmap);
 
             if (null == result)
                 return null;

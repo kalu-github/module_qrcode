@@ -1,4 +1,4 @@
-package lib.kalu.zxing.qrcode.encode;
+package lib.kalu.zxing.qrcode;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,12 +11,9 @@ import androidx.annotation.Nullable;
 
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import java.util.Map;
-
-import lib.kalu.zxing.qrcode.write.QrcodeWriter;
 
 /**
  * description: 创建二维码
@@ -90,7 +87,7 @@ public final class EncodeTool {
 
         try {
 
-            BitMatrix bitMatrix = QrcodeWriter.getInstance().encode(text, multiple, marginLeft, marginTop, marginRight, marginBottom, level, hints);
+            BitMatrix bitMatrix = new QrcodePlusWriter().encode(text, multiple, marginLeft, marginTop, marginRight, marginBottom, level, hints);
 
             int matrixWidth = bitMatrix.getWidth();
             int matrixHeight = bitMatrix.getHeight();
