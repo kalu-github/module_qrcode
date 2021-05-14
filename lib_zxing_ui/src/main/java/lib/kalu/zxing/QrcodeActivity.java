@@ -18,7 +18,7 @@ import lib.kalu.zxing.camerax.CameraScan;
 import lib.kalu.zxing.camerax.DefaultCameraScan;
 import lib.kalu.zxing.camerax.util.PermissionUtils;
 import lib.kalu.zxing.util.LogUtil;
-import lib.kalu.zxing.util.ZxingUtil;
+import lib.kalu.zxing.qrcode.QrcodeTool;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -187,7 +187,7 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
             return;
         }
 
-        String s = ZxingUtil.decodeQrcodeFromUrl(getApplicationContext(), uri);
+        String s = QrcodeTool.decodeQrcodeFromUrl(getApplicationContext(), uri);
         if (null == s || s.length() == 0) {
             Toast.makeText(getApplicationContext(), R.string.moudle_zxing_string_null, Toast.LENGTH_SHORT).show();
             return;

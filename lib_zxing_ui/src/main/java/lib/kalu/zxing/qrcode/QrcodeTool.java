@@ -1,4 +1,4 @@
-package lib.kalu.zxing.util;
+package lib.kalu.zxing.qrcode;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -35,7 +35,7 @@ import lib.kalu.zxing.qrcode.EncodeTool;
  * create by kalu on 2019/1/30 13:08
  */
 @Keep
-public final class ZxingUtil {
+public final class QrcodeTool {
 
     /**
      * @param filePath 二维码本地文件路径

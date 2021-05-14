@@ -22,7 +22,7 @@ import lib.kalu.zxing.util.LogUtil;
  * description: zxingutil
  * create by kalu on 2019/1/25 17:10
  */
-public class DecodeTool {
+class DecodeTool {
 
     public static String decodeQrcodeFromFile(@NonNull String filePath) {
 

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import lib.kalu.zxing.QrcodeActivity;
-import lib.kalu.zxing.util.ZxingUtil;
+import lib.kalu.zxing.qrcode.QrcodeTool;
 
 public class MainActivity extends Activity {
 
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcode(getApplicationContext(), url);
+                String qrcode = QrcodeTool.createQrcode(getApplicationContext(), url);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
 
-                        String qrcode = ZxingUtil.createQrcodeFromUrl(getApplicationContext(), url, 3, 4, 4, 7, 7, logo);
+                        String qrcode = QrcodeTool.createQrcodeFromUrl(getApplicationContext(), url, 3, 4, 4, 7, 7, logo);
                         if (TextUtils.isEmpty(qrcode)) {
                             Looper.prepare();
                             Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromRaw(getApplicationContext(), url, 3, 8, 8, 2, 2, R.raw.logo);
+                String qrcode = QrcodeTool.createQrcodeFromRaw(getApplicationContext(), url, 3, 8, 8, 2, 2, R.raw.logo);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = ZxingUtil.createQrcodeFromAssets(getApplicationContext(), url, 20, 2, 2, 8, 8, "logo.jpg");
+                String qrcode = QrcodeTool.createQrcodeFromAssets(getApplicationContext(), url, 20, 2, 2, 8, 8, "logo.jpg");
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -234,7 +234,7 @@ public class MainActivity extends Activity {
             public void run() {
 
                 Uri uri = data.getData();
-                String qrcodeFromUrl = ZxingUtil.decodeQrcodeFromUrl(getApplicationContext(), uri);
+                String qrcodeFromUrl = QrcodeTool.decodeQrcodeFromUrl(getApplicationContext(), uri);
 
                 runOnUiThread(new Runnable() {
                     @Override

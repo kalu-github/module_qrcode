@@ -19,7 +19,7 @@ import java.util.Map;
  * description: 创建二维码
  * create by kalu on 2019/1/30 13:08
  */
-public final class EncodeTool {
+class EncodeTool {
 
     public static Bitmap createBitmapQrcode(
             @NonNull Context context,
