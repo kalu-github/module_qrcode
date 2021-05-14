@@ -9,7 +9,7 @@ import com.google.zxing.Result;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 import lib.kalu.zxing.camerax.DecodeConfig;
-import lib.kalu.zxing.camerax.util.LogUtil;
+import lib.kalu.zxing.util.LogUtil;
 
 import java.util.Map;
 
@@ -63,7 +63,7 @@ abstract class AnalyzerFormat extends AnalyzerCore {
                 }
                 if(rawResult != null){
                     long end = System.currentTimeMillis();
-                    LogUtil.d("Found barcode in " + (end - start) + " ms");
+                    LogUtil.log("Found barcode in " + (end - start) + " ms");
                 }
             } catch (Exception e) {
 

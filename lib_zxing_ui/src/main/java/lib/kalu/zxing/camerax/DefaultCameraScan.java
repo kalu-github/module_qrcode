@@ -16,7 +16,7 @@ import com.google.zxing.common.detector.MathUtils;
 
 import lib.kalu.zxing.camerax.analyze.AnalyzerImpl;
 import lib.kalu.zxing.camerax.analyze.AnalyzerQrcode;
-import lib.kalu.zxing.camerax.util.LogUtil;
+import lib.kalu.zxing.util.LogUtil;
 
 import java.util.concurrent.Executors;
 
@@ -189,7 +189,7 @@ public class DefaultCameraScan extends CameraScan {
 
     private void startFocusAndMetering(float x, float y) {
         if (mCamera != null) {
-            LogUtil.d("startFocusAndMetering:" + x + "," + y);
+            LogUtil.log("startFocusAndMetering:" + x + "," + y);
             MeteringPoint point = mPreviewView.getMeteringPointFactory().createPoint(x, y);
             mCamera.getCameraControl().startFocusAndMetering(new FocusMeteringAction.Builder(point).build());
         }
@@ -247,7 +247,7 @@ public class DefaultCameraScan extends CameraScan {
                 //绑定到生命周期
                 mCamera = mCameraProviderFuture.get().bindToLifecycle(mLifecycleOwner, cameraSelector, preview, imageAnalysis);
             } catch (Exception e) {
-                LogUtil.e(e);
+                LogUtil.log(e.getMessage());
             }
 
         }, ContextCompat.getMainExecutor(mContext));
@@ -319,7 +319,7 @@ public class DefaultCameraScan extends CameraScan {
             try {
                 mCameraProviderFuture.get().unbindAll();
             } catch (Exception e) {
-                LogUtil.e(e);
+                LogUtil.log(e.getMessage());
             }
         }
     }

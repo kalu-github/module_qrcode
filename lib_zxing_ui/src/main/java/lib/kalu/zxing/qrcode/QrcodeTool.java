@@ -20,15 +20,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
+import com.google.zxing.common.GlobalHistogramBinarizer;
+import com.google.zxing.common.HybridBinarizer;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
-import lib.kalu.zxing.qrcode.DecodeTool;
-import lib.kalu.zxing.qrcode.EncodeTool;
+
+import lib.kalu.zxing.camerax.DecodeFormatManager;
+import lib.kalu.zxing.util.LogUtil;
 
 /**
  * description: 创建二维码
@@ -36,6 +47,9 @@ import lib.kalu.zxing.qrcode.EncodeTool;
  */
 @Keep
 public final class QrcodeTool {
+
+    private static final int DEFAULT_REQ_WIDTH = 480;
+    private static final int DEFAULT_REQ_HEIGHT = 640;
 
     /**
      * @param filePath 二维码本地文件路径
@@ -778,5 +792,178 @@ public final class QrcodeTool {
         //转化为输入流
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
         return inputStream;
+    }
+
+    /********************************/
+
+    /**
+     * 解析二维码图片
+     * @param bitmapPath 需要解析的图片路径
+     * @return
+     */
+    public static String parseQRCode(String bitmapPath){
+        Result result = parseQRCodeResult(bitmapPath);
+        if(result != null){
+            return result.getText();
+        }
+        return null;
+    }
+
+    /**
+     * 解析二维码图片
+     * @param bitmapPath 需要解析的图片路径
+     * @return
+     */
+    public static Result parseQRCodeResult(String bitmapPath){
+        return parseQRCodeResult(bitmapPath,DEFAULT_REQ_WIDTH,DEFAULT_REQ_HEIGHT);
+    }
+
+    /**
+     * 解析二维码图片
+     * @param bitmapPath 需要解析的图片路径
+     * @param reqWidth 请求目标宽度，如果实际图片宽度大于此值，会自动进行压缩处理，当 reqWidth 和 reqHeight都小于或等于0时，则不进行压缩处理
+     * @param reqHeight 请求目标高度，如果实际图片高度大于此值，会自动进行压缩处理，当 reqWidth 和 reqHeight都小于或等于0时，则不进行压缩处理
+     * @return
+     */
+    public static Result parseQRCodeResult(String bitmapPath,int reqWidth,int reqHeight){
+        return parseCodeResult(bitmapPath,reqWidth,reqHeight, DecodeFormatManager.QR_CODE_HINTS);
+    }
+
+    /**
+     * 解析一维码/二维码图片
+     * @param bitmapPath 需要解析的图片路径
+     * @return
+     */
+    public static String parseCode(String bitmapPath){
+        return parseCode(bitmapPath, DecodeFormatManager.ALL_HINTS);
+    }
+
+    /**
+     * 解析一维码/二维码图片
+     * @param bitmapPath 需要解析的图片路径
+     * @param hints 解析编码类型
+     * @return
+     */
+    public static String parseCode(String bitmapPath, Map<DecodeHintType,Object> hints){
+        Result result = parseCodeResult(bitmapPath,hints);
+        if(result != null){
+            return result.getText();
+        }
+        return null;
+    }
+
+    /**
+     * 解析一维码/二维码图片
+     * @param bitmapPath
+     * @param hints 解析编码类型
+     * @return
+     */
+    public static Result parseCodeResult(String bitmapPath, Map<DecodeHintType,Object> hints){
+        return parseCodeResult(bitmapPath,DEFAULT_REQ_WIDTH,DEFAULT_REQ_HEIGHT,hints);
+    }
+
+    /**
+     * 解析一维码/二维码图片
+     * @param bitmapPath 需要解析的图片路径
+     * @param reqWidth 请求目标宽度，如果实际图片宽度大于此值，会自动进行压缩处理，当 reqWidth 和 reqHeight都小于或等于0时，则不进行压缩处理
+     * @param reqHeight 请求目标高度，如果实际图片高度大于此值，会自动进行压缩处理，当 reqWidth 和 reqHeight都小于或等于0时，则不进行压缩处理
+     * @param hints 解析编码类型
+     * @return
+     */
+    public static Result parseCodeResult(String bitmapPath,int reqWidth,int reqHeight, Map<DecodeHintType,Object> hints){
+        Result result = null;
+        MultiFormatReader reader = new MultiFormatReader();
+        try{
+            reader.setHints(hints);
+            RGBLuminanceSource source = getRGBLuminanceSource(compressBitmap(bitmapPath,reqWidth,reqHeight));
+            if (source != null) {
+                result = decodeInternal(reader,source);
+                if(result == null){
+                    result = decodeInternal(reader,source.invert());
+                }
+                if(result == null && source.isRotateSupported()){
+                    result = decodeInternal(reader,source.rotateCounterClockwise());
+                }
+            }
+
+        }catch (Exception e){
+            LogUtil.log(e.getMessage());
+        }finally {
+            reader.reset();
+        }
+
+        return result;
+    }
+
+    private static Result decodeInternal(MultiFormatReader reader, LuminanceSource source){
+        Result result = null;
+        try{
+            try{
+                //采用HybridBinarizer解析
+                result = reader.decodeWithState(new BinaryBitmap(new HybridBinarizer(source)));
+            }catch (Exception e){
+
+            }
+            if(result == null){
+                //如果没有解析成功，再采用GlobalHistogramBinarizer解析一次
+                result = reader.decodeWithState(new BinaryBitmap(new GlobalHistogramBinarizer(source)));
+            }
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+
+    /**
+     * 压缩图片
+     * @param path
+     * @return
+     */
+    private static Bitmap compressBitmap(String path,int reqWidth,int reqHeight){
+        if(reqWidth > 0 && reqHeight > 0){//都大于进行判断是否压缩
+
+            BitmapFactory.Options newOpts = new BitmapFactory.Options();
+            // 开始读入图片，此时把options.inJustDecodeBounds 设回true了
+            newOpts.inJustDecodeBounds = true;//获取原始图片大小
+            BitmapFactory.decodeFile(path, newOpts);// 此时返回bm为空
+            float width = newOpts.outWidth;
+            float height = newOpts.outHeight;
+            // 缩放比，由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+            int wSize = 1;// wSize=1表示不缩放
+            if (width > reqWidth) {// 如果宽度大的话根据宽度固定大小缩放
+                wSize = (int) (width / reqWidth);
+            }
+            int hSize = 1;// wSize=1表示不缩放
+            if (height > reqHeight) {// 如果高度高的话根据宽度固定大小缩放
+                hSize = (int) (height / reqHeight);
+            }
+            int size = Math.max(wSize,hSize);
+            if (size <= 0)
+                size = 1;
+            newOpts.inSampleSize = size;// 设置缩放比例
+            // 重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
+            newOpts.inJustDecodeBounds = false;
+
+            return BitmapFactory.decodeFile(path, newOpts);
+
+        }
+
+        return BitmapFactory.decodeFile(path);
+    }
+
+
+    /**
+     * 获取RGBLuminanceSource
+     * @param bitmap
+     * @return
+     */
+    private static RGBLuminanceSource getRGBLuminanceSource(@NonNull Bitmap bitmap){
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        int[] pixels = new int[width * height];
+        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        return new RGBLuminanceSource(width, height, pixels);
+
     }
 }

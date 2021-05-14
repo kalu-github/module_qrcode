@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 import androidx.annotation.NonNull;
 import androidx.camera.core.ImageProxy;
 
-import lib.kalu.zxing.camerax.util.LogUtil;
+import lib.kalu.zxing.util.LogUtil;
 
 /**
  * @description: 图像分析器
@@ -20,7 +20,7 @@ abstract class AnalyzerYUV420888 implements AnalyzerImpl {
 
     @Override
     public Result analyze(@NonNull ImageProxy image, int orientation) {
-        LogUtil.w("imageFormat: " + image.getFormat());
+        LogUtil.log("imageFormat: " + image.getFormat());
 
         if (image.getFormat() != ImageFormat.YUV_420_888)
             return null;

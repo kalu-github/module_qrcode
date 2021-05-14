@@ -3,6 +3,7 @@ package lib.kalu.zxing;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -16,7 +17,6 @@ import com.google.zxing.Result;
 
 import lib.kalu.zxing.camerax.CameraScan;
 import lib.kalu.zxing.camerax.DefaultCameraScan;
-import lib.kalu.zxing.camerax.util.PermissionUtils;
 import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.qrcode.QrcodeTool;
 
@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
 
 /**
  * @description: 二维码扫描UI
@@ -139,11 +140,10 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
      */
     public void startCamera() {
         if (mCameraScan != null) {
-            if (PermissionUtils.checkPermission(this, Manifest.permission.CAMERA)) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 mCameraScan.startCamera();
             } else {
-                LogUtil.log("checkPermissionResult != PERMISSION_GRANTED");
-                PermissionUtils.requestPermission(this, Manifest.permission.CAMERA, 0X86);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0X86);
             }
         }
     }
@@ -207,11 +207,18 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
      * @param grantResults
      */
     public void requestCameraPermissionResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (PermissionUtils.requestPermissionsResult(Manifest.permission.CAMERA, permissions, grantResults)) {
-            startCamera();
-        } else {
-            finish();
+
+        int length = permissions.length;
+        for(int i = 0; i < length; i++){
+            if(Manifest.permission.CAMERA.equals(permissions[i])){
+                if(grantResults[i] == PackageManager.PERMISSION_GRANTED){
+                    startCamera();
+                    return;
+                }
+            }
         }
+
+        finish();
     }
 
     @Override

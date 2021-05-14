@@ -7,7 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Vibrator;
 
 import lib.kalu.zxing.R;
-import lib.kalu.zxing.camerax.util.LogUtil;
+import lib.kalu.zxing.util.LogUtil;
 
 import java.io.Closeable;
 
@@ -68,7 +68,7 @@ public final class BeepManager implements MediaPlayer.OnErrorListener, Closeable
             mediaPlayer.prepare();
             return mediaPlayer;
         } catch (Exception e) {
-            LogUtil.w(e);
+            LogUtil.log(e.getMessage(), e);
             mediaPlayer.release();
             return null;
         }
@@ -89,7 +89,7 @@ public final class BeepManager implements MediaPlayer.OnErrorListener, Closeable
                 mediaPlayer = null;
             }
         }catch (Exception e){
-            LogUtil.e(e);
+            LogUtil.log(e.getMessage(), e);
         }
     }
 }
