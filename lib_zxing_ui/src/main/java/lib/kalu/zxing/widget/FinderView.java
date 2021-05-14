@@ -31,11 +31,12 @@ import lib.kalu.zxing.util.LogUtil;
  * description: 二维码扫描框
  * created by kalu on 2021-02-26
  */
-public final class FinderView extends AppCompatTextView {
+public final class FinderView extends View {
 
     private final int TYPE_QRCODE = 0;
     private final int TYPE_BARCODE = 1;
     private final int COLOR_66000000 = Color.parseColor("#66000000");
+    private final TextPaint CANVAS_PAINT = new TextPaint();
 
     @IntRange(from = 0, to = 1)
     private int mType = TYPE_QRCODE;
@@ -137,11 +138,10 @@ public final class FinderView extends AppCompatTextView {
         }
 
         // 画笔
-        TextPaint paint = getPaint();
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(0);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setPathEffect(null);
+        CANVAS_PAINT.setAntiAlias(true);
+        CANVAS_PAINT.setStrokeWidth(0);
+        CANVAS_PAINT.setStyle(Paint.Style.FILL);
+        CANVAS_PAINT.setPathEffect(null);
 
         // 直角
         int rectH = (int) mAngleWidth;
@@ -150,51 +150,51 @@ public final class FinderView extends AppCompatTextView {
 //        int rectW = (int) (14 * 4 + 0.5f);
 
         // 阴影1
-        paint.setColor(mShadowColor);
-        canvas.drawRect(0, 0, width, top, paint);
+        CANVAS_PAINT.setColor(mShadowColor);
+        canvas.drawRect(0, 0, width, top, CANVAS_PAINT);
         // canvas.drawRect(0, 0, width, top + rectH, paint);
 
         // 阴影2
-        paint.setColor(mShadowColor);
-        canvas.drawRect(0, bottom, width, height, paint);
+        CANVAS_PAINT.setColor(mShadowColor);
+        canvas.drawRect(0, bottom, width, height, CANVAS_PAINT);
         // canvas.drawRect(0, bottom, width, height, paint);
 
         // 阴影3
-        paint.setColor(mShadowColor);
-        canvas.drawRect(0, top, left, bottom, paint);
+        CANVAS_PAINT.setColor(mShadowColor);
+        canvas.drawRect(0, top, left, bottom, CANVAS_PAINT);
         // canvas.drawRect(0, top + rectH, left + rectH, bottom - rectH, paint);
 
         // 阴影4
-        paint.setColor(mShadowColor);
-        canvas.drawRect(right, top, width, bottom, paint);
+        CANVAS_PAINT.setColor(mShadowColor);
+        canvas.drawRect(right, top, width, bottom, CANVAS_PAINT);
         // canvas.drawRect(right - rectH, top + rectH, width, bottom - rectH, paint);
 
         //左上角
-        paint.setColor(mAngleColor);
-        canvas.drawRect(left, top, left + rectW, top + rectH, paint);
-        canvas.drawRect(left, top, left + rectH, top + rectW, paint);
+        CANVAS_PAINT.setColor(mAngleColor);
+        canvas.drawRect(left, top, left + rectW, top + rectH, CANVAS_PAINT);
+        canvas.drawRect(left, top, left + rectH, top + rectW, CANVAS_PAINT);
         //右上角
-        paint.setColor(mAngleColor);
-        canvas.drawRect(right - rectW, top, right + 1, top + rectH, paint);
-        canvas.drawRect(right - rectH, top, right + 1, top + rectW, paint);
+        CANVAS_PAINT.setColor(mAngleColor);
+        canvas.drawRect(right - rectW, top, right + 1, top + rectH, CANVAS_PAINT);
+        canvas.drawRect(right - rectH, top, right + 1, top + rectW, CANVAS_PAINT);
         //左下角
-        paint.setColor(mAngleColor);
-        canvas.drawRect(left, bottom - rectH, left + rectW, bottom + 1, paint);
-        canvas.drawRect(left, bottom - rectW, left + rectH, bottom + 1, paint);
+        CANVAS_PAINT.setColor(mAngleColor);
+        canvas.drawRect(left, bottom - rectH, left + rectW, bottom + 1, CANVAS_PAINT);
+        canvas.drawRect(left, bottom - rectW, left + rectH, bottom + 1, CANVAS_PAINT);
         //右下角
-        paint.setColor(mAngleColor);
-        canvas.drawRect(right - rectW, bottom - rectH, right + 1, bottom + 1, paint);
-        canvas.drawRect(right - rectH, bottom - rectW, right + 1, bottom + 1, paint);
+        CANVAS_PAINT.setColor(mAngleColor);
+        canvas.drawRect(right - rectW, bottom - rectH, right + 1, bottom + 1, CANVAS_PAINT);
+        canvas.drawRect(right - rectH, bottom - rectW, right + 1, bottom + 1, CANVAS_PAINT);
 
         // 文字
         if (null != mTextTip && mTextTip.length() > 0) {
-            paint.setStrokeWidth(0);
-            paint.setColor(mTextColor);
-            paint.setTextSize(mTextSize);
-            paint.setStyle(Paint.Style.FILL);
-            paint.setPathEffect(null);
-            paint.setTextAlign(Paint.Align.CENTER);
-            StaticLayout layout = new StaticLayout(mTextTip, paint, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.4F, 0.0F, true);
+            CANVAS_PAINT.setStrokeWidth(0);
+            CANVAS_PAINT.setColor(mTextColor);
+            CANVAS_PAINT.setTextSize(mTextSize);
+            CANVAS_PAINT.setStyle(Paint.Style.FILL);
+            CANVAS_PAINT.setPathEffect(null);
+            CANVAS_PAINT.setTextAlign(Paint.Align.CENTER);
+            StaticLayout layout = new StaticLayout(mTextTip, CANVAS_PAINT, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.4F, 0.0F, true);
             canvas.save();
             canvas.translate(width / 2, height / 2 - layout.getHeight() / 2);
             layout.draw(canvas);
@@ -209,7 +209,7 @@ public final class FinderView extends AppCompatTextView {
         // 扫描动画, 局部刷新
         float displacement;
         try {
-            CharSequence hint = getHint();
+            CharSequence hint = (null == getTag(R.id.moudle_zxing_id_finderview_tag) ? null : getTag(R.id.moudle_zxing_id_finderview_tag).toString());
             float parseFloat = Float.parseFloat(hint.toString());
             displacement = Math.abs(parseFloat);
 
@@ -218,11 +218,11 @@ public final class FinderView extends AppCompatTextView {
             } else {
                 displacement += (mType == TYPE_BARCODE ? 2f : 5f);
             }
-            setHint(String.valueOf(parseFloat < 0 ? -displacement : displacement));
+            setTag(R.id.moudle_zxing_id_finderview_tag, String.valueOf(parseFloat < 0 ? -displacement : displacement));
 
         } catch (Exception e) {
             displacement = (mType == TYPE_BARCODE ? 2f : 5f);
-            setHint(String.valueOf(displacement));
+            setTag(R.id.moudle_zxing_id_finderview_tag, String.valueOf(displacement));
         }
 
         float margin = Math.abs(right - left) * 0.1f;
@@ -233,7 +233,7 @@ public final class FinderView extends AppCompatTextView {
         float rectBottom = rectTop + lineHeight;
 
         // 下移
-        if (null == getHint() || !getHint().toString().startsWith("-")) {
+        if (null == getTag(R.id.moudle_zxing_id_finderview_tag) || !getTag(R.id.moudle_zxing_id_finderview_tag).toString().startsWith("-")) {
             displacement += (mType == TYPE_BARCODE ? 2f : 5f);
         }
         // 上移
@@ -243,48 +243,25 @@ public final class FinderView extends AppCompatTextView {
 
         // 底部
         if (rectBottom + margin > bottom) {
-            setHint(String.valueOf(-displacement));
+            setTag(R.id.moudle_zxing_id_finderview_tag, String.valueOf(-displacement));
         }
         // 顶部
         else if (rectTop - margin < top) {
-            setHint(String.valueOf(displacement));
+            setTag(R.id.moudle_zxing_id_finderview_tag, String.valueOf(displacement));
         }
 
-        paint.setStrokeWidth(0);
-        paint.setColor(mLineColor);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
-        canvas.drawLine(rectLeft, rectTop, rectRight, rectBottom, paint);
+        CANVAS_PAINT.setStrokeWidth(0);
+        CANVAS_PAINT.setColor(mLineColor);
+        CANVAS_PAINT.setStyle(Paint.Style.STROKE);
+        CANVAS_PAINT.setAntiAlias(true);
+        CANVAS_PAINT.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+        canvas.drawLine(rectLeft, rectTop, rectRight, rectBottom, CANVAS_PAINT);
 //        canvas.drawRect(rectLeft, rectTop, rectRight, rectBottom, paint);
         postInvalidateDelayed(20, (int) left, (int) top, (int) right, (int) bottom);
         // LogUtil.log("onDraw[二维码扫描框] => lineDisplacement = " + getHint());
     }
 
     /***************/
-
-//    @Override
-//    public void setText(CharSequence text, BufferType type) {
-//    }
-//
-//    @Override
-//    public void setTextAppearance(int resId) {
-//    }
-//
-//    @Override
-//    public void setTextSize(float size) {
-//    }
-//
-//    @Override
-//    public void setTextColor(int color) {
-//    }
-//
-//    @Override
-//    public void setTextColor(ColorStateList colors) {
-//    }
-    @Override
-    public void setTextCursorDrawable(int textCursorDrawable) {
-    }
 
     @Override
     public void setBackgroundColor(int color) {
@@ -321,13 +298,5 @@ public final class FinderView extends AppCompatTextView {
 
     @Override
     public void setBackgroundTintMode(@Nullable PorterDuff.Mode tintMode) {
-    }
-
-    @Override
-    public void setSupportBackgroundTintList(@Nullable @org.jetbrains.annotations.Nullable ColorStateList tint) {
-    }
-
-    @Override
-    public void setSupportBackgroundTintMode(@Nullable @org.jetbrains.annotations.Nullable PorterDuff.Mode tintMode) {
     }
 }
