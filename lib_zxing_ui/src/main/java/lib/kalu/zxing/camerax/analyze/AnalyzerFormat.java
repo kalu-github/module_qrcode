@@ -19,15 +19,15 @@ import androidx.annotation.Nullable;
  * @description:
  * @date:  2021-05-07 14:57
  */
-public abstract class BarcodeFormatAnalyzer extends AreaRectAnalyzer {
+abstract class AnalyzerFormat extends AnalyzerCore {
 
     private Reader mReader;
 
-    public BarcodeFormatAnalyzer(@Nullable Map<DecodeHintType,Object> hints){
+    public AnalyzerFormat(@Nullable Map<DecodeHintType,Object> hints){
         this(new DecodeConfig().setHints(hints));
     }
 
-    public BarcodeFormatAnalyzer(@Nullable DecodeConfig config) {
+    public AnalyzerFormat(@Nullable DecodeConfig config) {
         super(config);
         initReader();
     }

@@ -22,19 +22,19 @@ import androidx.annotation.Nullable;
  * @description:
  * @date: 2021-05-07 14:57
  */
-public class MultiFormatAnalyzer extends AreaRectAnalyzer {
+public final class AnalyzerMulti extends AnalyzerCore {
 
     MultiFormatReader mReader;
 
-    public MultiFormatAnalyzer() {
+    public AnalyzerMulti() {
         this((DecodeConfig) null);
     }
 
-    public MultiFormatAnalyzer(@Nullable Map<DecodeHintType, Object> hints) {
+    public AnalyzerMulti(@Nullable Map<DecodeHintType, Object> hints) {
         this(new DecodeConfig().setHints(hints));
     }
 
-    public MultiFormatAnalyzer(@Nullable DecodeConfig config) {
+    public AnalyzerMulti(@Nullable DecodeConfig config) {
         super(config);
         initReader();
     }

@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
  * @description:
  * @date:  2021-05-07 14:56
  */
-public abstract class AreaRectAnalyzer extends ImageAnalyzer {
+abstract class AnalyzerCore extends AnalyzerYUV420888 {
 
     DecodeConfig mDecodeConfig;
     Map<DecodeHintType,?> mHints;
@@ -24,7 +24,7 @@ public abstract class AreaRectAnalyzer extends ImageAnalyzer {
     private int mAreaRectHorizontalOffset = 0;
     private int mAreaRectVerticalOffset = 0;
 
-    public AreaRectAnalyzer(@Nullable DecodeConfig config){
+    public AnalyzerCore(@Nullable DecodeConfig config){
         this.mDecodeConfig = config;
         if(config != null){
             mHints = config.getHints();
@@ -59,9 +59,5 @@ public abstract class AreaRectAnalyzer extends ImageAnalyzer {
         int top = (height-size)/2 + mAreaRectVerticalOffset;
 
         return analyze(data,width,height,left,top,size,size);
-
     }
-
-    abstract Result analyze(byte[] data, int dataWidth, int dataHeight,int left,int top,int width,int height);
-
 }

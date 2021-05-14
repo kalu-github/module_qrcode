@@ -15,8 +15,7 @@ import com.google.zxing.ResultPoint;
 import com.google.zxing.common.detector.MathUtils;
 
 import lib.kalu.zxing.camerax.analyze.AnalyzerImpl;
-import lib.kalu.zxing.camerax.analyze.MultiFormatAnalyzer;
-import lib.kalu.zxing.camerax.analyze.QRCodeAnalyzer;
+import lib.kalu.zxing.camerax.analyze.AnalyzerQrcode;
 import lib.kalu.zxing.camerax.util.LogUtil;
 
 import java.util.concurrent.Executors;
@@ -202,7 +201,7 @@ public class DefaultCameraScan extends CameraScan {
             mCameraConfig = new CameraConfig();
         }
         if (mAnalyzer == null) {
-            mAnalyzer = new QRCodeAnalyzer();
+            mAnalyzer = new AnalyzerQrcode();
         }
     }
 

@@ -14,17 +14,17 @@ import androidx.annotation.Nullable;
  * @description: 图像分析器
  * @date: 2021-05-07 14:57
  */
-public class QRCodeAnalyzer extends BarcodeFormatAnalyzer {
+public class AnalyzerQrcode extends AnalyzerFormat {
 
-    public QRCodeAnalyzer() {
+    public AnalyzerQrcode() {
         this((DecodeConfig) null);
     }
 
-    public QRCodeAnalyzer(@Nullable Map<DecodeHintType, Object> hints) {
+    public AnalyzerQrcode(@Nullable Map<DecodeHintType, Object> hints) {
         this(new DecodeConfig().setHints(hints));
     }
 
-    public QRCodeAnalyzer(@Nullable DecodeConfig config) {
+    public AnalyzerQrcode(@Nullable DecodeConfig config) {
         super(config);
     }
 
