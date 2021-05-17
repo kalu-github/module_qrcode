@@ -20,6 +20,7 @@
         <activity
             android:name="lib.kalu.zxing.QrcodeActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/QrcodeTheme" />
     </application>
