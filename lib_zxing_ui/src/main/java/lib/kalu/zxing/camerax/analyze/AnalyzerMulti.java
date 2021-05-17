@@ -92,11 +92,11 @@ public final class AnalyzerMulti extends AnalyzerCore {
         try {
 
             // 优先采用GlobalHistogramBinarizer解析
-            Result result = mReader.decodeWithState(new BinaryBitmap(new GlobalHistogramBinarizer(source)));
+            Result result = mReader.decode(new BinaryBitmap(new GlobalHistogramBinarizer(source)));
 
             if (null == result) {
                 // 采用HybridBinarizer解析
-                return mReader.decodeWithState(new BinaryBitmap(new HybridBinarizer(source)));
+                return mReader.decode(new BinaryBitmap(new HybridBinarizer(source)));
             } else {
                 return result;
             }
