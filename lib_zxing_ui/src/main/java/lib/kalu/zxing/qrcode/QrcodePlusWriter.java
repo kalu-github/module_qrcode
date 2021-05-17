@@ -24,6 +24,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.Writer;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.google.zxing.qrcode.encoder.ByteMatrix;
@@ -32,12 +33,26 @@ import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.util.Map;
 
+import lib.kalu.zxing.util.LogUtil;
+
 /**
  * This object renders a QR Code as a BitMatrix 2D array of greyscale values.
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class QrcodePlusWriter extends QRCodeWriter {
+
+    private QrcodePlusWriter() {
+        LogUtil.log("QrcodePlusWriter =>");
+    }
+
+    private static class Holder {
+        private static final QrcodePlusWriter qrcodePlusWriter = new QrcodePlusWriter();
+    }
+
+    public static final QrcodePlusWriter getQrcodePlusWriter() {
+        return QrcodePlusWriter.Holder.qrcodePlusWriter;
+    }
 
     public BitMatrix encode(@NonNull String text,
                             @IntRange(from = 3, to = 100) int multiple,

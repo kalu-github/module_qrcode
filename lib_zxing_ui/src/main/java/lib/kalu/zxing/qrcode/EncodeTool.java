@@ -87,7 +87,7 @@ class EncodeTool {
 
         try {
 
-            BitMatrix bitMatrix = new QrcodePlusWriter().encode(text, multiple, marginLeft, marginTop, marginRight, marginBottom, level, hints);
+            BitMatrix bitMatrix = QrcodePlusWriter.getQrcodePlusWriter().encode(text, multiple, marginLeft, marginTop, marginRight, marginBottom, level, hints);
 
             int matrixWidth = bitMatrix.getWidth();
             int matrixHeight = bitMatrix.getHeight();

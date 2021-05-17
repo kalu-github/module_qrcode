@@ -31,10 +31,10 @@ public final class QrcodePlusReader extends QRCodeReader {
     }
 
     private static class Holder {
-        private static final QrcodePlusReader readerManager = new QrcodePlusReader();
+        private static final QrcodePlusReader qrcodePlusReader = new QrcodePlusReader();
     }
 
     public static final QRCodeReader getQRCodeReader() {
-        return Holder.readerManager;
+        return Holder.qrcodePlusReader;
     }
 }
