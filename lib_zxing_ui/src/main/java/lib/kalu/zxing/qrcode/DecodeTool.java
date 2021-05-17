@@ -91,7 +91,7 @@ class DecodeTool {
 
             RGBLuminanceSource source = new RGBLuminanceSource(bitmapWidth, bitmapHeight, pixels);
             BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
-            Result result = QrcodePlusReader.getInstance().decode(binaryBitmap);
+            Result result = QrcodePlusReader.getQRCodeReader().decode(binaryBitmap);
 
             if (null == result)
                 return null;

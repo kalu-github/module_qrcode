@@ -1,12 +1,10 @@
-package lib.kalu.zxing.camerax.analyze;
+package lib.kalu.zxing.analyze;
 
 import com.google.zxing.Result;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
-
-import android.content.res.Configuration;
 
 /**
  * @description: 分析器

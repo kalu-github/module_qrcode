@@ -1,13 +1,13 @@
-package lib.kalu.zxing.camerax;
+package lib.kalu.zxing.impl;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.Keep;
 
 /**
- * @description:
- * @date:  2021-05-07 14:55
+ * @description: 相机控制Impl
+ * @date:  2021-05-17 13:46
  */
-public interface ICameraControl {
+public interface ICameraBaseControlImpl {
 
     /**
      * 放大

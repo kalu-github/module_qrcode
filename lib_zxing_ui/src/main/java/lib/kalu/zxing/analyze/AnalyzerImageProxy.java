@@ -1,4 +1,4 @@
-package lib.kalu.zxing.camerax.analyze;
+package lib.kalu.zxing.analyze;
 
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
@@ -16,11 +16,11 @@ import lib.kalu.zxing.util.LogUtil;
  * @description: 图像分析器
  * @date: 2021-05-07 14:57
  */
-abstract class AnalyzerYUV420888 implements AnalyzerImpl {
+abstract class AnalyzerImageProxy implements AnalyzerImpl {
 
     @Override
     public Result analyze(@NonNull ImageProxy image, int orientation) {
-        LogUtil.log("imageFormat: " + image.getFormat());
+        LogUtil.log("analyze => format =  " + image.getFormat() + ", orientation = " + (orientation == Configuration.ORIENTATION_PORTRAIT ? "竖屏" : "横屏"));
 
         if (image.getFormat() != ImageFormat.YUV_420_888)
             return null;
@@ -31,15 +31,19 @@ abstract class AnalyzerYUV420888 implements AnalyzerImpl {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        if (orientation != Configuration.ORIENTATION_PORTRAIT)
-            return analyze(data, width, height);
-
-        byte[] rotatedData = new byte[data.length];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                rotatedData[x * height + height - y - 1] = data[x + y * width];
+        // 竖屏
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            byte[] bytes = new byte[data.length];
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    bytes[x * height + height - y - 1] = data[x + y * width];
+                }
             }
+            return analyze(bytes, height, width);
         }
-        return analyze(rotatedData, height, width);
+        // 横屏
+        else {
+            return analyze(data, width, height);
+        }
     }
 }

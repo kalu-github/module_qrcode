@@ -15,8 +15,9 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
-import lib.kalu.zxing.camerax.CameraScan;
-import lib.kalu.zxing.camerax.DefaultCameraScan;
+import lib.kalu.zxing.impl.ICameraImpl;
+import lib.kalu.zxing.camerax.CameraManager;
+import lib.kalu.zxing.listener.OnCameraScanChangeListener;
 import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.qrcode.QrcodeTool;
 
@@ -32,14 +33,14 @@ import androidx.core.app.ActivityCompat;
  * @date: 2021-05-07 10:50
  */
 @Keep
-public final class QrcodeActivity extends AppCompatActivity implements CameraScan.OnCameraScanChangeListener {
+public final class QrcodeActivity extends AppCompatActivity implements OnCameraScanChangeListener {
 
     private static final String INTENT_DATA = "intent_data";
     private static final int RESULT_SUCC = 10890001;
     private static final int RESULT_FAIL = 10890002;
     private static final int RESULT_CANCLE = 10890003;
 
-    private CameraScan mCameraScan;
+    private ICameraImpl mCameraScan;
 
     @Override
     public void onBackPressed() {
@@ -131,7 +132,7 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
      */
     public void initCamera() {
         PreviewView previewView = findViewById(R.id.lib_zxing_ui_id_preview);
-        mCameraScan = new DefaultCameraScan(this, previewView);
+        mCameraScan = new CameraManager(this, previewView);
         mCameraScan.setOnCameraScanChangeListener(this);
     }
 
@@ -141,7 +142,7 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
     public void startCamera() {
         if (mCameraScan != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                mCameraScan.startCamera();
+                mCameraScan.start(getApplicationContext());
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0X86);
             }
@@ -153,7 +154,7 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
      */
     public void stopCamera() {
         if (mCameraScan != null) {
-            mCameraScan.stopCamera();
+            mCameraScan.start(getApplicationContext());
         }
     }
 
@@ -162,7 +163,7 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
      */
     private void releaseCamera() {
         if (mCameraScan != null) {
-            mCameraScan.release();
+            mCameraScan.release(getApplicationContext());
         }
     }
 
@@ -228,11 +229,11 @@ public final class QrcodeActivity extends AppCompatActivity implements CameraSca
     }
 
     /**
-     * Get {@link CameraScan}
+     * Get {@link ICameraImpl}
      *
      * @return {@link #mCameraScan}
      */
-    public CameraScan getCameraScan() {
+    public ICameraImpl getCameraScan() {
         return mCameraScan;
     }
 

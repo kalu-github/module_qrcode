@@ -829,17 +829,7 @@ public final class QrcodeTool {
      * @return
      */
     public static Result parseQRCodeResult(String bitmapPath, int reqWidth, int reqHeight) {
-        return parseCodeResult(bitmapPath, reqWidth, reqHeight, DecodeFormatManager.QR_CODE_HINTS);
-    }
-
-    /**
-     * 解析一维码/二维码图片
-     *
-     * @param bitmapPath 需要解析的图片路径
-     * @return
-     */
-    public static String parseCode(String bitmapPath) {
-        return parseCode(bitmapPath, DecodeFormatManager.ALL_HINTS);
+        return parseCodeResult(bitmapPath, reqWidth, reqHeight, null);
     }
 
     /**

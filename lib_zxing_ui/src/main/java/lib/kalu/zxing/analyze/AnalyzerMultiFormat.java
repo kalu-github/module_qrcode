@@ -1,4 +1,4 @@
-package lib.kalu.zxing.camerax.analyze;
+package lib.kalu.zxing.analyze;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -22,19 +22,21 @@ import androidx.annotation.Nullable;
  * @description:
  * @date: 2021-05-07 14:57
  */
-public final class AnalyzerMulti extends AnalyzerCore {
+public final class AnalyzerMultiFormat extends AnalyzerCore {
 
     MultiFormatReader mReader;
 
-    public AnalyzerMulti() {
-        this((DecodeConfig) null);
+    public AnalyzerMultiFormat() {
+        super();
+        initReader();
     }
 
-    public AnalyzerMulti(@Nullable Map<DecodeHintType, Object> hints) {
-        this(new DecodeConfig().setHints(hints));
+    public AnalyzerMultiFormat(@Nullable Map<DecodeHintType, Object> hints) {
+        super();
+        initReader();
     }
 
-    public AnalyzerMulti(@Nullable DecodeConfig config) {
+    public AnalyzerMultiFormat(@Nullable DecodeConfig config) {
         super(config);
         initReader();
     }
@@ -49,29 +51,29 @@ public final class AnalyzerMulti extends AnalyzerCore {
         Result rawResult = null;
         try {
             long start = System.currentTimeMillis();
-            mReader.setHints(mHints);
+            mReader.setHints(null);
             PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(data, dataWidth, dataHeight, left, top, width, height, false);
-            rawResult = decodeInternal(source, isMultiDecode);
+            rawResult = decodeInternal(source, false);
 
-            if (rawResult == null && mDecodeConfig != null) {
-                if (rawResult == null && mDecodeConfig.isSupportVerticalCode()) {
-                    byte[] rotatedData = new byte[data.length];
-                    for (int y = 0; y < dataHeight; y++) {
-                        for (int x = 0; x < dataWidth; x++) {
-                            rotatedData[x * dataHeight + dataHeight - y - 1] = data[x + y * dataWidth];
-                        }
-                    }
-                    rawResult = decodeInternal(new PlanarYUVLuminanceSource(rotatedData, dataHeight, dataWidth, top, left, height, width, false), mDecodeConfig.isSupportVerticalCodeMultiDecode());
-                }
-
-                if (rawResult == null && mDecodeConfig.isSupportLuminanceInvert()) {
-                    rawResult = decodeInternal(source.invert(), mDecodeConfig.isSupportLuminanceInvertMultiDecode());
-                }
-            }
-            if (rawResult != null) {
-                long end = System.currentTimeMillis();
-                LogUtil.log("Found barcode in " + (end - start) + " ms");
-            }
+//            if (rawResult == null && mDecodeConfig != null) {
+//                if (rawResult == null && mDecodeConfig.isSupportVerticalCode()) {
+//                    byte[] rotatedData = new byte[data.length];
+//                    for (int y = 0; y < dataHeight; y++) {
+//                        for (int x = 0; x < dataWidth; x++) {
+//                            rotatedData[x * dataHeight + dataHeight - y - 1] = data[x + y * dataWidth];
+//                        }
+//                    }
+//                    rawResult = decodeInternal(new PlanarYUVLuminanceSource(rotatedData, dataHeight, dataWidth, top, left, height, width, false), mDecodeConfig.isSupportVerticalCodeMultiDecode());
+//                }
+//
+//                if (rawResult == null && mDecodeConfig.isSupportLuminanceInvert()) {
+//                    rawResult = decodeInternal(source.invert(), mDecodeConfig.isSupportLuminanceInvertMultiDecode());
+//                }
+//            }
+//            if (rawResult != null) {
+//                long end = System.currentTimeMillis();
+//                LogUtil.log("Found barcode in " + (end - start) + " ms");
+//            }
         } catch (Exception e) {
 
         } finally {

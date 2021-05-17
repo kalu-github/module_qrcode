@@ -1,10 +1,11 @@
-package lib.kalu.zxing.camerax.analyze;
+package lib.kalu.zxing.analyze;
 
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Reader;
 import com.google.zxing.qrcode.QRCodeReader;
 
 import lib.kalu.zxing.camerax.DecodeConfig;
+import lib.kalu.zxing.qrcode.QrcodePlusReader;
 
 import java.util.Map;
 
@@ -17,20 +18,16 @@ import androidx.annotation.Nullable;
 public class AnalyzerQrcode extends AnalyzerFormat {
 
     public AnalyzerQrcode() {
-        this((DecodeConfig) null);
+        this(null);
     }
 
     public AnalyzerQrcode(@Nullable Map<DecodeHintType, Object> hints) {
-        this(new DecodeConfig().setHints(hints));
-    }
-
-    public AnalyzerQrcode(@Nullable DecodeConfig config) {
-        super(config);
+        super(hints);
     }
 
     @Override
     public Reader createReader() {
-        return new QRCodeReader();
+        return QrcodePlusReader.getQRCodeReader();
     }
 
 }

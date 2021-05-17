@@ -16,10 +16,7 @@
 
 package com.google.zxing;
 
-import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-
-import java.util.Map;
 
 /**
  * This is a factory class which finds the appropriate Writer subclass for the BarcodeFormat

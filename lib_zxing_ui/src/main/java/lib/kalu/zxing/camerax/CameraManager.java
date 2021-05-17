@@ -14,18 +14,23 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.common.detector.MathUtils;
 
-import lib.kalu.zxing.camerax.analyze.AnalyzerImpl;
-import lib.kalu.zxing.camerax.analyze.AnalyzerQrcode;
+import lib.kalu.zxing.analyze.AnalyzerImpl;
+import lib.kalu.zxing.analyze.AnalyzerQrcode;
+import lib.kalu.zxing.impl.ICameraImpl;
+import lib.kalu.zxing.listener.OnCameraScanChangeListener;
 import lib.kalu.zxing.util.LogUtil;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 
 import androidx.annotation.FloatRange;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.ImageAnalysis;
+import androidx.camera.core.ImageProxy;
 import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.Preview;
 import androidx.camera.core.TorchState;
@@ -38,11 +43,13 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @description:
  * @date: 2021-05-07 14:55
  */
-public class DefaultCameraScan extends CameraScan {
+public final class CameraManager implements ICameraImpl {
 
     /**
      * Defines the maximum duration in milliseconds between a touch pad
@@ -59,7 +66,7 @@ public class DefaultCameraScan extends CameraScan {
     private static final int HOVER_TAP_SLOP = 20;
 
     private FragmentActivity mFragmentActivity;
-    private Context mContext;
+    //    private Context mContext;
     private LifecycleOwner mLifecycleOwner;
     private PreviewView mPreviewView;
 
@@ -97,20 +104,20 @@ public class DefaultCameraScan extends CameraScan {
     private float mDownX;
     private float mDownY;
 
-    public DefaultCameraScan(FragmentActivity activity, PreviewView previewView) {
+    public CameraManager(FragmentActivity activity, PreviewView previewView) {
         this.mFragmentActivity = activity;
         this.mLifecycleOwner = activity;
-        this.mContext = activity;
         this.mPreviewView = previewView;
-        initData();
+        Context context = activity.getApplicationContext();
+        initData(context);
     }
 
-    public DefaultCameraScan(Fragment fragment, PreviewView previewView) {
+    public CameraManager(Fragment fragment, PreviewView previewView) {
         this.mFragmentActivity = fragment.getActivity();
         this.mLifecycleOwner = fragment;
-        this.mContext = fragment.getContext();
         this.mPreviewView = previewView;
-        initData();
+        Context context = fragment.getContext().getApplicationContext();
+        initData(context);
     }
 
     private ScaleGestureDetector.OnScaleGestureListener mOnScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -126,14 +133,14 @@ public class DefaultCameraScan extends CameraScan {
 
     };
 
-    private void initData() {
+    private void initData(@NonNull Context context) {
         mResultLiveData = new MutableLiveData<>();
         mResultLiveData.observe(mLifecycleOwner, result -> {
             handleAnalyzeResult(result);
         });
 
-        mOrientation = mContext.getResources().getConfiguration().orientation;
-        ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
+        mOrientation = context.getResources().getConfiguration().orientation;
+        ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, mOnScaleGestureListener);
         mPreviewView.setOnTouchListener((v, event) -> {
             handlePreviewViewClickTap(event);
             if (isNeedTouchZoom()) {
@@ -142,11 +149,11 @@ public class DefaultCameraScan extends CameraScan {
             return false;
         });
 
-        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         mScreenWidth = displayMetrics.widthPixels;
         mScreenHeight = displayMetrics.heightPixels;
-        mBeepManager = new BeepManager(mContext);
-        mAmbientLightManager = new AmbientLightManager(mContext);
+        mBeepManager = new BeepManager(context);
+        mAmbientLightManager = new AmbientLightManager(context);
         if (mAmbientLightManager != null) {
             mAmbientLightManager.register();
             mAmbientLightManager.setOnLightSensorEventListener((dark, lightLux) -> {
@@ -207,7 +214,7 @@ public class DefaultCameraScan extends CameraScan {
 
 
     @Override
-    public CameraScan setCameraConfig(CameraConfig cameraConfig) {
+    public ICameraImpl setCameraConfig(CameraConfig cameraConfig) {
         if (cameraConfig != null) {
             this.mCameraConfig = cameraConfig;
         }
@@ -215,9 +222,9 @@ public class DefaultCameraScan extends CameraScan {
     }
 
     @Override
-    public void startCamera() {
+    public void start(@NonNull Context context) {
         initConfig();
-        mCameraProviderFuture = ProcessCameraProvider.getInstance(mContext);
+        mCameraProviderFuture = ProcessCameraProvider.getInstance(context);
         mCameraProviderFuture.addListener(() -> {
 
             try {
@@ -232,14 +239,20 @@ public class DefaultCameraScan extends CameraScan {
                 //图像分析
                 ImageAnalysis imageAnalysis = mCameraConfig.options(new ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST));
-                imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), image -> {
-                    if (isAnalyze && !isAnalyzeResult && mAnalyzer != null) {
-                        Result result = mAnalyzer.analyze(image, mOrientation);
-                        if (result != null) {
-                            mResultLiveData.postValue(result);
+
+                // 分析
+                imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), new ImageAnalysis.Analyzer() {
+                    @Override
+                    public void analyze(@NonNull @NotNull ImageProxy image) {
+
+                        if (isAnalyze && !isAnalyzeResult && mAnalyzer != null) {
+                            Result result = mAnalyzer.analyze(image, mOrientation);
+                            if (result != null) {
+                                mResultLiveData.postValue(result);
+                            }
                         }
+                        image.close();
                     }
-                    image.close();
                 });
                 if (mCamera != null) {
                     mCameraProviderFuture.get().unbindAll();
@@ -250,7 +263,7 @@ public class DefaultCameraScan extends CameraScan {
                 LogUtil.log(e.getMessage());
             }
 
-        }, ContextCompat.getMainExecutor(mContext));
+        }, ContextCompat.getMainExecutor(context));
     }
 
     /**
@@ -314,7 +327,7 @@ public class DefaultCameraScan extends CameraScan {
 
 
     @Override
-    public void stopCamera() {
+    public void stop(@NonNull Context context) {
         if (mCameraProviderFuture != null) {
             try {
                 mCameraProviderFuture.get().unbindAll();
@@ -325,19 +338,19 @@ public class DefaultCameraScan extends CameraScan {
     }
 
     @Override
-    public CameraScan setAnalyzeImage(boolean analyze) {
+    public ICameraImpl setAnalyzeImage(boolean analyze) {
         isAnalyze = analyze;
         return this;
     }
 
     /**
      * 设置分析器，如果内置的一些分析器不满足您的需求，你也可以自定义{@link AnalyzerImpl}，
-     * 自定义时，切记需在{@link #startCamera()}之前调用才有效
+     * 自定义时，切记需在{@link #start()}之前调用才有效
      *
      * @param analyzer
      */
     @Override
-    public CameraScan setAnalyzer(AnalyzerImpl analyzer) {
+    public ICameraImpl setAnalyzer(AnalyzerImpl analyzer) {
         mAnalyzer = analyzer;
         return this;
     }
@@ -432,7 +445,7 @@ public class DefaultCameraScan extends CameraScan {
     }
 
     @Override
-    public CameraScan setVibrate(boolean vibrate) {
+    public ICameraImpl setVibrate(boolean vibrate) {
         if (mBeepManager != null) {
             mBeepManager.setVibrate(vibrate);
         }
@@ -440,7 +453,7 @@ public class DefaultCameraScan extends CameraScan {
     }
 
     @Override
-    public CameraScan setPlayBeep(boolean playBeep) {
+    public ICameraImpl setPlayBeep(boolean playBeep) {
         if (mBeepManager != null) {
             mBeepManager.setPlayBeep(playBeep);
         }
@@ -455,7 +468,7 @@ public class DefaultCameraScan extends CameraScan {
 
 
     @Override
-    public void release() {
+    public void release(@NonNull Context context) {
         isAnalyze = false;
         flashlightView = null;
         if (mAmbientLightManager != null) {
@@ -464,11 +477,11 @@ public class DefaultCameraScan extends CameraScan {
         if (mBeepManager != null) {
             mBeepManager.close();
         }
-        stopCamera();
+        stop(context);
     }
 
     @Override
-    public CameraScan bindFlashlightView(@Nullable View v) {
+    public ICameraImpl bindFlashlightView(@Nullable View v) {
         flashlightView = v;
         if (mAmbientLightManager != null) {
             mAmbientLightManager.setLightSensorEnabled(v != null);
@@ -476,14 +489,14 @@ public class DefaultCameraScan extends CameraScan {
         return this;
     }
 
-    public CameraScan setDarkLightLux(float lightLux) {
+    public ICameraImpl setDarkLightLux(float lightLux) {
         if (mAmbientLightManager != null) {
             mAmbientLightManager.setDarkLightLux(lightLux);
         }
         return this;
     }
 
-    public CameraScan setBrightLightLux(float lightLux) {
+    public ICameraImpl setBrightLightLux(float lightLux) {
         if (mAmbientLightManager != null) {
             mAmbientLightManager.setBrightLightLux(lightLux);
         }
@@ -491,7 +504,7 @@ public class DefaultCameraScan extends CameraScan {
     }
 
     @Override
-    public CameraScan setOnCameraScanChangeListener(OnCameraScanChangeListener callback) {
+    public ICameraImpl setOnCameraScanChangeListener(@NonNull OnCameraScanChangeListener callback) {
         this.mOnScanResultCallback = callback;
         return this;
     }
