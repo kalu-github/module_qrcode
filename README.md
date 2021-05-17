@@ -3,7 +3,6 @@
 
 ![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162026.gif )
 ![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162824.gif )
-![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513163052.gif )
 
 #
 #### todolist
