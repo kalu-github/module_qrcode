@@ -3,11 +3,10 @@
 
 ![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162026.gif )
 ![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162824.gif )
-![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513163052.gif )
 
 #
 #### todolist
-- [ ] 相机预览界面手势相机放大缩小
+- [x] 相机预览界面手势相机放大缩小
 - [x] 迁移项目依赖到cameraX
 
 #
