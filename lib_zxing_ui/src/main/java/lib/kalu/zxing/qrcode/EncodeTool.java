@@ -109,9 +109,9 @@ class EncodeTool {
             if (null != logo) {
 
                 // logo输出宽度
-                int logoOutWidth = matrixWidth / 5;
+                int logoOutWidth = matrixWidth / 4;
                 // logo输出高度
-                int logoOutHeight = matrixHeight / 5;
+                int logoOutHeight = matrixHeight / 4;
 
                 // logo范围计算
                 minX = Math.abs(matrixWidth - multiple * marginLeft - multiple * marginRight) / 2 - Math.abs(logoOutWidth) / 2;

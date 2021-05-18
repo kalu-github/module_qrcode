@@ -651,7 +651,7 @@ public final class QrcodeTool {
      * @param inputStream
      * @return
      */
-    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull InputStream inputStream, @IntRange(from = 4, to = 14) int boderWidth, @ColorInt int borderColor) {
+    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull InputStream inputStream, @IntRange(from = 10, to = 20) int boderWidth, @ColorInt int borderColor) {
 
         try {
 
