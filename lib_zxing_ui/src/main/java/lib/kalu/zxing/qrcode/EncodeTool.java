@@ -114,12 +114,18 @@ class EncodeTool {
                 int logoOutHeight = matrixHeight / 4;
 
                 // logo范围计算
-                minX = Math.abs(matrixWidth - multiple * marginLeft - multiple * marginRight) / 2 - Math.abs(logoOutWidth) / 2;
-                minX += marginLeft * multiple;
+                minX = Math.abs(matrixWidth - marginLeft - marginRight) / 2 - Math.abs(logoOutWidth) / 2;
+                minX += marginLeft;
                 maxX = minX + logoOutWidth;
-                minY = Math.abs(matrixHeight - multiple * marginTop - multiple * marginBottom) / 2 - Math.abs(logoOutWidth) / 2;
-                minY += marginTop * multiple;
+                minY = Math.abs(matrixHeight - marginTop - marginBottom) / 2 - Math.abs(logoOutWidth) / 2;
+                minY += marginTop;
                 maxY = minY + logoOutHeight;
+//                minX = Math.abs(matrixWidth - multiple * marginLeft - multiple * marginRight) / 2 - Math.abs(logoOutWidth) / 2;
+//                minX += marginLeft * multiple;
+//                maxX = minX + logoOutWidth;
+//                minY = Math.abs(matrixHeight - multiple * marginTop - multiple * marginBottom) / 2 - Math.abs(logoOutWidth) / 2;
+//                minY += marginTop * multiple;
+//                maxY = minY + logoOutHeight;
 
                 // logo真实高度
                 int logoRealWidth = logo.getWidth();

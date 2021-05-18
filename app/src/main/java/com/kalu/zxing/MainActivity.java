@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
 
-                        String qrcode = QrcodeTool.createQrcodeFromUrl(getApplicationContext(), url, 3, 4, 4, 7, 7, logo);
+                        String qrcode = QrcodeTool.createQrcodeFromUrl(getApplicationContext(), url, 3, 10, 10, 10, 10, logo);
                         if (TextUtils.isEmpty(qrcode)) {
                             Looper.prepare();
                             Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = QrcodeTool.createQrcodeFromRaw(getApplicationContext(), url, 3, 8, 8, 2, 2, R.raw.logo);
+                String qrcode = QrcodeTool.createQrcodeFromRaw(getApplicationContext(), url, 10, 10, 10, 10, 10, R.raw.logo);
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;
@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
                 ImageView imageView = findViewById(R.id.logo);
                 imageView.setImageDrawable(null);
 
-                String qrcode = QrcodeTool.createQrcodeFromAssets(getApplicationContext(), url, 20, 2, 2, 8, 8, "logo.jpg");
+                String qrcode = QrcodeTool.createQrcodeFromAssets(getApplicationContext(), url, 20, 1, 1, 1, 1, "logo.jpg");
                 if (TextUtils.isEmpty(qrcode)) {
                     Toast.makeText(MainActivity.this, "生成二维码错误", Toast.LENGTH_SHORT).show();
                     return;

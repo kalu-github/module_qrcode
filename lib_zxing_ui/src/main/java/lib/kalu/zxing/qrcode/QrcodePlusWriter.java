@@ -20,6 +20,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Dimension;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.Writer;
 import com.google.zxing.WriterException;
@@ -115,8 +116,9 @@ public final class QrcodePlusWriter extends QRCodeWriter {
 //        int qrHeight = inputHeight + (quietZone * 2);
 //        int outputWidth = Math.max(width, qrWidth);
 //        int outputHeight = Math.max(height, qrHeight);
-        int outputWidth = (inputWidth + marginLeft + marginRight) * multiple;
-        int outputHeight = (inputHeight + marginTop + marginBottom) * multiple;
+
+        int outputWidth = inputWidth * multiple + marginLeft + marginRight;
+        int outputHeight = inputHeight * multiple + marginTop + marginBottom;
 
         // Padding includes both the quiet zone and the extra white pixels to accommodate the requested
         // dimensions. For example, if input is 25x25 the QR will be 33x33 including the quiet zone.
@@ -125,8 +127,8 @@ public final class QrcodePlusWriter extends QRCodeWriter {
 
 //        int leftPadding = (outputWidth - (inputWidth * multiple)) / 2;
 //        int topPadding = (outputHeight - (inputHeight * multiple)) / 2;
-        int leftPadding = marginLeft * multiple;
-        int topPadding = marginTop * multiple;
+        int leftPadding = marginLeft;
+        int topPadding = marginTop;
 
         BitMatrix output = new BitMatrix(outputWidth, outputHeight);
         for (int inputY = 0, outputY = topPadding; inputY < inputHeight; inputY++, outputY += multiple) {
