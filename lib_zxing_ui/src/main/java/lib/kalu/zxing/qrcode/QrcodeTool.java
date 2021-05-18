@@ -207,7 +207,7 @@ public final class QrcodeTool {
         try {
             inputStream = context.getResources().getAssets().open(assets);
         } catch (Exception e) {
-            Log.e("ZxingUtil", "createQrcodeFromAssets => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "createQrcodeFromAssets => " + e.getMessage(), e);
         }
 
         String qrcode = createQrcodeFromInputStream(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, inputStream);
@@ -273,7 +273,7 @@ public final class QrcodeTool {
         try {
             bitmap = createBitmapLogoFromFile(context, filePath, 14, Color.WHITE);
         } catch (Exception e) {
-            Log.e("ZxingUtil", "createQrcodeFromFile => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "createQrcodeFromFile => " + e.getMessage(), e);
         }
 
         String qrcode = createQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, bitmap);
@@ -358,14 +358,14 @@ public final class QrcodeTool {
                         InputStream openStream = new URL(url).openStream();
                         return openStream;
                     } catch (Exception e) {
-                        Log.e("ZxingUtil", "createQrcodeFromUrl => " + e.getMessage(), e);
+                        Log.e("QrcodeTool", "createQrcodeFromUrl => " + e.getMessage(), e);
                         return null;
                     }
                 }
             }).get();
 
         } catch (Exception e) {
-            Log.e("ZxingUtil", "createQrcodeFromUrl => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "createQrcodeFromUrl => " + e.getMessage(), e);
         }
 
         String qrcode = createQrcodeFromInputStream(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, inputStream);
@@ -465,7 +465,7 @@ public final class QrcodeTool {
         if (null == context)
             return null;
 
-        Bitmap logoBitmap = createBitmapLogo(context, inputStream, 14, Color.WHITE);
+        Bitmap logoBitmap = createBitmapLogo(context, inputStream, 20, Color.WHITE);
         String qrcode = createQrcode(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, logoBitmap);
 
         if (null != logoBitmap) {
@@ -591,7 +591,7 @@ public final class QrcodeTool {
                 file.delete();
             }
             file.createNewFile();
-            Log.e("ZxingUtil", "saveBitmapLocal =>  path = " + file.getAbsolutePath());
+            Log.e("QrcodeTool", "saveBitmapLocal =>  path = " + file.getAbsolutePath());
 
             FileOutputStream fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
@@ -606,7 +606,7 @@ public final class QrcodeTool {
             return root + File.separator + child;
 
         } catch (Exception e) {
-            Log.e("ZxingUtil", "saveBitmapLocal => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "saveBitmapLocal => " + e.getMessage(), e);
             return null;
         }
     }
@@ -640,7 +640,7 @@ public final class QrcodeTool {
             return bitmapBorder;
 
         } catch (Exception e) {
-            Log.e("ZxingUtil", "decodeBitmapFromInputStream => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "decodeBitmapFromInputStream => " + e.getMessage(), e);
             return null;
         }
     }
@@ -679,7 +679,7 @@ public final class QrcodeTool {
             return bitmapBorder;
 
         } catch (Exception e) {
-            Log.e("ZxingUtil", "decodeBitmapFromInputStream => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "decodeBitmapFromInputStream => " + e.getMessage(), e);
             return null;
         }
     }
@@ -707,7 +707,7 @@ public final class QrcodeTool {
             return bitmapBorder;
 
         } catch (Exception e) {
-            Log.e("ZxingUtil", "decodeBitmapFromInputStream => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "decodeBitmapFromInputStream => " + e.getMessage(), e);
             return null;
         }
     }
@@ -776,7 +776,7 @@ public final class QrcodeTool {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
             return bitmap;
         } catch (Exception e) {
-            Log.e("ZxingUtil", "base64ToBitmap => " + e.getMessage(), e);
+            Log.e("QrcodeTool", "base64ToBitmap => " + e.getMessage(), e);
             return null;
         }
     }

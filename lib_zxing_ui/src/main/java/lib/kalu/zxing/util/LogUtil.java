@@ -21,8 +21,8 @@ public final class LogUtil {
 
         try {
 
-//            if (!BuildConfig.DEBUG || "release".equals(BuildConfig.BUILD_TYPE) || null == info || info.length() == 0)
-//                return;
+            if (!BuildConfig.DEBUG || "release".equals(BuildConfig.BUILD_TYPE) || null == info || info.length() == 0)
+                return;
 
             Log.d("moulde_zxing", info, throwable);
 

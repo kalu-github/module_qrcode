@@ -35,17 +35,17 @@ import androidx.core.app.ActivityCompat;
 @Keep
 public final class QrcodeActivity extends AppCompatActivity implements OnCameraScanChangeListener {
 
-    private static final String INTENT_DATA = "intent_data";
-    private static final int RESULT_SUCC = 10890001;
-    private static final int RESULT_FAIL = 10890002;
-    private static final int RESULT_CANCLE = 10890003;
+    public static final int RESULT_CODE_SUCC = 10890001;
+    public static final int RESULT_CODE_FAIL = 10890002;
+    public static final int RESULT_CODE_CANCLE = 10890003;
+    public static final String RESULT_INTENT_DATA = "result_intent_data";
 
     private ICameraImpl mCameraScan;
 
     @Override
     public void onBackPressed() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setResult(RESULT_CANCLE);
+        setResult(RESULT_CODE_CANCLE);
         super.onBackPressed();
     }
 
@@ -196,8 +196,8 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
 
         LogUtil.log("onActivityResult => s = " + s);
         Intent intent = new Intent();
-        intent.putExtra(INTENT_DATA, s);
-        setResult(RESULT_SUCC, intent);
+        intent.putExtra(RESULT_INTENT_DATA, s);
+        setResult(RESULT_CODE_SUCC, intent);
         finish();
     }
 
@@ -210,9 +210,9 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     public void requestCameraPermissionResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
 
         int length = permissions.length;
-        for(int i = 0; i < length; i++){
-            if(Manifest.permission.CAMERA.equals(permissions[i])){
-                if(grantResults[i] == PackageManager.PERMISSION_GRANTED){
+        for (int i = 0; i < length; i++) {
+            if (Manifest.permission.CAMERA.equals(permissions[i])) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     startCamera();
                     return;
                 }
@@ -258,8 +258,8 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
             }
 
             Intent intent = new Intent();
-            intent.putExtra(INTENT_DATA, result.getText());
-            setResult(RESULT_SUCC, intent);
+            intent.putExtra(RESULT_INTENT_DATA, result.getText());
+            setResult(RESULT_CODE_SUCC, intent);
             finish();
         }
         return true;
