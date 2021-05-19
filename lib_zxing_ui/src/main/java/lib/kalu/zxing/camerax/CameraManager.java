@@ -43,8 +43,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * @description:
  * @date: 2021-05-07 14:55
@@ -243,7 +241,7 @@ public final class CameraManager implements ICameraImpl {
                 // 分析
                 imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), new ImageAnalysis.Analyzer() {
                     @Override
-                    public void analyze(@NonNull @NotNull ImageProxy image) {
+                    public void analyze(@NonNull ImageProxy image) {
 
                         if (isAnalyze && !isAnalyzeResult && mAnalyzer != null) {
                             Result result = mAnalyzer.analyze(image, mOrientation);

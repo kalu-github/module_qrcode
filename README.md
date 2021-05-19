@@ -10,22 +10,24 @@
 - [x] 迁移项目依赖到cameraX
 
 #
-#### 说明
+#### 模块
 ```
-zxing源码
-lib_zxing_source_all
+lib_zxing_ui => ui
+lib_zxing_source_all => zxing源码
+lib_zxing_source_qrcode => zxing源码 - 仅保留二维码编解码
+```
 
-zxing源码-仅保留解析二维码
-lib_zxing_source_qrcode
-
-zxing-ui-moudle
-lib_zxing_ui
-
-cameraX
+#
+#### cameraX
+```
+https://mvnrepository.com/search?q=androidx.camera
 https://developer.android.google.cn/jetpack/androidx/releases/camera
 https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/camera/
+```
 
-zxing-3.4.1
+#
+#### zxing-3.4.1
+```
 https://github.com/zxing/zxing/releases
 https://mvnrepository.com/artifact/com.google.zxing/core
 https://mvnrepository.com/artifact/com.google.zxing/android-core

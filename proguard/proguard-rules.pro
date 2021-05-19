@@ -586,4 +586,6 @@ public static final int *;
 #---------- 三方 ----------------
 
 
-# lib_zxing
+# caneraX
+-dontwarn androidx.camera.**
+-keep class androidx.camera.**{*;}

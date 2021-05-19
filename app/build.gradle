@@ -20,8 +20,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
@@ -30,23 +30,26 @@ repositories {
         dirs 'libs'
     }
 }
+
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // api fileTree(include: ['*.jar'], dir: 'libs')
+    // api fileTree(include: ['*.aar'], dir: 'libs')
 
     // 依赖
     implementation "androidx.appcompat:appcompat:1.1.0"
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     // camerax
-    implementation "androidx.camera:camera-core:1.0.0"
-    implementation "androidx.camera:camera-camera2:1.0.0"
-    implementation "androidx.camera:camera-lifecycle:1.0.0"
-    implementation "androidx.camera:camera-view:1.0.0-alpha24"
-    implementation "androidx.camera:camera-extensions:1.0.0-alpha24"
+    implementation(name: 'camera-core-1.0.0', ext: 'aar')
+    implementation(name: 'camera-camera2-1.0.0', ext: 'aar')
+    implementation(name: 'camera-lifecycle-1.0.0', ext: 'aar')
+    implementation(name: 'camera-view-1.0.0-alpha24', ext: 'aar')
+    implementation(name: 'camera-extensions-1.0.0-alpha24', ext: 'aar')
 
     // 二维码
-    implementation(name: 'lib_zxing_release_20210518', ext: 'aar')
-//     implementation project(':lib_zxing_ui')
+//    implementation(name: 'lib_zxing_release_20210519', ext: 'aar')
+     implementation project(':lib_zxing_ui')
 }
 
 

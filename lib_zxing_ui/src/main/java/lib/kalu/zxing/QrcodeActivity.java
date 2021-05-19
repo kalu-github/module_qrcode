@@ -176,7 +176,7 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtil.log("onActivityResult => requestCode = " + requestCode + ", resultCode = " + resultCode + ", data = " + data + ", uri = " + (null == data ? "null" : data.getData()));
         if (null == data || null == data.getData() || requestCode != 0X87)
