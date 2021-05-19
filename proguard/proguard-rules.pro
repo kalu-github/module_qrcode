@@ -586,6 +586,10 @@ public static final int *;
 #---------- 三方 ----------------
 
 
-# caneraX
+# androidx-camera
 -dontwarn androidx.camera.**
 -keep class androidx.camera.**{*;}
+
+# androidx-lifecycle
+-dontwarn androidx.lifecycle.**
+-keep class androidx.lifecycle.**{*;}

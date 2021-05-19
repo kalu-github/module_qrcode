@@ -8,6 +8,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled false
     }
     buildTypes {
         debug {
@@ -38,14 +39,13 @@ dependencies {
     // 依赖
     implementation "androidx.appcompat:appcompat:1.1.0"
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
 
     // camerax
-    implementation(name: 'camera-core-1.0.0', ext: 'aar')
-    implementation(name: 'camera-camera2-1.0.0', ext: 'aar')
-    implementation(name: 'camera-lifecycle-1.0.0', ext: 'aar')
-    implementation(name: 'camera-view-1.0.0-alpha24', ext: 'aar')
-    implementation(name: 'camera-extensions-1.0.0-alpha24', ext: 'aar')
+    implementation "androidx.camera:camera-core:1.0.0"
+    implementation "androidx.camera:camera-camera2:1.0.0"
+    implementation "androidx.camera:camera-lifecycle:1.0.0"
+    implementation "androidx.camera:camera-view:1.0.0-alpha24"
+    implementation "androidx.camera:camera-extensions:1.0.0-alpha24"
 
     // 二维码
 //    implementation(name: 'lib_zxing_release_20210519', ext: 'aar')
