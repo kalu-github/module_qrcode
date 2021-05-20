@@ -16,7 +16,9 @@
 
 package com.google.zxing.qrcode;
 
-import com.google.zxing.BarcodeFormat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.DecodeHintType;
@@ -51,22 +53,13 @@ public class QRCodeReader implements Reader {
         return decoder;
     }
 
-    /**
-     * Locates and decodes a QR code in an image.
-     *
-     * @return a String representing the content encoded by the QR code
-     * @throws NotFoundException if a QR code cannot be found
-     * @throws FormatException   if a QR code cannot be decoded
-     * @throws ChecksumException if error correction fails
-     */
     @Override
-    public Result decode(BinaryBitmap image) throws NotFoundException, ChecksumException, FormatException {
-        return decode(image, null);
+    public Result decode(@NonNull BinaryBitmap image) throws NotFoundException, ChecksumException, FormatException {
+        return decode(image, QrcodeDecodeHintTypeManager.DECODE_HINT_TYPE);
     }
 
     @Override
-    public final Result decode(BinaryBitmap image, Map<DecodeHintType, ?> hints)
-            throws NotFoundException, ChecksumException, FormatException {
+    public final Result decode(@NonNull BinaryBitmap image, @Nullable Map<DecodeHintType, ?> hints) throws NotFoundException, ChecksumException, FormatException {
         DecoderResult decoderResult;
         ResultPoint[] points;
         if (hints != null && hints.containsKey(DecodeHintType.PURE_BARCODE)) {
@@ -84,7 +77,7 @@ public class QRCodeReader implements Reader {
             ((QRCodeDecoderMetaData) decoderResult.getOther()).applyMirroredCorrection(points);
         }
 
-        Result result = new Result(decoderResult.getText(), decoderResult.getRawBytes(), points, BarcodeFormat.QR_CODE);
+        Result result = new Result(decoderResult.getText(), decoderResult.getRawBytes(), points);
         List<byte[]> byteSegments = decoderResult.getByteSegments();
         if (byteSegments != null) {
             result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, byteSegments);

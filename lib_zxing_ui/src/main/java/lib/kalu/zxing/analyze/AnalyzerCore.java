@@ -1,11 +1,14 @@
 package lib.kalu.zxing.analyze;
 
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 
 import lib.kalu.zxing.camerax.DecodeConfig;
 import lib.kalu.zxing.util.LogUtil;
 
 import androidx.annotation.Nullable;
+
+import java.util.Map;
 
 /**
  * @description:

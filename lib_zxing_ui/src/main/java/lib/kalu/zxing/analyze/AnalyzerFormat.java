@@ -25,7 +25,7 @@ abstract class AnalyzerFormat extends AnalyzerCore {
 
     private Reader mReader;
 
-    public AnalyzerFormat(@Nullable Map<DecodeHintType, Object> hints) {
+    public AnalyzerFormat() {
         super();
         initReader();
     }

@@ -30,37 +30,32 @@ public final class Result {
     private final byte[] rawBytes;
     private final int numBits;
     private ResultPoint[] resultPoints;
-    private final BarcodeFormat format;
     private Map<ResultMetadataType, Object> resultMetadata;
     private final long timestamp;
 
     public Result(String text,
                   byte[] rawBytes,
-                  ResultPoint[] resultPoints,
-                  BarcodeFormat format) {
-        this(text, rawBytes, resultPoints, format, System.currentTimeMillis());
+                  ResultPoint[] resultPoints) {
+        this(text, rawBytes, resultPoints, System.currentTimeMillis());
     }
 
     public Result(String text,
                   byte[] rawBytes,
                   ResultPoint[] resultPoints,
-                  BarcodeFormat format,
                   long timestamp) {
         this(text, rawBytes, rawBytes == null ? 0 : 8 * rawBytes.length,
-                resultPoints, format, timestamp);
+                resultPoints, timestamp);
     }
 
     public Result(String text,
                   byte[] rawBytes,
                   int numBits,
                   ResultPoint[] resultPoints,
-                  BarcodeFormat format,
                   long timestamp) {
         this.text = text;
         this.rawBytes = rawBytes;
         this.numBits = numBits;
         this.resultPoints = resultPoints;
-        this.format = format;
         this.resultMetadata = null;
         this.timestamp = timestamp;
     }
@@ -94,13 +89,6 @@ public final class Result {
      */
     public ResultPoint[] getResultPoints() {
         return resultPoints;
-    }
-
-    /**
-     * @return {@link BarcodeFormat} representing the format of the barcode that was decoded
-     */
-    public BarcodeFormat getBarcodeFormat() {
-        return format;
     }
 
     /**

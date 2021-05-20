@@ -9,7 +9,6 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.common.detector.MathUtils;
@@ -278,7 +277,7 @@ public final class CameraManager implements ICameraImpl {
             mBeepManager.playBeepSoundAndVibrate();
         }
 
-        if (result.getBarcodeFormat() == BarcodeFormat.QR_CODE && isNeedAutoZoom() && mLastAutoZoomTime + 100 < System.currentTimeMillis()) {
+        if (isNeedAutoZoom() && mLastAutoZoomTime + 100 < System.currentTimeMillis()) {
             ResultPoint[] points = result.getResultPoints();
             if (points != null && points.length >= 2) {
                 float distance1 = ResultPoint.distance(points[0], points[1]);

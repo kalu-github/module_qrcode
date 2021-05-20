@@ -1,4 +1,4 @@
-package lib.kalu.zxing.camerax;
+package com.google.zxing.qrcode;
 
 import androidx.annotation.NonNull;
 
@@ -11,18 +11,10 @@ import java.util.Map;
  * @description:
  * @date: 2021-05-07 14:55
  */
-public final class DecodeFormatManager {
+public final class QrcodeDecodeHintTypeManager {
 
-    /**
-     * QR_CODE (最常用的二维码)
-     */
     public static final Map<DecodeHintType, Object> DECODE_HINT_TYPE = createDecodeHint();
 
-    /**
-     * 支持解码的格式
-     *
-     * @return
-     */
     public static Map<DecodeHintType, Object> createDecodeHint() {
         Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
         addDecodeHintTypes(hints);
@@ -30,10 +22,11 @@ public final class DecodeFormatManager {
     }
 
     private static void addDecodeHintTypes(@NonNull Map<DecodeHintType, Object> hints) {
-        // Spend more time to try to find a barcode; optimize for accuracy, not speed.
-        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+        // 复杂模式，开启PURE_BARCODE模式
         hints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
-        // Specifies what character encoding to use when decoding, where applicable (type String)
+        // 优化精度
+        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+        // 解码设置编码方式为：utf-8
         hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
     }
 }

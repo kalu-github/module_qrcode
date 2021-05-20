@@ -41,12 +41,6 @@ public enum DecodeHintType {
     PURE_BARCODE(Void.class),
 
     /**
-     * Image is known to be of one of a few possible formats.
-     * Maps to a {@link List} of {@link BarcodeFormat}s.
-     */
-    POSSIBLE_FORMATS(List.class),
-
-    /**
      * Spend more time to try to find a barcode; optimize for accuracy, not speed.
      * Doesn't matter what it maps to; use {@link Boolean#TRUE}.
      */

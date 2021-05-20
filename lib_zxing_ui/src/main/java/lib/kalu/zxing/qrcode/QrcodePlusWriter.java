@@ -19,13 +19,9 @@ package lib.kalu.zxing.qrcode;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Dimension;
 import com.google.zxing.EncodeHintType;
-import com.google.zxing.Writer;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.google.zxing.qrcode.encoder.ByteMatrix;
@@ -144,12 +140,12 @@ public final class QrcodePlusWriter extends QRCodeWriter {
     }
 
     @Override
-    public BitMatrix encode(String s, BarcodeFormat barcodeFormat, int i, int i1) throws WriterException {
+    public BitMatrix encode(String s, int i, int i1) throws WriterException {
         return null;
     }
 
     @Override
-    public BitMatrix encode(String s, BarcodeFormat barcodeFormat, int i, int i1, Map<EncodeHintType, ?> map) throws WriterException {
+    public BitMatrix encode(String s, int i, int i1, Map<EncodeHintType, ?> map) throws WriterException {
         return null;
     }
 }

@@ -1,16 +1,5 @@
 package lib.kalu.zxing.camerax;
 
-import android.graphics.Rect;
-
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
-
-import java.util.Map;
-
-import androidx.annotation.FloatRange;
-
 /**
  * @description:
  * @date: 2021-05-17 10:57
