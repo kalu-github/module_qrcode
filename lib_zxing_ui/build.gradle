@@ -14,7 +14,7 @@ android {
         variant.outputs.all {
             def type = new String(buildType.name).toLowerCase()
             def time = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+08"))
-            outputFileName = "lib_zxing_" + type + "_" + time + ".aar"
+            outputFileName = "lib_zxing_r3.4.1_" + type + "_" + time + ".aar"
         }
     }
 

@@ -1,4 +1,4 @@
 include ':app'
-include ':lib_zxing_ui'
-include ':lib_zxing_source_all'
-include ':lib_zxing_source_qrcode'
+//include ':lib_zxing_ui'
+//include ':lib_zxing_source_all'
+//include ':lib_zxing_source_qrcode'
