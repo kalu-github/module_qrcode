@@ -18,7 +18,7 @@ package com.google.zxing.qrcode;
 
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.Writer;
-import com.google.zxing.WriterException;
+import com.google.zxing.exception.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.encoder.ByteMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;

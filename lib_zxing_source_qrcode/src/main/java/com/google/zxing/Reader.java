@@ -19,6 +19,10 @@ package com.google.zxing;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.zxing.exception.ChecksumException;
+import com.google.zxing.exception.FormatException;
+import com.google.zxing.exception.NotFoundException;
+
 import java.util.Map;
 
 /**

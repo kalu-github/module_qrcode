@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.google.zxing;
+package com.google.zxing.source;
 
 /**
- * A wrapper implementation of {@link LuminanceSource} which inverts the luminances it returns -- black becomes
+ * A wrapper implementation of {@link LuminanceSourceImpl} which inverts the luminances it returns -- black becomes
  * white and vice versa, and each value becomes (255-value).
  *
  * @author Sean Owen
  */
-public final class InvertedLuminanceSource extends LuminanceSource {
+public final class LuminanceSourceInverted extends LuminanceSourceBase {
 
-    private final LuminanceSource delegate;
+    private final LuminanceSourceImpl delegate;
 
-    public InvertedLuminanceSource(LuminanceSource delegate) {
+    public LuminanceSourceInverted(LuminanceSourceImpl delegate) {
         super(delegate.getWidth(), delegate.getHeight());
         this.delegate = delegate;
     }
@@ -58,8 +58,8 @@ public final class InvertedLuminanceSource extends LuminanceSource {
     }
 
     @Override
-    public LuminanceSource crop(int left, int top, int width, int height) {
-        return new InvertedLuminanceSource(delegate.crop(left, top, width, height));
+    public LuminanceSourceImpl crop(int left, int top, int width, int height) {
+        return new LuminanceSourceInverted(delegate.crop(left, top, width, height));
     }
 
     @Override
@@ -68,21 +68,21 @@ public final class InvertedLuminanceSource extends LuminanceSource {
     }
 
     /**
-     * @return original delegate {@link LuminanceSource} since invert undoes itself
+     * @return original delegate {@link LuminanceSourceImpl} since invert undoes itself
      */
     @Override
-    public LuminanceSource invert() {
+    public LuminanceSourceImpl invert() {
         return delegate;
     }
 
     @Override
-    public LuminanceSource rotateCounterClockwise() {
-        return new InvertedLuminanceSource(delegate.rotateCounterClockwise());
+    public LuminanceSourceImpl rotateCounterClockwise() {
+        return new LuminanceSourceInverted(delegate.rotateCounterClockwise());
     }
 
     @Override
-    public LuminanceSource rotateCounterClockwise45() {
-        return new InvertedLuminanceSource(delegate.rotateCounterClockwise45());
+    public LuminanceSourceImpl rotateCounterClockwise45() {
+        return new LuminanceSourceInverted(delegate.rotateCounterClockwise45());
     }
 
 }

@@ -17,7 +17,7 @@
 package com.google.zxing.qrcode.decoder;
 
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.FormatException;
+import com.google.zxing.exception.FormatException;
 import com.google.zxing.common.BitSource;
 import com.google.zxing.common.CharacterSetECI;
 import com.google.zxing.common.DecoderResult;

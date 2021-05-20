@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing;
+package com.google.zxing.source;
 
 /**
  * This class is used to help decode images from files which arrive as RGB data from
@@ -23,7 +23,7 @@ package com.google.zxing;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Betaminos
  */
-public final class RGBLuminanceSource extends LuminanceSource {
+public final class RGBLuminanceSource extends LuminanceSourceBase {
 
     private final byte[] luminances;
     private final int dataWidth;
@@ -123,7 +123,7 @@ public final class RGBLuminanceSource extends LuminanceSource {
     }
 
     @Override
-    public LuminanceSource crop(int left, int top, int width, int height) {
+    public LuminanceSourceImpl crop(int left, int top, int width, int height) {
         return new RGBLuminanceSource(luminances,
                 dataWidth,
                 dataHeight,

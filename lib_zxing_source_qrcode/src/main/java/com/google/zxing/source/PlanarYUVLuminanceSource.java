@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing;
+package com.google.zxing.source;
 
 /**
  * This object extends LuminanceSource around an array of YUV data returned from the camera driver,
@@ -26,7 +26,7 @@ package com.google.zxing;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class PlanarYUVLuminanceSource extends LuminanceSource {
+public final class PlanarYUVLuminanceSource extends LuminanceSourceBase {
 
     private static final int THUMBNAIL_SCALE_FACTOR = 2;
 
@@ -42,8 +42,7 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
                                     int left,
                                     int top,
                                     int width,
-                                    int height,
-                                    boolean reverseHorizontal) {
+                                    int height) {
         super(width, height);
 
         if (left + width > dataWidth || top + height > dataHeight) {
@@ -55,9 +54,6 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
         this.dataHeight = dataHeight;
         this.left = left;
         this.top = top;
-        if (reverseHorizontal) {
-            reverseHorizontal(width, height);
-        }
     }
 
     @Override
@@ -110,15 +106,14 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
     }
 
     @Override
-    public LuminanceSource crop(int left, int top, int width, int height) {
+    public LuminanceSourceImpl crop(int left, int top, int width, int height) {
         return new PlanarYUVLuminanceSource(yuvData,
                 dataWidth,
                 dataHeight,
                 this.left + left,
                 this.top + top,
                 width,
-                height,
-                false);
+                height);
     }
 
     public int[] renderThumbnail() {
@@ -151,17 +146,5 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
      */
     public int getThumbnailHeight() {
         return getHeight() / THUMBNAIL_SCALE_FACTOR;
-    }
-
-    private void reverseHorizontal(int width, int height) {
-        byte[] yuvData = this.yuvData;
-        for (int y = 0, rowStart = top * dataWidth + left; y < height; y++, rowStart += dataWidth) {
-            int middle = rowStart + width / 2;
-            for (int x1 = rowStart, x2 = rowStart + width - 1; x1 < middle; x1++, x2--) {
-                byte temp = yuvData[x1];
-                yuvData[x1] = yuvData[x2];
-                yuvData[x2] = temp;
-            }
-        }
     }
 }

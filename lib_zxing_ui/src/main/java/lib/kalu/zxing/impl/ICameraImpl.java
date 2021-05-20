@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import com.google.zxing.qrcode.QRCodeReader;
 
-import lib.kalu.zxing.analyze.AnalyzerImpl;
+import lib.kalu.zxing.analyze.AnalyzerBaseImpl;
 import lib.kalu.zxing.camerax.CameraConfig;
 import lib.kalu.zxing.listener.OnCameraScanChangeListener;
 
@@ -88,12 +88,12 @@ public interface ICameraImpl extends ICameraBaseLifecycleImpl, ICameraBaseContro
    ICameraImpl setAnalyzeImage(boolean analyze);
 
     /**
-     * 设置分析器，内置了一些{@link AnalyzerImpl}的实现类如下
+     * 设置分析器，内置了一些{@link AnalyzerBaseImpl}的实现类如下
      *
      * @param analyzer
      * @see {@link QRCodeReader}
      */
-   ICameraImpl setAnalyzer(AnalyzerImpl analyzer);
+   ICameraImpl setAnalyzer(AnalyzerBaseImpl analyzer);
 
     /**
      * 设置是否震动

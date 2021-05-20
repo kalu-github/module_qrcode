@@ -49,7 +49,7 @@ dependencies {
 
     // 二维码
     implementation(name: 'lib_zxing_release_20210520', ext: 'aar')
-//     implementation project(':lib_zxing_ui')
+//    implementation project(':lib_zxing_ui')
 }
 
 

@@ -16,7 +16,7 @@
 
 package com.google.zxing.common;
 
-import com.google.zxing.FormatException;
+import com.google.zxing.exception.FormatException;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,6 +18,8 @@ package com.google.zxing;
 
 import com.google.zxing.common.BitArray;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.exception.NotFoundException;
+import com.google.zxing.source.LuminanceSourceImpl;
 
 /**
  * This class is the core bitmap class used by ZXing to represent 1 bit data. Reader objects
@@ -105,7 +107,7 @@ public final class BinaryBitmap {
      * @return A cropped version of this object.
      */
     public BinaryBitmap crop(int left, int top, int width, int height) {
-        LuminanceSource newSource = binarizer.getLuminanceSource().crop(left, top, width, height);
+        LuminanceSourceImpl newSource = binarizer.getLuminanceSource().crop(left, top, width, height);
         return new BinaryBitmap(binarizer.createBinarizer(newSource));
     }
 
@@ -123,7 +125,7 @@ public final class BinaryBitmap {
      * @return A rotated version of this object.
      */
     public BinaryBitmap rotateCounterClockwise() {
-        LuminanceSource newSource = binarizer.getLuminanceSource().rotateCounterClockwise();
+        LuminanceSourceImpl newSource = binarizer.getLuminanceSource().rotateCounterClockwise();
         return new BinaryBitmap(binarizer.createBinarizer(newSource));
     }
 
@@ -134,7 +136,7 @@ public final class BinaryBitmap {
      * @return A rotated version of this object.
      */
     public BinaryBitmap rotateCounterClockwise45() {
-        LuminanceSource newSource = binarizer.getLuminanceSource().rotateCounterClockwise45();
+        LuminanceSourceImpl newSource = binarizer.getLuminanceSource().rotateCounterClockwise45();
         return new BinaryBitmap(binarizer.createBinarizer(newSource));
     }
 

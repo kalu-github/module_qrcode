@@ -18,6 +18,8 @@ package com.google.zxing;
 
 import com.google.zxing.common.BitArray;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.exception.NotFoundException;
+import com.google.zxing.source.LuminanceSourceImpl;
 
 /**
  * This class hierarchy provides a set of methods to convert luminance data to 1 bit data.
@@ -29,13 +31,13 @@ import com.google.zxing.common.BitMatrix;
  */
 public abstract class Binarizer {
 
-    private final LuminanceSource source;
+    private final LuminanceSourceImpl source;
 
-    protected Binarizer(LuminanceSource source) {
+    protected Binarizer(LuminanceSourceImpl source) {
         this.source = source;
     }
 
-    public final LuminanceSource getLuminanceSource() {
+    public final LuminanceSourceImpl getLuminanceSource() {
         return source;
     }
 
@@ -74,7 +76,7 @@ public abstract class Binarizer {
      * @param source The LuminanceSource this Binarizer will operate on.
      * @return A new concrete Binarizer implementation object.
      */
-    public abstract Binarizer createBinarizer(LuminanceSource source);
+    public abstract Binarizer createBinarizer(LuminanceSourceImpl source);
 
     public final int getWidth() {
         return source.getWidth();

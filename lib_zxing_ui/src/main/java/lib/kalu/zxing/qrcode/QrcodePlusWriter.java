@@ -20,7 +20,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import com.google.zxing.EncodeHintType;
-import com.google.zxing.WriterException;
+import com.google.zxing.exception.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;

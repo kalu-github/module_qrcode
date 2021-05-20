@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing;
+package com.google.zxing.exception;
 
 /**
  * The general exception class throw when something goes wrong during decoding of a barcode.

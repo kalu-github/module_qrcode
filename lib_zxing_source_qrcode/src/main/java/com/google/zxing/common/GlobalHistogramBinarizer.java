@@ -17,8 +17,8 @@
 package com.google.zxing.common;
 
 import com.google.zxing.Binarizer;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.NotFoundException;
+import com.google.zxing.source.LuminanceSourceImpl;
+import com.google.zxing.exception.NotFoundException;
 
 /**
  * This Binarizer implementation uses the old ZXing global histogram approach. It is suitable
@@ -41,7 +41,7 @@ public class GlobalHistogramBinarizer extends Binarizer {
     private byte[] luminances;
     private final int[] buckets;
 
-    public GlobalHistogramBinarizer(LuminanceSource source) {
+    public GlobalHistogramBinarizer(LuminanceSourceImpl source) {
         super(source);
         luminances = EMPTY;
         buckets = new int[LUMINANCE_BUCKETS];
@@ -50,7 +50,7 @@ public class GlobalHistogramBinarizer extends Binarizer {
     // Applies simple sharpening to the row data to improve performance of the 1D Readers.
     @Override
     public BitArray getBlackRow(int y, BitArray row) throws NotFoundException {
-        LuminanceSource source = getLuminanceSource();
+        LuminanceSourceImpl source = getLuminanceSource();
         int width = source.getWidth();
         if (row == null || row.getSize() < width) {
             row = new BitArray(width);
@@ -92,7 +92,7 @@ public class GlobalHistogramBinarizer extends Binarizer {
     // Does not sharpen the data, as this call is intended to only be used by 2D Readers.
     @Override
     public BitMatrix getBlackMatrix() throws NotFoundException {
-        LuminanceSource source = getLuminanceSource();
+        LuminanceSourceImpl source = getLuminanceSource();
         int width = source.getWidth();
         int height = source.getHeight();
         BitMatrix matrix = new BitMatrix(width, height);
@@ -130,7 +130,7 @@ public class GlobalHistogramBinarizer extends Binarizer {
     }
 
     @Override
-    public Binarizer createBinarizer(LuminanceSource source) {
+    public Binarizer createBinarizer(LuminanceSourceImpl source) {
         return new GlobalHistogramBinarizer(source);
     }
 

@@ -13,13 +13,12 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.common.detector.MathUtils;
 
-import lib.kalu.zxing.analyze.AnalyzerImpl;
+import lib.kalu.zxing.analyze.AnalyzerBaseImpl;
 import lib.kalu.zxing.analyze.AnalyzerQrcode;
 import lib.kalu.zxing.impl.ICameraImpl;
 import lib.kalu.zxing.listener.OnCameraScanChangeListener;
 import lib.kalu.zxing.util.LogUtil;
 
-import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 
 import androidx.annotation.FloatRange;
@@ -71,7 +70,7 @@ public final class CameraManager implements ICameraImpl {
     private Camera mCamera;
 
     private CameraConfig mCameraConfig;
-    private AnalyzerImpl mAnalyzer;
+    private AnalyzerBaseImpl mAnalyzer;
 
     /**
      * 是否分析
@@ -243,7 +242,7 @@ public final class CameraManager implements ICameraImpl {
                     public void analyze(@NonNull ImageProxy image) {
 
                         if (isAnalyze && !isAnalyzeResult && mAnalyzer != null) {
-                            Result result = mAnalyzer.analyze(image, mOrientation);
+                            Result result = mAnalyzer.analyzeImage(image, mOrientation);
                             if (result != null) {
                                 mResultLiveData.postValue(result);
                             }
@@ -341,13 +340,13 @@ public final class CameraManager implements ICameraImpl {
     }
 
     /**
-     * 设置分析器，如果内置的一些分析器不满足您的需求，你也可以自定义{@link AnalyzerImpl}，
+     * 设置分析器，如果内置的一些分析器不满足您的需求，你也可以自定义{@link AnalyzerBaseImpl}，
      * 自定义时，切记需在{@link #start()}之前调用才有效
      *
      * @param analyzer
      */
     @Override
-    public ICameraImpl setAnalyzer(AnalyzerImpl analyzer) {
+    public ICameraImpl setAnalyzer(AnalyzerBaseImpl analyzer) {
         mAnalyzer = analyzer;
         return this;
     }

@@ -17,8 +17,8 @@
 package com.google.zxing.common;
 
 import com.google.zxing.Binarizer;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.NotFoundException;
+import com.google.zxing.source.LuminanceSourceImpl;
+import com.google.zxing.exception.NotFoundException;
 
 /**
  * This class implements a local thresholding algorithm, which while slower than the
@@ -49,7 +49,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
 
     private BitMatrix matrix;
 
-    public HybridBinarizer(LuminanceSource source) {
+    public HybridBinarizer(LuminanceSourceImpl source) {
         super(source);
     }
 
@@ -63,7 +63,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
         if (matrix != null) {
             return matrix;
         }
-        LuminanceSource source = getLuminanceSource();
+        LuminanceSourceImpl source = getLuminanceSource();
         int width = source.getWidth();
         int height = source.getHeight();
         if (width >= MINIMUM_DIMENSION && height >= MINIMUM_DIMENSION) {
@@ -89,7 +89,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
     }
 
     @Override
-    public Binarizer createBinarizer(LuminanceSource source) {
+    public Binarizer createBinarizer(LuminanceSourceImpl source) {
         return new HybridBinarizer(source);
     }
 

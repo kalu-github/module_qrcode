@@ -17,7 +17,7 @@
 package com.google.zxing.qrcode.detector;
 
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.NotFoundException;
+import com.google.zxing.exception.NotFoundException;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;
 import com.google.zxing.common.BitMatrix;

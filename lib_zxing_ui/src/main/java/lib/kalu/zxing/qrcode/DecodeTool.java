@@ -8,7 +8,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import com.google.zxing.BinaryBitmap;
-import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.source.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 

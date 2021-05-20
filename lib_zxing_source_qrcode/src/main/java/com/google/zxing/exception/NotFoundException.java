@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package com.google.zxing;
+package com.google.zxing.exception;
 
 /**
- * Thrown when a barcode was successfully detected, but some aspect of
- * the content did not conform to the barcode's format rules. This could have
- * been due to a mis-detection.
+ * Thrown when a barcode was not found in the image. It might have been
+ * partially detected but could not be confirmed.
  *
  * @author Sean Owen
  */
-public final class FormatException extends ReaderException {
+public final class NotFoundException extends ReaderException {
 
-    private static final FormatException INSTANCE = new FormatException();
+    private static final NotFoundException INSTANCE = new NotFoundException();
 
     static {
         INSTANCE.setStackTrace(NO_TRACE); // since it's meaningless
     }
 
-    private FormatException() {
+    private NotFoundException() {
+        // do nothing
     }
 
-    private FormatException(Throwable cause) {
-        super(cause);
+    public static NotFoundException getNotFoundInstance() {
+        return INSTANCE;
     }
 
-    public static FormatException getFormatInstance() {
-        return isStackTrace ? new FormatException() : INSTANCE;
-    }
-
-    public static FormatException getFormatInstance(Throwable cause) {
-        return isStackTrace ? new FormatException(cause) : INSTANCE;
-    }
 }

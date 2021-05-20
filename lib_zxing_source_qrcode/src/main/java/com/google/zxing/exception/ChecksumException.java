@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing;
+package com.google.zxing.exception;
 
 /**
  * Thrown when a barcode was successfully detected and decoded, but

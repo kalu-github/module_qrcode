@@ -16,7 +16,7 @@
 
 package com.google.zxing.common;
 
-import com.google.zxing.NotFoundException;
+import com.google.zxing.exception.NotFoundException;
 
 /**
  * @author Sean Owen

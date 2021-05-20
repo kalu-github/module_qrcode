@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing;
+package com.google.zxing.exception;
 
 /**
  * A base class which covers the range of exceptions which may occur when encoding a barcode using

@@ -17,6 +17,7 @@
 package com.google.zxing;
 
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.exception.WriterException;
 
 import java.util.Map;
 
