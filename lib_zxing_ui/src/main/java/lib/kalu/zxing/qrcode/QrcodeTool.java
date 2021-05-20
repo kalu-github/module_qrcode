@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
-import lib.kalu.zxing.camerax.DecodeFormatManager;
 import lib.kalu.zxing.util.LogUtil;
 
 /**

@@ -9,8 +9,7 @@ import com.google.zxing.Result;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 
-import lib.kalu.zxing.camerax.DecodeConfig;
-import lib.kalu.zxing.util.LogUtil;
+import com.google.zxing.qrcode.QrcodeDecodeConfig;
 
 
 import java.util.Map;
@@ -36,7 +35,7 @@ public final class AnalyzerMultiFormat extends AnalyzerCore {
         initReader();
     }
 
-    public AnalyzerMultiFormat(@Nullable DecodeConfig config) {
+    public AnalyzerMultiFormat(@Nullable QrcodeDecodeConfig config) {
         super(config);
         initReader();
     }

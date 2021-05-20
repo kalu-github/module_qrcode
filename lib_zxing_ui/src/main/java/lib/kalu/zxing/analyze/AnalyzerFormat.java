@@ -1,7 +1,6 @@
 package lib.kalu.zxing.analyze;
 
 import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Reader;
@@ -9,10 +8,7 @@ import com.google.zxing.Result;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 
-import lib.kalu.zxing.camerax.DecodeConfig;
-import lib.kalu.zxing.util.LogUtil;
-
-import java.util.Map;
+import com.google.zxing.qrcode.QrcodeDecodeConfig;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +26,7 @@ abstract class AnalyzerFormat extends AnalyzerCore {
         initReader();
     }
 
-    public AnalyzerFormat(@Nullable DecodeConfig config) {
+    public AnalyzerFormat(@Nullable QrcodeDecodeConfig config) {
         super(config);
         initReader();
     }

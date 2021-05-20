@@ -1,10 +1,10 @@
-package lib.kalu.zxing.camerax;
+package com.google.zxing.qrcode;
 
 /**
  * @description:
  * @date: 2021-05-17 10:57
  */
-public final class DecodeConfig {
+public final class QrcodeDecodeConfig {
 
     /**
      * 识别区域比例，默认0.6

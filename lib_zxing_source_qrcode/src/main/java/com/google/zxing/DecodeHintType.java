@@ -35,12 +35,6 @@ public enum DecodeHintType {
     OTHER(Object.class),
 
     /**
-     * Image is a pure monochrome image of a barcode. Doesn't matter what it maps to;
-     * use {@link Boolean#TRUE}.
-     */
-    PURE_BARCODE(Void.class),
-
-    /**
      * Spend more time to try to find a barcode; optimize for accuracy, not speed.
      * Doesn't matter what it maps to; use {@link Boolean#TRUE}.
      */
@@ -90,10 +84,7 @@ public enum DecodeHintType {
      * and a UPC or EAN barcode is found but an extension is not, then no result will be returned
      * at all.
      */
-    ALLOWED_EAN_EXTENSIONS(int[].class),
-
-    // End of enumeration values.
-    ;
+    ALLOWED_EAN_EXTENSIONS(int[].class);
 
     /**
      * Data type the hint is expecting.

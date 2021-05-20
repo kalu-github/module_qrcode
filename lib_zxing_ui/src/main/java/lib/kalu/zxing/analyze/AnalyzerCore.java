@@ -1,14 +1,11 @@
 package lib.kalu.zxing.analyze;
 
-import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 
-import lib.kalu.zxing.camerax.DecodeConfig;
+import com.google.zxing.qrcode.QrcodeDecodeConfig;
 import lib.kalu.zxing.util.LogUtil;
 
 import androidx.annotation.Nullable;
-
-import java.util.Map;
 
 /**
  * @description:
@@ -21,7 +18,7 @@ abstract class AnalyzerCore extends AnalyzerImageProxy {
     public AnalyzerCore() {
     }
 
-    public AnalyzerCore(@Nullable DecodeConfig config) {
+    public AnalyzerCore(@Nullable QrcodeDecodeConfig config) {
         if (null != config) {
             this.mAreaRectRatio = config.getRectRatio();
         }

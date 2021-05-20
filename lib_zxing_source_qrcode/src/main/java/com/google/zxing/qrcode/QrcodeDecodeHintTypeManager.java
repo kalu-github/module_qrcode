@@ -22,11 +22,11 @@ public final class QrcodeDecodeHintTypeManager {
     }
 
     private static void addDecodeHintTypes(@NonNull Map<DecodeHintType, Object> hints) {
-        // 复杂模式，开启PURE_BARCODE模式
-        hints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
         // 优化精度
         hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
         // 解码设置编码方式为：utf-8
         hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
+        // hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK, NULL);
+        // hints.put(DecodeHintType.RETURN_CODABAR_START_END, NULL);
     }
 }

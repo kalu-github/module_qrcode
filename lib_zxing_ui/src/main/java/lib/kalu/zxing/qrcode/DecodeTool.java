@@ -33,16 +33,16 @@ class DecodeTool {
         if (!file.exists() || !file.isFile())
             return null;
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-        int sampleSize = options.outHeight / 400;
-        if (sampleSize <= 0)
-            sampleSize = 1;
-        options.inSampleSize = sampleSize;
-        options.inJustDecodeBounds = false;
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(filePath, options);
+//        int sampleSize = options.outHeight / 400;
+//        if (sampleSize <= 0)
+//            sampleSize = 1;
+//        options.inSampleSize = sampleSize;
+//        options.inJustDecodeBounds = false;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, null);
         return decodeQrcodeFromBitmap(bitmap);
     }
 
@@ -54,14 +54,14 @@ class DecodeTool {
 
         try {
 
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
-            options.inSampleSize = calculateInSampleSize(options, 720, 1280);
-            options.inJustDecodeBounds = false;
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inJustDecodeBounds = true;
+//            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
+//            options.inSampleSize = 2;
+//            options.inJustDecodeBounds = false;
 
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, null);
             return decodeQrcodeFromBitmap(bitmap);
         } catch (Exception e) {
             LogUtil.log("decodeQrcodeFromUri => " + e.getMessage(), e);
@@ -113,19 +113,19 @@ class DecodeTool {
         }
     }
 
-    //计算图片的缩放值
-    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
-            //使用需要的宽高的最大值来计算比率
-            final int suitedValue = reqHeight > reqWidth ? reqHeight : reqWidth;
-            final int heightRatio = Math.round((float) height / (float) suitedValue);
-            final int widthRatio = Math.round((float) width / (float) suitedValue);
-
-            inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;//用最大
-        }
-        return inSampleSize;
-    }
+//    // 计算图片的缩放值
+//    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+//        final int height = options.outHeight;
+//        final int width = options.outWidth;
+//        int inSampleSize = 1;
+//        if (height > reqHeight || width > reqWidth) {
+//            //使用需要的宽高的最大值来计算比率
+//            final int suitedValue = reqHeight > reqWidth ? reqHeight : reqWidth;
+//            final int heightRatio = Math.round((float) height / (float) suitedValue);
+//            final int widthRatio = Math.round((float) width / (float) suitedValue);
+//
+//            inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;//用最大
+//        }
+//        return inSampleSize;
+//    }
 }
