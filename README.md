@@ -1,4 +1,10 @@
 #
+#### 基于CameraX-Zbar二维码扫描库
+```
+https://github.com/153437803/moudle_zbar
+```
+
+#
 #### demo
 
 ![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162026.gif )
