@@ -53,7 +53,7 @@ public interface AnalyzerBaseImpl {
      */
     default byte[] optimize(int orientation, boolean optimizeColor, @NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight) {
 
-        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimizeColor ? original.clone() : original;
+        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimizeColor ? new byte[original.length] : original;
 
         // 竖屏
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {

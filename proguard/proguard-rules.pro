@@ -48,13 +48,13 @@
 -optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
 
 # 指定外部模糊字典
--obfuscationdictionary proguard-dict-cn1.txt
+-obfuscationdictionary proguard-dict-1il.txt
 
 # 指定class模糊字典
--classobfuscationdictionary proguard-dict-cn1.txt
+-classobfuscationdictionary proguard-dict-1il.txt
 
 # 指定package模糊字典
--packageobfuscationdictionary proguard-dict-cn1.txt
+-packageobfuscationdictionary proguard-dict-1il.txt
 
 #---------- 混淆配置 ----------------
 #---------- 混淆配置 ----------------
