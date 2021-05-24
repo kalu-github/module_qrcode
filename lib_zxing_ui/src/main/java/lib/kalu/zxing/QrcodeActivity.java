@@ -176,7 +176,7 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtil.log("onActivityResult => requestCode = " + requestCode + ", resultCode = " + resultCode + ", data = " + data + ", uri = " + (null == data ? "null" : data.getData()));
         if (null == data || null == data.getData() || requestCode != 0X87)
@@ -226,6 +226,12 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     protected void onDestroy() {
         releaseCamera();
         super.onDestroy();
+
+        try {
+            android.os.Process.killProcess(android.os.Process.myPid());
+        } catch (Exception e) {
+            System.exit(0);
+        }
     }
 
     /**

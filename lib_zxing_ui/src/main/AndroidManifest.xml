@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-feature
@@ -21,6 +22,7 @@
             android:name="lib.kalu.zxing.QrcodeActivity"
             android:exported="false"
             android:launchMode="singleTop"
+            android:process=":zxing"
             android:screenOrientation="portrait"
             android:theme="@style/QrcodeTheme" />
     </application>
