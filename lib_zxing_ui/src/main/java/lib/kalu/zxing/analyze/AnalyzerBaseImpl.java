@@ -59,29 +59,67 @@ public interface AnalyzerBaseImpl {
     default byte[] optimize(int orientation, boolean optimize, @NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight) {
         LogUtil.log("optimize=> orientation = " + (orientation == Configuration.ORIENTATION_PORTRAIT ? "竖屏" : "横屏") + ", optimize = " + optimize + ", dataWidth = " + dataWidth + ", dataHeight = " + dataHeight);
 
-        // 优化
+        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimize ? new byte[original.length] : original;
+        short random = 0;
         if (optimize) {
-            short random = (short) (Math.random() * 4 + 3);
-            for (int i = 0; i < dataWidth * dataHeight; i++) {
-                byte a = original[i];
-                // 1. 伽马增强
-                byte b = (byte) (255 * Math.pow((a & 0xff) / 255f, 4f));
-                // 2. 线性增强
-                byte c = (byte) (b * random);
-                original[i] = c;
-            }
+            random = (short) (Math.random() * 4 + 3);
         }
 
-        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimize ? new byte[original.length] : original;
+        boolean isBreak = false;
+        for (int y = 0; y < dataHeight; y++) {
 
-        // 竖屏
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            for (int y = 0; y < dataHeight; y++) {
-                for (int x = 0; x < dataWidth; x++) {
-                    data[x * dataHeight + dataHeight - y - 1] = original[x + y * dataWidth];
+            if (isBreak)
+                break;
+
+            for (int x = 0; x < dataWidth; x++) {
+
+                int i = x + y * dataWidth;
+                if (optimize) {
+                    byte a = original[i];
+                    // 1. 伽马增强
+                    byte b = (byte) (255 * Math.pow((a & 0xff) / 255f, 4f));
+                    // 2. 线性增强
+                    byte c = (byte) (b * random);
+                    original[i] = c;
+                }
+
+                // 不需要优化, 并且不是竖屏, 跳出嵌套循环
+                if (!optimize && orientation != Configuration.ORIENTATION_PORTRAIT) {
+                    isBreak = true;
+                    break;
+                }
+                // 竖屏切换坐标值
+                else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    int j = x * dataHeight + dataHeight - y - 1;
+                    data[j] = original[i];
                 }
             }
         }
+
+
+//        // 优化
+//        if (optimize) {
+//            short random = (short) (Math.random() * 4 + 3);
+//            for (int i = 0; i < dataWidth * dataHeight; i++) {
+//                byte a = original[i];
+//                // 1. 伽马增强
+//                byte b = (byte) (255 * Math.pow((a & 0xff) / 255f, 4f));
+//                // 2. 线性增强
+//                byte c = (byte) (b * random);
+//                original[i] = c;
+//            }
+//        }
+//
+//        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimize ? new byte[original.length] : original;
+//
+//        // 竖屏
+//        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            for (int y = 0; y < dataHeight; y++) {
+//                for (int x = 0; x < dataWidth; x++) {
+//                    data[x * dataHeight + dataHeight - y - 1] = original[x + y * dataWidth];
+//                }
+//            }
+//        }
 
         return data;
     }
