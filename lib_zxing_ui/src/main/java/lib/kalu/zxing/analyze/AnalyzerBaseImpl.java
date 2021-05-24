@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.ImageProxy;
 
+import lib.kalu.zxing.util.LogUtil;
+
 /**
  * @description: 分析器
  * @date: 2021-05-07 14:56
@@ -41,19 +43,36 @@ public interface AnalyzerBaseImpl {
     }
 
     default byte[] optimize(int orientation, @NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight) {
-        return optimize(orientation, false, original, dataWidth, dataHeight);
+        return optimize(orientation, true, original, dataWidth, dataHeight);
     }
 
     /**
-     * 没有任何色彩， 灰度化后跟原图应该是差不多， zxing扫不出的原因就是理应的黑色区域灰度值过高，这里要想办法降低。这里笔者经过大量测试发现一个极其巧妙的处理方式
+     * 相机预览的每一帧数据, 进行优化
      *
-     * @param data
-     * @param dataWidth
-     * @param dataHeight
+     * @param orientation 方向
+     * @param optimize    优化开关：1. 伽马增强， 2. 线性增强
+     * @param original    相机帧数据
+     * @param dataWidth   相机帧数据, 原始宽
+     * @param dataHeight  相机帧数据, 原始高
+     * @return
      */
-    default byte[] optimize(int orientation, boolean optimizeColor, @NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight) {
+    default byte[] optimize(int orientation, boolean optimize, @NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight) {
+        LogUtil.log("optimize=> orientation = " + (orientation == Configuration.ORIENTATION_PORTRAIT ? "竖屏" : "横屏") + ", optimize = " + optimize + ", dataWidth = " + dataWidth + ", dataHeight = " + dataHeight);
 
-        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimizeColor ? new byte[original.length] : original;
+        // 优化
+        if (optimize) {
+            short random = (short) (Math.random() * 4 + 3);
+            for (int i = 0; i < dataWidth * dataHeight; i++) {
+                byte a = original[i];
+                // 1. 伽马增强
+                byte b = (byte) (255 * Math.pow((a & 0xff) / 255f, 4f));
+                // 2. 线性增强
+                byte c = (byte) (b * random);
+                original[i] = c;
+            }
+        }
+
+        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimize ? new byte[original.length] : original;
 
         // 竖屏
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -62,16 +81,6 @@ public interface AnalyzerBaseImpl {
                     data[x * dataHeight + dataHeight - y - 1] = original[x + y * dataWidth];
                 }
             }
-        }
-
-        // 颜色线性增强
-        if (optimizeColor) {
-//            int width = orientation == Configuration.ORIENTATION_PORTRAIT ? dataHeight : dataWidth;
-//            int height = orientation == Configuration.ORIENTATION_PORTRAIT ? dataWidth : dataHeight;
-//            short random = (short) (Math.random() * 4 + 3);
-//            for (int i = 0; i < width * height; i++) {
-//                data[i] = (byte) (original[i] * random);
-//            }
         }
 
         return data;
