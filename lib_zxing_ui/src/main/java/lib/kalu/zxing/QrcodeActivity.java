@@ -35,17 +35,25 @@ import androidx.core.app.ActivityCompat;
 @Keep
 public final class QrcodeActivity extends AppCompatActivity implements OnCameraScanChangeListener {
 
+    @Keep
     public static final int RESULT_CODE_SUCC = 10890001;
+    @Keep
     public static final int RESULT_CODE_FAIL = 10890002;
+    @Keep
     public static final int RESULT_CODE_CANCLE = 10890003;
-    public static final String RESULT_INTENT_DATA = "result_intent_data";
+    @Keep
+    public static final String INTENT_RESULT = "intent_result";
+    @Keep
+    public static final String INTENT_EXTRA = "intent_extra";
 
     private ICameraImpl mCameraScan;
 
     @Override
     public void onBackPressed() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setResult(RESULT_CODE_CANCLE);
+        Intent intent = new Intent();
+        intent.putExtra(INTENT_EXTRA, getIntent().getStringExtra(INTENT_EXTRA));
+        setResult(RESULT_CODE_CANCLE, intent);
         super.onBackPressed();
     }
 
@@ -196,7 +204,8 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
 
         LogUtil.log("onActivityResult => s = " + s);
         Intent intent = new Intent();
-        intent.putExtra(RESULT_INTENT_DATA, s);
+        intent.putExtra(INTENT_RESULT, s);
+        intent.putExtra(INTENT_EXTRA, getIntent().getStringExtra(INTENT_EXTRA));
         setResult(RESULT_CODE_SUCC, intent);
         finish();
     }
@@ -264,7 +273,8 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
             }
 
             Intent intent = new Intent();
-            intent.putExtra(RESULT_INTENT_DATA, result.getText());
+            intent.putExtra(INTENT_RESULT, result.getText());
+            intent.putExtra(INTENT_EXTRA, getIntent().getStringExtra(INTENT_EXTRA));
             setResult(RESULT_CODE_SUCC, intent);
             finish();
         }
