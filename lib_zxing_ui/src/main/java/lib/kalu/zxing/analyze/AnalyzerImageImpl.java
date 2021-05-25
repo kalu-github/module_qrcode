@@ -35,7 +35,7 @@ interface AnalyzerImageImpl extends AnalyzerBaseImpl {
         int width = imageProxy.getWidth();
         int height = imageProxy.getHeight();
 
-        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT ? optimize(orientation, original, width, height) : original;
+        byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT ? optimize(original, width, height, orientation, true) : original;
         int dataWidth = orientation == Configuration.ORIENTATION_PORTRAIT ? height : width;
         int dataHeight = orientation == Configuration.ORIENTATION_PORTRAIT ? width : height;
         return analyzeData(data, dataWidth, dataHeight);

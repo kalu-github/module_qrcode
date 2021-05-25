@@ -31,6 +31,7 @@ public interface AnalyzerBaseImpl {
      * @param top        裁剪上起始位置
      * @param outWidth   裁剪宽度
      * @param outHeight  裁剪高度
+     * @param tryAgain   重试
      * @return
      */
     Result analyzeRect(byte[] data, int dataWidth, int dataHeight, int left, int top, int outWidth, int outHeight);
@@ -38,25 +39,26 @@ public interface AnalyzerBaseImpl {
     @Nullable
     Reader createReader();
 
+    /**
+     * 默认全屏扫描
+     *
+     * @return
+     */
     default float ratio() {
-        return 0.6F;
-    }
-
-    default byte[] optimize(int orientation, @NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight) {
-        return optimize(orientation, true, original, dataWidth, dataHeight);
+        return 1F;
     }
 
     /**
      * 相机预览的每一帧数据, 进行优化
      *
-     * @param orientation 方向
-     * @param optimize    优化开关：1. 伽马增强， 2. 线性增强
      * @param original    相机帧数据
      * @param dataWidth   相机帧数据, 原始宽
      * @param dataHeight  相机帧数据, 原始高
+     * @param orientation 方向
+     * @param optimize    优化开关：1. 伽马增强， 2. 线性增强
      * @return
      */
-    default byte[] optimize(int orientation, boolean optimize, @NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight) {
+    default byte[] optimize(@NonNull byte[] original, @NonNull int dataWidth, @NonNull int dataHeight, int orientation, boolean optimize) {
         LogUtil.log("optimize=> orientation = " + (orientation == Configuration.ORIENTATION_PORTRAIT ? "竖屏" : "横屏") + ", optimize = " + optimize + ", dataWidth = " + dataWidth + ", dataHeight = " + dataHeight);
 
         byte[] data = orientation == Configuration.ORIENTATION_PORTRAIT || optimize ? new byte[original.length] : original;
