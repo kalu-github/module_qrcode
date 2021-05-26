@@ -242,7 +242,7 @@ public final class CameraManager implements ICameraImpl {
                     public void analyze(@NonNull ImageProxy image) {
 
                         if (isAnalyze && !isAnalyzeResult && mAnalyzer != null) {
-                            Result result = mAnalyzer.analyzeImage(image, mOrientation);
+                            Result result = mAnalyzer.analyzeImage(context, image, mOrientation);
                             if (result != null) {
                                 mResultLiveData.postValue(result);
                             }
