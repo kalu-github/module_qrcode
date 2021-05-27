@@ -1,4 +1,4 @@
-package lib.kalu.zxing.camerax;
+package lib.kalu.zxing.sensor;
 
 /*
  * Copyright (C) 2012 ZXing authors
@@ -23,11 +23,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import lib.kalu.zxing.contentprovider.ContextProviderZxing;
+
 /**
  * @description:
- * @date:  2021-05-07 14:56
+ * @date: 2021-05-07 14:56
  */
-public class AmbientLightManager implements SensorEventListener {
+public class LightSensorEventManager implements SensorEventListener {
 
     private static final int INTERVAL_TIME = 200;
 
@@ -52,11 +54,23 @@ public class AmbientLightManager implements SensorEventListener {
 
     private OnLightSensorEventListener mOnLightSensorEventListener;
 
-    AmbientLightManager(Context context) {
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+    /*******************************/
+
+    private LightSensorEventManager() {
+        sensorManager = (SensorManager) ContextProviderZxing.mContext.getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         isLightSensorEnabled = true;
     }
+
+    private static final class Holder {
+        static final LightSensorEventManager instance = new LightSensorEventManager();
+    }
+
+    public static final LightSensorEventManager build() {
+        return Holder.instance;
+    }
+
+    /*******************************/
 
     public void register() {
         if (sensorManager != null && lightSensor != null) {
@@ -73,9 +87,9 @@ public class AmbientLightManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if(isLightSensorEnabled){
+        if (isLightSensorEnabled) {
             long currentTime = System.currentTimeMillis();
-            if(currentTime - lastTime < INTERVAL_TIME){//降低频率
+            if (currentTime - lastTime < INTERVAL_TIME) {//降低频率
                 return;
             }
             lastTime = currentTime;
@@ -84,9 +98,9 @@ public class AmbientLightManager implements SensorEventListener {
                 float lightLux = sensorEvent.values[0];
                 mOnLightSensorEventListener.onSensorChanged(lightLux);
                 if (lightLux <= darkLightLux) {
-                    mOnLightSensorEventListener.onSensorChanged(true,darkLightLux);
+                    mOnLightSensorEventListener.onSensorChanged(true, darkLightLux);
                 } else if (lightLux >= brightLightLux) {
-                    mOnLightSensorEventListener.onSensorChanged(false,darkLightLux);
+                    mOnLightSensorEventListener.onSensorChanged(false, darkLightLux);
                 }
             }
         }
@@ -94,17 +108,19 @@ public class AmbientLightManager implements SensorEventListener {
 
     /**
      * 设置光线足够暗的阈值（单位：lux）
+     *
      * @param lightLux
      */
-    public void setDarkLightLux(float lightLux){
+    public void setDarkLightLux(float lightLux) {
         this.darkLightLux = lightLux;
     }
 
     /**
      * 设置光线足够明亮的阈值（单位：lux）
+     *
      * @param lightLux
      */
-    public void setBrightLightLux(float lightLux){
+    public void setBrightLightLux(float lightLux) {
         this.darkLightLux = lightLux;
     }
 
@@ -119,6 +135,7 @@ public class AmbientLightManager implements SensorEventListener {
 
     /**
      * 设置是否启用光线亮度传感器
+     *
      * @param lightSensorEnabled
      */
     public void setLightSensorEnabled(boolean lightSensorEnabled) {
@@ -127,26 +144,27 @@ public class AmbientLightManager implements SensorEventListener {
 
     /**
      * 设置光线亮度传感器监听器，只有在 {@link #isLightSensorEnabled} 为{@code true} 才有效
+     *
      * @param listener
      */
-    public void setOnLightSensorEventListener(OnLightSensorEventListener listener){
+    public void setOnLightSensorEventListener(OnLightSensorEventListener listener) {
         mOnLightSensorEventListener = listener;
     }
 
-    public interface OnLightSensorEventListener{
+    public interface OnLightSensorEventListener {
         /**
-         *
          * @param lightLux 当前检测到的光线照度值
          */
-        default void onSensorChanged(float lightLux){
+        default void onSensorChanged(float lightLux) {
 
         }
 
         /**
          * 传感器改变事件
-         * @param dark 是否太暗了，当检测到的光线照度值小于{@link #darkLightLux}时，为{@code true}
+         *
+         * @param dark     是否太暗了，当检测到的光线照度值小于{@link #darkLightLux}时，为{@code true}
          * @param lightLux 当前检测到的光线照度值
          */
-        void onSensorChanged(boolean dark,float lightLux);
+        void onSensorChanged(boolean dark, float lightLux);
     }
 }

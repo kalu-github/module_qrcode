@@ -5,6 +5,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.Camera;
+import androidx.camera.view.PreviewView;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * @description: 相机生命周期Impl
@@ -12,17 +14,13 @@ import androidx.camera.core.Camera;
  */
 interface ICameraBaseLifecycleImpl {
 
-    /**
-     * 启动相机预览
-     */
-    void start(@NonNull Context context);
-
-    /**
-     * 停止相机预览
-     */
-    void stop(@NonNull Context context);
+    void start(@NonNull FragmentActivity activity, @NonNull PreviewView previewView);
 
     void release(@NonNull Context context);
+
+    void pause(@NonNull FragmentActivity activity);
+
+    void resume(@NonNull FragmentActivity activity);
 
     @Nullable
     Camera getCamera();

@@ -15,9 +15,8 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
-import lib.kalu.zxing.impl.ICameraImpl;
 import lib.kalu.zxing.camerax.CameraManager;
-import lib.kalu.zxing.listener.OnCameraScanChangeListener;
+import lib.kalu.zxing.listener.OnCameraStatusChangeListener;
 import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.qrcode.QrcodeTool;
 
@@ -33,7 +32,7 @@ import androidx.core.app.ActivityCompat;
  * @date: 2021-05-07 10:50
  */
 @Keep
-public final class QrcodeActivity extends AppCompatActivity implements OnCameraScanChangeListener {
+public final class QrcodeActivity extends AppCompatActivity implements OnCameraStatusChangeListener {
 
     @Keep
     public static final int RESULT_CODE_SUCC = 10890001;
@@ -46,7 +45,7 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     @Keep
     public static final String INTENT_EXTRA = "intent_extra";
 
-    private ICameraImpl mCameraScan;
+//    private ICameraImpl mCameraScan;
 
     @Override
     public void onBackPressed() {
@@ -102,8 +101,10 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
             @Override
             public void onClick(View v) {
                 try {
-                    boolean isTorch = mCameraScan.isTorchEnabled();
-                    mCameraScan.enableTorch(!isTorch);
+
+                    CameraManager cameraManager = CameraManager.build();
+                    boolean isTorch = cameraManager.isTorchEnabled();
+                    cameraManager.enableTorch(!isTorch);
 
                     TextView textView = findViewById(R.id.lib_zxing_ui_id_flashlight);
                     textView.setCompoundDrawablesWithIntrinsicBounds(0, !isTorch ? R.drawable.moudle_zxing_ic_flashlight_on : R.drawable.moudle_zxing_ic_flashlight_off, 0, 0);
@@ -123,7 +124,7 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     @Override
     protected void onRestart() {
         super.onRestart();
-        startCamera();
+        CameraManager.build().resume(this);
         TextView textView = findViewById(R.id.lib_zxing_ui_id_flashlight);
         textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.moudle_zxing_ic_flashlight_off, 0, 0);
         textView.setText(R.string.moudle_zxing_string_light_on);
@@ -132,7 +133,7 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     @Override
     protected void onPause() {
         super.onPause();
-        stopCamera();
+        CameraManager.build().pause(this);
     }
 
     /**
@@ -140,29 +141,20 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
      */
     public void initCamera() {
         PreviewView previewView = findViewById(R.id.lib_zxing_ui_id_preview);
-        mCameraScan = new CameraManager(this, previewView);
-        mCameraScan.setOnCameraScanChangeListener(this);
+        CameraManager cameraManager = CameraManager.build();
+        cameraManager.init(this, previewView, true, true);
+        cameraManager.setOnCameraScanChangeListener(this);
     }
 
     /**
      * 启动相机预览
      */
     public void startCamera() {
-        if (mCameraScan != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                mCameraScan.start(getApplicationContext());
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0X86);
-            }
-        }
-    }
-
-    /**
-     * 暂停相机预览
-     */
-    public void stopCamera() {
-        if (mCameraScan != null) {
-            mCameraScan.start(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            PreviewView previewView = findViewById(R.id.lib_zxing_ui_id_preview);
+            CameraManager.build().start(this, previewView);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0X86);
         }
     }
 
@@ -170,9 +162,7 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
      * 释放相机
      */
     private void releaseCamera() {
-        if (mCameraScan != null) {
-            mCameraScan.release(getApplicationContext());
-        }
+        CameraManager.build().release(this);
     }
 
     @Override
@@ -244,15 +234,6 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     }
 
     /**
-     * Get {@link ICameraImpl}
-     *
-     * @return {@link #mCameraScan}
-     */
-    public ICameraImpl getCameraScan() {
-        return mCameraScan;
-    }
-
-    /**
      * 接收扫码结果回调
      *
      * @param result 扫码结果
@@ -264,14 +245,6 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
             LogUtil.log("onScanResultCallback => text = " + result.getText());
             releaseCamera();
 
-            // 震动
-            try {
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(40);
-            } catch (Exception e) {
-                LogUtil.log("onScanResultCallback => msg = " + e.getMessage(), e);
-            }
-
             Intent intent = new Intent();
             intent.putExtra(INTENT_RESULT, result.getText());
             intent.putExtra(INTENT_EXTRA, getIntent().getStringExtra(INTENT_EXTRA));
@@ -279,5 +252,10 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
             finish();
         }
         return true;
+    }
+
+    @Override
+    public void onFlash(boolean dark, float lightLux) {
+
     }
 }

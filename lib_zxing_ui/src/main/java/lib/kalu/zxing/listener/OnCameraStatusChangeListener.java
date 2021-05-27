@@ -7,10 +7,17 @@ import com.google.zxing.Result;
 
 /**
  * @description:
- * @date:  2021-05-17 13:53
+ * @date: 2021-05-17 13:53
  */
 @Keep
-public interface OnCameraScanChangeListener {
+public interface OnCameraStatusChangeListener {
 
     boolean onResult(@NonNull Result result);
+
+    /**
+     * 手电筒
+     *
+     * @param open
+     */
+    void onFlash(boolean dark, float lightLux);
 }

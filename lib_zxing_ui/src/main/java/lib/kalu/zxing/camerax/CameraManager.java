@@ -1,8 +1,9 @@
 package lib.kalu.zxing.camerax;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -16,8 +17,11 @@ import com.google.zxing.common.detector.MathUtils;
 import lib.kalu.zxing.analyze.AnalyzerBaseImpl;
 import lib.kalu.zxing.analyze.AnalyzerQrcode;
 import lib.kalu.zxing.impl.ICameraImpl;
-import lib.kalu.zxing.listener.OnCameraScanChangeListener;
+import lib.kalu.zxing.listener.OnCameraStatusChangeListener;
+import lib.kalu.zxing.sensor.LightSensorEventManager;
+import lib.kalu.zxing.util.BeepUtil;
 import lib.kalu.zxing.util.LogUtil;
+import lib.kalu.zxing.util.VibratorUtil;
 
 import java.util.concurrent.Executors;
 
@@ -36,16 +40,19 @@ import androidx.camera.core.ZoomState;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @description:
  * @date: 2021-05-07 14:55
  */
 public final class CameraManager implements ICameraImpl {
+
+    private static final String INTENT_ZXING_POST = "intent_zxing_post";
 
     /**
      * Defines the maximum duration in milliseconds between a touch pad
@@ -61,62 +68,40 @@ public final class CameraManager implements ICameraImpl {
      */
     private static final int HOVER_TAP_SLOP = 20;
 
-    private FragmentActivity mFragmentActivity;
-    //    private Context mContext;
-    private LifecycleOwner mLifecycleOwner;
-    private PreviewView mPreviewView;
+    private final CameraConfig CAMERA_CONFIG = new CameraConfig();
 
-    private ListenableFuture<ProcessCameraProvider> mCameraProviderFuture;
     private Camera mCamera;
 
-    private CameraConfig mCameraConfig;
-    private AnalyzerBaseImpl mAnalyzer;
+    private final MutableLiveData<Result> MUTABLE_LIVE_DATA = new MutableLiveData<>();
 
-    /**
-     * 是否分析
-     */
-    private volatile boolean isAnalyze = true;
+    private OnCameraStatusChangeListener mOnCameraStatusChangeListener;
 
-    /**
-     * 是否已经分析出结果
-     */
-    private volatile boolean isAnalyzeResult;
+//    private AmbientLightManager mAmbientLightManager;
 
-    private View flashlightView;
-
-    private MutableLiveData<Result> mResultLiveData;
-
-    private OnCameraScanChangeListener mOnScanResultCallback;
-
-    private BeepManager mBeepManager;
-    private AmbientLightManager mAmbientLightManager;
-
-    private int mOrientation;
-    private int mScreenWidth;
-    private int mScreenHeight;
+    //    private int mOrientation;
     private long mLastAutoZoomTime;
     private long mLastHoveTapTime;
     private boolean isClickTap;
     private float mDownX;
     private float mDownY;
 
-    public CameraManager(FragmentActivity activity, PreviewView previewView) {
-        this.mFragmentActivity = activity;
-        this.mLifecycleOwner = activity;
-        this.mPreviewView = previewView;
-        Context context = activity.getApplicationContext();
-        initData(context);
+
+    /*******************/
+
+    private CameraManager() {
     }
 
-    public CameraManager(Fragment fragment, PreviewView previewView) {
-        this.mFragmentActivity = fragment.getActivity();
-        this.mLifecycleOwner = fragment;
-        this.mPreviewView = previewView;
-        Context context = fragment.getContext().getApplicationContext();
-        initData(context);
+    private static class Holder {
+        static final CameraManager instance = new CameraManager();
     }
 
-    private ScaleGestureDetector.OnScaleGestureListener mOnScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+    public static CameraManager build() {
+        return Holder.instance;
+    }
+
+    /*******************/
+
+    private final ScaleGestureDetector.OnScaleGestureListener mOnScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scale = detector.getScaleFactor();
@@ -126,50 +111,53 @@ public final class CameraManager implements ICameraImpl {
             }
             return true;
         }
-
     };
 
-    private void initData(@NonNull Context context) {
-        mResultLiveData = new MutableLiveData<>();
-        mResultLiveData.observe(mLifecycleOwner, result -> {
-            handleAnalyzeResult(result);
-        });
+    public void init(@NonNull FragmentActivity activity, @NonNull PreviewView previewView) {
+        init(activity, previewView, false, false);
+    }
 
-        mOrientation = context.getResources().getConfiguration().orientation;
-        ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, mOnScaleGestureListener);
-        mPreviewView.setOnTouchListener((v, event) -> {
-            handlePreviewViewClickTap(event);
-            if (isNeedTouchZoom()) {
-                return scaleGestureDetector.onTouchEvent(event);
+    public void init(@NonNull FragmentActivity activity, @NonNull PreviewView previewView, boolean touchScale, boolean sensorEvent) {
+        MUTABLE_LIVE_DATA.observe(activity, new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                callback(activity, result);
             }
-            return false;
         });
 
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        mScreenWidth = displayMetrics.widthPixels;
-        mScreenHeight = displayMetrics.heightPixels;
-        mBeepManager = new BeepManager(context);
-        mAmbientLightManager = new AmbientLightManager(context);
-        if (mAmbientLightManager != null) {
-            mAmbientLightManager.register();
-            mAmbientLightManager.setOnLightSensorEventListener((dark, lightLux) -> {
-                if (flashlightView != null) {
-                    if (dark) {
-                        if (flashlightView.getVisibility() != View.VISIBLE) {
-                            flashlightView.setVisibility(View.VISIBLE);
-                            flashlightView.setSelected(isTorchEnabled());
-                        }
-                    } else if (flashlightView.getVisibility() == View.VISIBLE && !isTorchEnabled()) {
-                        flashlightView.setVisibility(View.INVISIBLE);
-                        flashlightView.setSelected(false);
-                    }
+        Context context = activity.getApplicationContext();
 
+        // 手势缩放
+        if (touchScale) {
+            ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, mOnScaleGestureListener);
+            previewView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    handlePreviewViewClickTap(previewView, event);
+                    if (isNeedTouchZoom()) {
+                        return scaleGestureDetector.onTouchEvent(event);
+                    }
+                    return false;
+                }
+            });
+        }
+
+        // 光纤传感器
+        if (sensorEvent) {
+            LightSensorEventManager.build().register();
+            LightSensorEventManager.build().setOnLightSensorEventListener(new LightSensorEventManager.OnLightSensorEventListener() {
+                @Override
+                public void onSensorChanged(boolean dark, float lightLux) {
+
+                    if (null != mOnCameraStatusChangeListener) {
+                        mOnCameraStatusChangeListener.onFlash(dark, lightLux);
+                    }
                 }
             });
         }
     }
 
-    private void handlePreviewViewClickTap(MotionEvent event) {
+    private void handlePreviewViewClickTap(@NonNull PreviewView previewView, @NonNull MotionEvent event) {
         if (event.getPointerCount() == 1) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -183,172 +171,130 @@ public final class CameraManager implements ICameraImpl {
                     break;
                 case MotionEvent.ACTION_UP:
                     if (isClickTap && mLastHoveTapTime + HOVER_TAP_TIMEOUT > System.currentTimeMillis()) {
-                        startFocusAndMetering(event.getX(), event.getY());
+                        startFocusAndMetering(previewView, event.getX(), event.getY());
                     }
                     break;
             }
         }
     }
 
-    private void startFocusAndMetering(float x, float y) {
+    private void startFocusAndMetering(@NonNull PreviewView previewView, float x, float y) {
         if (mCamera != null) {
             LogUtil.log("startFocusAndMetering:" + x + "," + y);
-            MeteringPoint point = mPreviewView.getMeteringPointFactory().createPoint(x, y);
+            MeteringPoint point = previewView.getMeteringPointFactory().createPoint(x, y);
             mCamera.getCameraControl().startFocusAndMetering(new FocusMeteringAction.Builder(point).build());
         }
     }
 
-
-    private void initConfig() {
-        if (mCameraConfig == null) {
-            mCameraConfig = new CameraConfig();
-        }
-        if (mAnalyzer == null) {
-            mAnalyzer = new AnalyzerQrcode();
-        }
-    }
-
-
     @Override
-    public ICameraImpl setCameraConfig(CameraConfig cameraConfig) {
-        if (cameraConfig != null) {
-            this.mCameraConfig = cameraConfig;
+    public ICameraImpl setCameraConfig(@NonNull ImageAnalysis.Builder builder) {
+        if (CAMERA_CONFIG != null) {
+            this.CAMERA_CONFIG.options(builder);
         }
         return this;
     }
 
     @Override
-    public void start(@NonNull Context context) {
-        initConfig();
-        mCameraProviderFuture = ProcessCameraProvider.getInstance(context);
-        mCameraProviderFuture.addListener(() -> {
+    public void start(@NonNull FragmentActivity activity, @NonNull PreviewView previewView) {
 
-            try {
-                Preview preview = mCameraConfig.options(new Preview.Builder());
+        Context context = activity.getApplicationContext();
+        ListenableFuture<ProcessCameraProvider> instance = ProcessCameraProvider.getInstance(context);
 
-                //相机选择器
-                CameraSelector cameraSelector = mCameraConfig.options(new CameraSelector.Builder()
-                        .requireLensFacing(LENS_FACING_BACK));
-                //设置SurfaceProvider
-                preview.setSurfaceProvider(mPreviewView.getSurfaceProvider());
+        instance.addListener(new Runnable() {
+            @Override
+            public void run() {
 
-                //图像分析
-                ImageAnalysis imageAnalysis = mCameraConfig.options(new ImageAnalysis.Builder()
-                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST));
+                try {
+                    Preview preview = CAMERA_CONFIG.options(new Preview.Builder());
 
-                // 分析
-                imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), new ImageAnalysis.Analyzer() {
-                    @Override
-                    public void analyze(@NonNull ImageProxy image) {
+                    // 相机选择器
+                    CameraSelector.Builder requireLensFacing = new CameraSelector.Builder().requireLensFacing(LENS_FACING_BACK);
+                    CameraSelector cameraSelector = CAMERA_CONFIG.options(requireLensFacing);
+                    // 设置SurfaceProvider
+                    preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                        if (isAnalyze && !isAnalyzeResult && mAnalyzer != null) {
-                            Result result = mAnalyzer.analyzeImage(context, image, mOrientation);
+                    // 图像分析
+                    ImageAnalysis.Builder builder = new ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST);
+                    ImageAnalysis imageAnalysis = CAMERA_CONFIG.options(builder);
+
+                    // 分析
+//                    imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), new ImageAnalysis.Analyzer() {
+                    imageAnalysis.setAnalyzer(Executors.newFixedThreadPool(1), new ImageAnalysis.Analyzer() {
+                        @Override
+                        public void analyze(@NonNull ImageProxy image) {
+                            AnalyzerQrcode analyzerQrcode = new AnalyzerQrcode();
+                            Result result = analyzerQrcode.analyzeImage(context, image, context.getResources().getConfiguration().orientation);
                             if (result != null) {
-                                mResultLiveData.postValue(result);
+                                boolean status = activity.getIntent().getBooleanExtra(INTENT_ZXING_POST, true);
+                                activity.getIntent().putExtra(INTENT_ZXING_POST, false);
+                                if (status) {
+                                    LogUtil.log("setAnalyzer => thread = " + Thread.currentThread().getName());
+                                    MUTABLE_LIVE_DATA.postValue(result);
+                                }
                             }
+                            image.close();
                         }
-                        image.close();
+                    });
+                    if (mCamera != null) {
+                        instance.get().unbindAll();
                     }
-                });
-                if (mCamera != null) {
-                    mCameraProviderFuture.get().unbindAll();
+                    //绑定到生命周期
+                    mCamera = instance.get().bindToLifecycle(activity, cameraSelector, preview, imageAnalysis);
+                } catch (Exception e) {
+                    LogUtil.log(e.getMessage());
                 }
-                //绑定到生命周期
-                mCamera = mCameraProviderFuture.get().bindToLifecycle(mLifecycleOwner, cameraSelector, preview, imageAnalysis);
-            } catch (Exception e) {
-                LogUtil.log(e.getMessage());
             }
-
         }, ContextCompat.getMainExecutor(context));
     }
 
-    /**
-     * 处理分析结果
-     *
-     * @param result
-     */
-    private synchronized void handleAnalyzeResult(Result result) {
-        if (isAnalyzeResult || !isAnalyze) {
-            return;
-        }
-        isAnalyzeResult = true;
-        if (mBeepManager != null) {
-            mBeepManager.playBeepSoundAndVibrate();
-        }
+    @Override
+    public ICameraImpl callback(@NonNull @NotNull Activity activity, @Nullable Result result) {
 
-        if (isNeedAutoZoom() && mLastAutoZoomTime + 100 < System.currentTimeMillis()) {
-            ResultPoint[] points = result.getResultPoints();
-            if (points != null && points.length >= 2) {
-                float distance1 = ResultPoint.distance(points[0], points[1]);
-                float maxDistance = distance1;
-                if (points.length >= 3) {
-                    float distance2 = ResultPoint.distance(points[1], points[2]);
-                    float distance3 = ResultPoint.distance(points[0], points[2]);
-                    maxDistance = Math.max(Math.max(distance1, distance2), distance3);
-                }
-                if (handleAutoZoom((int) maxDistance, result)) {
-                    return;
-                }
+        synchronized (CameraManager.this) {
+
+//        // 正处于缩放状态
+//        if (isNeedAutoZoom() && mLastAutoZoomTime + 100 < System.currentTimeMillis()) {
+//            ResultPoint[] points = result.getResultPoints();
+//            if (points != null && points.length >= 2) {
+//                float distance1 = ResultPoint.distance(points[0], points[1]);
+//                float maxDistance = distance1;
+//                if (points.length >= 3) {
+//                    float distance2 = ResultPoint.distance(points[1], points[2]);
+//                    float distance3 = ResultPoint.distance(points[0], points[2]);
+//                    maxDistance = Math.max(Math.max(distance1, distance2), distance3);
+//                }
+//                if (handleAutoZoom(activity, result, maxDistance)) {
+//                    return this;
+//                }
+//            }
+//        }
+
+            if (null != mOnCameraStatusChangeListener) {
+                Context context = activity.getApplicationContext();
+                release(context);
+                mOnCameraStatusChangeListener.onResult(result);
             }
         }
 
-        scanResultCallback(result);
+        return this;
     }
 
-    private boolean handleAutoZoom(int distance, Result result) {
-        int size = Math.min(mScreenWidth, mScreenHeight);
+    private boolean handleAutoZoom(@NonNull Activity activity, @Nullable Result result, float distance) {
+
+        Context context = activity.getApplicationContext();
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int size = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels);
         if (distance * 4 < size) {
             mLastAutoZoomTime = System.currentTimeMillis();
             zoomIn();
-            scanResultCallback(result);
+
+            if (null != mOnCameraStatusChangeListener) {
+                release(context);
+                mOnCameraStatusChangeListener.onResult(result);
+            }
             return true;
         }
         return false;
-    }
-
-    private void scanResultCallback(Result result) {
-        if (mOnScanResultCallback != null && mOnScanResultCallback.onResult(result)) {
-            //如果拦截了结果，则重置分析结果状态，直接可以连扫
-            isAnalyzeResult = false;
-            return;
-        }
-
-        if (mFragmentActivity != null) {
-            Intent intent = new Intent();
-            intent.putExtra(SCAN_RESULT, result.getText());
-            mFragmentActivity.setResult(Activity.RESULT_OK, intent);
-            mFragmentActivity.finish();
-        }
-    }
-
-
-    @Override
-    public void stop(@NonNull Context context) {
-        if (mCameraProviderFuture != null) {
-            try {
-                mCameraProviderFuture.get().unbindAll();
-            } catch (Exception e) {
-                LogUtil.log(e.getMessage());
-            }
-        }
-    }
-
-    @Override
-    public ICameraImpl setAnalyzeImage(boolean analyze) {
-        isAnalyze = analyze;
-        return this;
-    }
-
-    /**
-     * 设置分析器，如果内置的一些分析器不满足您的需求，你也可以自定义{@link AnalyzerBaseImpl}，
-     * 自定义时，切记需在{@link #start()}之前调用才有效
-     *
-     * @param analyzer
-     */
-    @Override
-    public ICameraImpl setAnalyzer(AnalyzerBaseImpl analyzer) {
-        mAnalyzer = analyzer;
-        return this;
     }
 
     @Override
@@ -442,17 +388,13 @@ public final class CameraManager implements ICameraImpl {
 
     @Override
     public ICameraImpl setVibrate(boolean vibrate) {
-        if (mBeepManager != null) {
-            mBeepManager.setVibrate(vibrate);
-        }
+        VibratorUtil.vibrate = vibrate;
         return this;
     }
 
     @Override
-    public ICameraImpl setPlayBeep(boolean playBeep) {
-        if (mBeepManager != null) {
-            mBeepManager.setPlayBeep(playBeep);
-        }
+    public ICameraImpl setBeep(boolean beep) {
+        BeepUtil.beep = beep;
         return this;
     }
 
@@ -462,46 +404,51 @@ public final class CameraManager implements ICameraImpl {
         return mCamera;
     }
 
-
+    @SuppressLint("RestrictedApi")
     @Override
     public void release(@NonNull Context context) {
-        isAnalyze = false;
-        flashlightView = null;
-        if (mAmbientLightManager != null) {
-            mAmbientLightManager.unregister();
+
+        try {
+            ListenableFuture<ProcessCameraProvider> instance = ProcessCameraProvider.getInstance(context);
+            ProcessCameraProvider provider = instance.get();
+            provider.unbindAll();
+            provider.shutdown();
+        } catch (Exception e) {
+            LogUtil.log(e.getMessage(), e);
         }
-        if (mBeepManager != null) {
-            mBeepManager.close();
-        }
-        stop(context);
+
+        // 蜂鸣
+//        BeepUtil.beep();
+//        BeepUtil.release();
+
+        // 震动
+        VibratorUtil.vibrator(context);
+
+        // 光线传感器
+        LightSensorEventManager.build().unregister();
     }
 
     @Override
-    public ICameraImpl bindFlashlightView(@Nullable View v) {
-        flashlightView = v;
-        if (mAmbientLightManager != null) {
-            mAmbientLightManager.setLightSensorEnabled(v != null);
-        }
-        return this;
-    }
-
-    public ICameraImpl setDarkLightLux(float lightLux) {
-        if (mAmbientLightManager != null) {
-            mAmbientLightManager.setDarkLightLux(lightLux);
-        }
-        return this;
-    }
-
-    public ICameraImpl setBrightLightLux(float lightLux) {
-        if (mAmbientLightManager != null) {
-            mAmbientLightManager.setBrightLightLux(lightLux);
-        }
-        return this;
+    public void pause(@NonNull @NotNull FragmentActivity activity) {
+        activity.getIntent().putExtra(INTENT_ZXING_POST, false);
     }
 
     @Override
-    public ICameraImpl setOnCameraScanChangeListener(@NonNull OnCameraScanChangeListener callback) {
-        this.mOnScanResultCallback = callback;
+    public void resume(@NonNull @NotNull FragmentActivity activity) {
+        activity.getIntent().putExtra(INTENT_ZXING_POST, true);
+    }
+
+//    @Override
+//    public ICameraImpl bindFlashlightView(@Nullable View v) {
+////        if (mAmbientLightManager != null) {
+////            mAmbientLightManager.setLightSensorEnabled(v != null);
+////        }
+//        return this;
+//    }
+
+    @Override
+    public ICameraImpl setOnCameraScanChangeListener(@NonNull OnCameraStatusChangeListener callback) {
+        this.mOnCameraStatusChangeListener = callback;
         return this;
     }
 }

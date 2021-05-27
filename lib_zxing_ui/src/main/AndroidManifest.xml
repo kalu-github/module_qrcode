@@ -18,6 +18,13 @@
         android:required="false" />
 
     <application android:allowBackup="false">
+
+        <provider
+            android:name="lib.kalu.zxing.contentprovider.ContextProviderZxing"
+            android:authorities="${applicationId}.mediaplayer.contextprovider"
+            android:exported="false"
+            android:process=":zxing" />
+
         <activity
             android:name="lib.kalu.zxing.QrcodeActivity"
             android:exported="false"
