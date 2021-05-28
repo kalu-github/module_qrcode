@@ -19,6 +19,7 @@ import lib.kalu.zxing.camerax.CameraManager;
 import lib.kalu.zxing.listener.OnCameraStatusChangeListener;
 import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.qrcode.QrcodeTool;
+import lib.kalu.zxing.util.VibratorUtil;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -244,6 +245,9 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
         if (null != result && null != result.getText() && result.getText().length() > 0) {
             LogUtil.log("onScanResultCallback => text = " + result.getText());
             releaseCamera();
+
+            // 震动
+            VibratorUtil.vibrator(getApplicationContext());
 
             Intent intent = new Intent();
             intent.putExtra(INTENT_RESULT, result.getText());

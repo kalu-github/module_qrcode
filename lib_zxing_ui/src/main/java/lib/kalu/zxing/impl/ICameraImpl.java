@@ -24,46 +24,6 @@ public interface ICameraImpl extends ICameraBaseLifecycleImpl, ICameraBaseContro
     int LENS_FACING_FRONT = CameraSelector.LENS_FACING_FRONT;
     int LENS_FACING_BACK = CameraSelector.LENS_FACING_BACK;
 
-    /**
-     * 是否需要支持自动缩放
-     */
-    boolean isNeedAutoZoom = true;
-
-    /**
-     * 是否需要支持触摸缩放
-     */
-    boolean isNeedTouchZoom = true;
-
-    /**
-     * 是否需要支持触摸缩放
-     *
-     * @return
-     */
-    default boolean isNeedTouchZoom() {
-        return isNeedTouchZoom;
-    }
-
-
-//    /**
-//     * 设置是否需要支持触摸缩放
-//     *
-//     * @param needTouchZoom
-//     * @return
-//     */
-//    default ICameraImpl setNeedTouchZoom(boolean needTouchZoom) {
-//        isNeedTouchZoom = needTouchZoom;
-//        return this;
-//    }
-
-    /**
-     * 是否需要支持自动缩放
-     *
-     * @return
-     */
-    default boolean isNeedAutoZoom() {
-        return isNeedAutoZoom;
-    }
-
 //    /**
 //     * 设置是否需要支持自动缩放
 //     *
@@ -74,6 +34,8 @@ public interface ICameraImpl extends ICameraBaseLifecycleImpl, ICameraBaseContro
 //        isNeedAutoZoom = needAutoZoom;
 //        return this;
 //    }
+
+    boolean isZoom();
 
     /**
      * 设置相机配置，请在{@link #start(@NonNull Context context)}之前调用
@@ -132,13 +94,4 @@ public interface ICameraImpl extends ICameraBaseLifecycleImpl, ICameraBaseContro
      * @param callback
      */
     ICameraImpl setOnCameraScanChangeListener(@NonNull OnCameraStatusChangeListener callback);
-
-    /**
-     * 分析数据
-     *
-     * @param activity
-     * @param result
-     * @return
-     */
-    ICameraImpl callback(@NonNull Activity activity, @Nullable Result result);
 }

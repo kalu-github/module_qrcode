@@ -3,7 +3,6 @@ package lib.kalu.zxing.camerax;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -11,10 +10,7 @@ import android.view.View;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
 import com.google.zxing.common.detector.MathUtils;
-
-import lib.kalu.zxing.analyze.AnalyzerBaseImpl;
 import lib.kalu.zxing.analyze.AnalyzerQrcode;
 import lib.kalu.zxing.impl.ICameraImpl;
 import lib.kalu.zxing.listener.OnCameraStatusChangeListener;
@@ -41,10 +37,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @description:
@@ -52,7 +44,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class CameraManager implements ICameraImpl {
 
-    private static final String INTENT_ZXING_POST = "intent_zxing_post";
+    private static final String INTENT_ZXING_ANALYZER_STATUS = "intent_zxing_analyzer_status";
+
+    /**
+     * 0：正常
+     * -1: 暂停
+     */
+    private static final String INTENT_ZXING_FOCUS_TIME = "intent_zxing_focus_time";
 
     /**
      * Defines the maximum duration in milliseconds between a touch pad
@@ -72,7 +70,7 @@ public final class CameraManager implements ICameraImpl {
 
     private Camera mCamera;
 
-    private final MutableLiveData<Result> MUTABLE_LIVE_DATA = new MutableLiveData<>();
+//    private final MutableLiveData<Result> MUTABLE_LIVE_DATA = new MutableLiveData<>();
 
     private OnCameraStatusChangeListener mOnCameraStatusChangeListener;
 
@@ -101,43 +99,68 @@ public final class CameraManager implements ICameraImpl {
 
     /*******************/
 
-    private final ScaleGestureDetector.OnScaleGestureListener mOnScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            float scale = detector.getScaleFactor();
-            if (mCamera != null) {
-                float ratio = mCamera.getCameraInfo().getZoomState().getValue().getZoomRatio();
-                zoomTo(ratio * scale);
-            }
-            return true;
-        }
-    };
-
-    public void init(@NonNull FragmentActivity activity, @NonNull PreviewView previewView) {
-        init(activity, previewView, false, false);
-    }
-
     public void init(@NonNull FragmentActivity activity, @NonNull PreviewView previewView, boolean touchScale, boolean sensorEvent) {
-        MUTABLE_LIVE_DATA.observe(activity, new Observer<Result>() {
-            @Override
-            public void onChanged(Result result) {
-                callback(activity, result);
-            }
-        });
+//        MUTABLE_LIVE_DATA.observe(activity, new Observer<Result>() {
+//            @Override
+//            public void onChanged(Result result) {
+//                callback(activity, result);
+//            }
+//        });
 
         Context context = activity.getApplicationContext();
 
         // 手势缩放
         if (touchScale) {
-            ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, mOnScaleGestureListener);
+            ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
+                    float scale = detector.getScaleFactor();
+                    if (mCamera != null) {
+                        float ratio = mCamera.getCameraInfo().getZoomState().getValue().getZoomRatio();
+                        zoomTo(ratio * scale);
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean onScaleBegin(ScaleGestureDetector detector) {
+                    activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
+                    return true;
+                }
+
+                @Override
+                public void onScaleEnd(ScaleGestureDetector detector) {
+                    activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, System.currentTimeMillis());
+                }
+            });
             previewView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    handlePreviewViewClickTap(previewView, event);
-                    if (isNeedTouchZoom()) {
-                        return scaleGestureDetector.onTouchEvent(event);
+
+                    if (event.getPointerCount() == 1) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
+                                isClickTap = true;
+                                mDownX = event.getX();
+                                mDownY = event.getY();
+                                mLastHoveTapTime = System.currentTimeMillis();
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
+                                isClickTap = MathUtils.distance(mDownX, mDownY, event.getX(), event.getY()) < HOVER_TAP_SLOP;
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, System.currentTimeMillis());
+                                if (isClickTap && mLastHoveTapTime + HOVER_TAP_TIMEOUT > System.currentTimeMillis()) {
+                                    MeteringPoint point = previewView.getMeteringPointFactory().createPoint(event.getX(), event.getY());
+                                    mCamera.getCameraControl().startFocusAndMetering(new FocusMeteringAction.Builder(point).build());
+                                }
+                                break;
+                        }
                     }
-                    return false;
+
+                    return isZoom() ? scaleGestureDetector.onTouchEvent(event) : false;
                 }
             });
         }
@@ -155,43 +178,6 @@ public final class CameraManager implements ICameraImpl {
                 }
             });
         }
-    }
-
-    private void handlePreviewViewClickTap(@NonNull PreviewView previewView, @NonNull MotionEvent event) {
-        if (event.getPointerCount() == 1) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    isClickTap = true;
-                    mDownX = event.getX();
-                    mDownY = event.getY();
-                    mLastHoveTapTime = System.currentTimeMillis();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    isClickTap = MathUtils.distance(mDownX, mDownY, event.getX(), event.getY()) < HOVER_TAP_SLOP;
-                    break;
-                case MotionEvent.ACTION_UP:
-                    if (isClickTap && mLastHoveTapTime + HOVER_TAP_TIMEOUT > System.currentTimeMillis()) {
-                        startFocusAndMetering(previewView, event.getX(), event.getY());
-                    }
-                    break;
-            }
-        }
-    }
-
-    private void startFocusAndMetering(@NonNull PreviewView previewView, float x, float y) {
-        if (mCamera != null) {
-            LogUtil.log("startFocusAndMetering:" + x + "," + y);
-            MeteringPoint point = previewView.getMeteringPointFactory().createPoint(x, y);
-            mCamera.getCameraControl().startFocusAndMetering(new FocusMeteringAction.Builder(point).build());
-        }
-    }
-
-    @Override
-    public ICameraImpl setCameraConfig(@NonNull ImageAnalysis.Builder builder) {
-        if (CAMERA_CONFIG != null) {
-            this.CAMERA_CONFIG.options(builder);
-        }
-        return this;
     }
 
     @Override
@@ -219,19 +205,35 @@ public final class CameraManager implements ICameraImpl {
 
                     // 分析
 //                    imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), new ImageAnalysis.Analyzer() {
-                    imageAnalysis.setAnalyzer(Executors.newFixedThreadPool(1), new ImageAnalysis.Analyzer() {
+                    imageAnalysis.setAnalyzer(Executors.newFixedThreadPool(2), new ImageAnalysis.Analyzer() {
                         @Override
                         public void analyze(@NonNull ImageProxy image) {
-                            AnalyzerQrcode analyzerQrcode = new AnalyzerQrcode();
-                            Result result = analyzerQrcode.analyzeImage(context, image, context.getResources().getConfiguration().orientation);
-                            if (result != null) {
-                                boolean status = activity.getIntent().getBooleanExtra(INTENT_ZXING_POST, true);
-                                activity.getIntent().putExtra(INTENT_ZXING_POST, false);
-                                if (status) {
-                                    LogUtil.log("setAnalyzer => thread = " + Thread.currentThread().getName());
-                                    MUTABLE_LIVE_DATA.postValue(result);
+
+                            if (null != mOnCameraStatusChangeListener) {
+                                boolean status = activity.getIntent().getBooleanExtra(INTENT_ZXING_ANALYZER_STATUS, true);
+                                long time = activity.getIntent().getLongExtra(INTENT_ZXING_FOCUS_TIME, 0L);
+                                LogUtil.log("setAnalyzer => status = " + status + ", time = " + time + ", thread = " + Thread.currentThread().getName());
+
+                                if (time == 0L || (time > 0L && (System.currentTimeMillis() - time) > 200L)) {
+                                    activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, 0L);
+                                    AnalyzerQrcode analyzerQrcode = AnalyzerQrcode.getAnalyzer();
+                                    Result result = analyzerQrcode.analyzeImage(context, image, context.getResources().getConfiguration().orientation);
+                                    if (result != null) {
+                                        if (status) {
+                                            activity.getIntent().putExtra(INTENT_ZXING_ANALYZER_STATUS, false);
+                                            previewView.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Context context = activity.getApplicationContext();
+                                                    release(context);
+                                                    mOnCameraStatusChangeListener.onResult(result);
+                                                }
+                                            }, 100);
+                                        }
+                                    }
                                 }
                             }
+
                             image.close();
                         }
                     });
@@ -247,35 +249,22 @@ public final class CameraManager implements ICameraImpl {
         }, ContextCompat.getMainExecutor(context));
     }
 
-    @Override
-    public ICameraImpl callback(@NonNull @NotNull Activity activity, @Nullable Result result) {
-
-        synchronized (CameraManager.this) {
-
-//        // 正处于缩放状态
-//        if (isNeedAutoZoom() && mLastAutoZoomTime + 100 < System.currentTimeMillis()) {
-//            ResultPoint[] points = result.getResultPoints();
-//            if (points != null && points.length >= 2) {
-//                float distance1 = ResultPoint.distance(points[0], points[1]);
-//                float maxDistance = distance1;
-//                if (points.length >= 3) {
-//                    float distance2 = ResultPoint.distance(points[1], points[2]);
-//                    float distance3 = ResultPoint.distance(points[0], points[2]);
-//                    maxDistance = Math.max(Math.max(distance1, distance2), distance3);
-//                }
-//                if (handleAutoZoom(activity, result, maxDistance)) {
-//                    return this;
-//                }
-//            }
+//    private void startFocusAndMetering(@NonNull PreviewView previewView, float x, float y) {
+//        if (mCamera != null) {
+//
 //        }
+//    }
 
-            if (null != mOnCameraStatusChangeListener) {
-                Context context = activity.getApplicationContext();
-                release(context);
-                mOnCameraStatusChangeListener.onResult(result);
-            }
+    @Override
+    public boolean isZoom() {
+        return true;
+    }
+
+    @Override
+    public ICameraImpl setCameraConfig(@NonNull ImageAnalysis.Builder builder) {
+        if (CAMERA_CONFIG != null) {
+            this.CAMERA_CONFIG.options(builder);
         }
-
         return this;
     }
 
@@ -422,20 +411,22 @@ public final class CameraManager implements ICameraImpl {
 //        BeepUtil.release();
 
         // 震动
-        VibratorUtil.vibrator(context);
+//        VibratorUtil.vibrator(context);
 
         // 光线传感器
         LightSensorEventManager.build().unregister();
     }
 
     @Override
-    public void pause(@NonNull @NotNull FragmentActivity activity) {
-        activity.getIntent().putExtra(INTENT_ZXING_POST, false);
+    public void pause(@NonNull FragmentActivity activity) {
+        activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
+        activity.getIntent().putExtra(INTENT_ZXING_ANALYZER_STATUS, false);
     }
 
     @Override
-    public void resume(@NonNull @NotNull FragmentActivity activity) {
-        activity.getIntent().putExtra(INTENT_ZXING_POST, true);
+    public void resume(@NonNull FragmentActivity activity) {
+        activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, 0L);
+        activity.getIntent().putExtra(INTENT_ZXING_ANALYZER_STATUS, true);
     }
 
 //    @Override

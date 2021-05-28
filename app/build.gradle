@@ -48,8 +48,8 @@ dependencies {
     implementation "androidx.camera:camera-extensions:1.0.0-alpha24"
 
     // 二维码
-//    implementation(name: 'lib_zxing_r3.4.1_release_20210526', ext: 'aar')
-    implementation project(':lib_zxing_ui')
+    implementation(name: 'lib_zxing_r3.4.1_release_20210528', ext: 'aar')
+//    implementation project(':lib_zxing_ui')
 }
 
 

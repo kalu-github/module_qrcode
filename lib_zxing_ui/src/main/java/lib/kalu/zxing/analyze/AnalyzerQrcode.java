@@ -1,8 +1,10 @@
 package lib.kalu.zxing.analyze;
 
 import com.google.zxing.Reader;
+import com.google.zxing.qrcode.QRCodeReader;
 
 import lib.kalu.zxing.qrcode.QrcodePlusReader;
+import lib.kalu.zxing.util.LogUtil;
 
 /**
  * @description: QR-Code图像分析器
@@ -10,8 +12,21 @@ import lib.kalu.zxing.qrcode.QrcodePlusReader;
  */
 public final class AnalyzerQrcode implements AnalyzerRectImpl {
 
+    private AnalyzerQrcode() {
+        LogUtil.log("AnalyzerQrcode =>");
+    }
+
+    private static class Holder {
+        private static final AnalyzerQrcode instance = new AnalyzerQrcode();
+    }
+
+    public static final AnalyzerQrcode getAnalyzer() {
+        return Holder.instance;
+    }
+
     @Override
     public Reader createReader() {
+//        return new QRCodeReader();
         return QrcodePlusReader.getQRCodeReader();
     }
 
