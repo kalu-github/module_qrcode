@@ -173,7 +173,7 @@ public final class CameraManager implements ICameraImpl {
                 public void onSensorChanged(boolean dark, float lightLux) {
 
                     if (null != mOnCameraStatusChangeListener) {
-                        mOnCameraStatusChangeListener.onFlash(dark, lightLux);
+                        mOnCameraStatusChangeListener.onSensor(dark, lightLux);
                     }
                 }
             });
@@ -397,6 +397,9 @@ public final class CameraManager implements ICameraImpl {
     @Override
     public void release(@NonNull Context context) {
 
+        // 光线传感器
+        LightSensorEventManager.build().unregister();
+
         try {
             ListenableFuture<ProcessCameraProvider> instance = ProcessCameraProvider.getInstance(context);
             ProcessCameraProvider provider = instance.get();
@@ -412,9 +415,6 @@ public final class CameraManager implements ICameraImpl {
 
         // 震动
 //        VibratorUtil.vibrator(context);
-
-        // 光线传感器
-        LightSensorEventManager.build().unregister();
     }
 
     @Override

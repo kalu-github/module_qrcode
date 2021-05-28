@@ -12,12 +12,18 @@ import com.google.zxing.Result;
 @Keep
 public interface OnCameraStatusChangeListener {
 
-    boolean onResult(@NonNull Result result);
+    /**
+     * 结果
+     *
+     * @param result
+     */
+    void onResult(@NonNull Result result);
 
     /**
-     * 手电筒
+     * 光线传感器
      *
-     * @param open
+     * @param dark
+     * @param lightLux
      */
-    void onFlash(boolean dark, float lightLux);
+    void onSensor(boolean dark, float lightLux);
 }

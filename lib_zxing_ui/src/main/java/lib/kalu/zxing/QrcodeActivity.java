@@ -17,6 +17,7 @@ import com.google.zxing.Result;
 
 import lib.kalu.zxing.camerax.CameraManager;
 import lib.kalu.zxing.listener.OnCameraStatusChangeListener;
+import lib.kalu.zxing.util.BeepUtil;
 import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.qrcode.QrcodeTool;
 import lib.kalu.zxing.util.VibratorUtil;
@@ -45,8 +46,10 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     public static final String INTENT_RESULT = "intent_result";
     @Keep
     public static final String INTENT_EXTRA = "intent_extra";
-
-//    private ICameraImpl mCameraScan;
+    @Keep
+    public static final String INTENT_BEEP = "intent_beep";
+    @Keep
+    public static final String INTENT_VIBRATOR = "intent_vibrator";
 
     @Override
     public void onBackPressed() {
@@ -159,13 +162,6 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
         }
     }
 
-    /**
-     * 释放相机
-     */
-    private void releaseCamera() {
-        CameraManager.build().release(this);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -224,7 +220,7 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
 
     @Override
     protected void onDestroy() {
-        releaseCamera();
+        CameraManager.build().release(this);
         super.onDestroy();
 
         try {
@@ -234,32 +230,36 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
         }
     }
 
-    /**
-     * 接收扫码结果回调
-     *
-     * @param result 扫码结果
-     * @return 返回true表示拦截，将不自动执行后续逻辑，为false表示不拦截，默认不拦截
-     */
     @Override
-    public boolean onResult(Result result) {
-        if (null != result && null != result.getText() && result.getText().length() > 0) {
-            LogUtil.log("onScanResultCallback => text = " + result.getText());
-            releaseCamera();
+    public void onResult(Result result) {
 
-            // 震动
-            VibratorUtil.vibrator(getApplicationContext());
-
-            Intent intent = new Intent();
-            intent.putExtra(INTENT_RESULT, result.getText());
-            intent.putExtra(INTENT_EXTRA, getIntent().getStringExtra(INTENT_EXTRA));
-            setResult(RESULT_CODE_SUCC, intent);
-            finish();
+        // 声音
+        boolean beep = getIntent().getBooleanExtra(INTENT_BEEP, true);
+        if (beep) {
+            BeepUtil.beep();
         }
-        return true;
+
+        // 震动
+        boolean vibrator = getIntent().getBooleanExtra(INTENT_VIBRATOR, true);
+        if (vibrator) {
+            VibratorUtil.vibrator(getApplicationContext());
+        }
+
+        // 释放
+        if (beep) {
+            BeepUtil.release();
+        }
+
+        LogUtil.log("onResult => text = " + result.getText());
+
+        Intent intent = new Intent();
+        intent.putExtra(INTENT_RESULT, result.getText());
+        intent.putExtra(INTENT_EXTRA, getIntent().getStringExtra(INTENT_EXTRA));
+        setResult(null != result && null != result.getText() && result.getText().length() > 0 ? RESULT_CODE_SUCC : RESULT_CODE_FAIL, intent);
+        finish();
     }
 
     @Override
-    public void onFlash(boolean dark, float lightLux) {
-
+    public void onSensor(boolean dark, float lightLux) {
     }
 }

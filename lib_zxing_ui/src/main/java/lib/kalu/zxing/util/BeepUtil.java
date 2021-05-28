@@ -6,6 +6,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 
+import androidx.annotation.RawRes;
+
 import lib.kalu.zxing.R;
 import lib.kalu.zxing.contentprovider.ContextProviderZxing;
 import lib.kalu.zxing.util.LogUtil;
@@ -24,13 +26,17 @@ public final class BeepUtil {
     private static MediaPlayer mediaPlayer = new MediaPlayer();
 
     public static final void beep() {
+        beep(R.raw.moudle_zxing_raw_beep);
+    }
+
+    public static final void beep(@RawRes int raw) {
         try {
 
             if (null == mediaPlayer) {
                 mediaPlayer = new MediaPlayer();
             }
 
-            AssetFileDescriptor file = ContextProviderZxing.mContext.getResources().openRawResourceFd(R.raw.moudle_zxing_raw_beep);
+            AssetFileDescriptor file = ContextProviderZxing.mContext.getResources().openRawResourceFd(raw);
             mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 //             mediaPlayer.setOnErrorListener(this);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
