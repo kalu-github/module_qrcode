@@ -21,7 +21,7 @@ public final class VibratorUtil {
 
         try {
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(40);
+            vibrator.vibrate(20);
         } catch (Exception e) {
             LogUtil.log("vibrator => " + e.getMessage(), e);
         }
