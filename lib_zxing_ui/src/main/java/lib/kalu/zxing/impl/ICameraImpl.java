@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
+import androidx.camera.core.ImageProxy;
 
 /**
  * @description: 相机生命周期Impl
@@ -23,6 +24,14 @@ public interface ICameraImpl extends ICameraBaseLifecycleImpl, ICameraBaseContro
 
     int LENS_FACING_FRONT = CameraSelector.LENS_FACING_FRONT;
     int LENS_FACING_BACK = CameraSelector.LENS_FACING_BACK;
+
+    /**
+     * 解析数据
+     *
+     * @param image
+     * @return
+     */
+    boolean analysis(@NonNull Activity activity, @NonNull ImageProxy image);
 
 //    /**
 //     * 设置是否需要支持自动缩放

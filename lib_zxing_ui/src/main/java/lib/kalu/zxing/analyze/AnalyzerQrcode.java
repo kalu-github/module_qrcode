@@ -31,11 +31,6 @@ public final class AnalyzerQrcode implements AnalyzerRectImpl {
     }
 
     @Override
-    public long failCount() {
-        return 10;
-    }
-
-    @Override
     public float ratio() {
         return 0.6F;
 //        return 1F;

@@ -3,7 +3,6 @@ package lib.kalu.zxing.camerax;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -20,9 +19,6 @@ import lib.kalu.zxing.sensor.LightSensorEventManager;
 import lib.kalu.zxing.util.BeepUtil;
 import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.util.VibratorUtil;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
@@ -41,19 +37,22 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * @description:
  * @date: 2021-05-07 14:55
  */
 public final class CameraManager implements ICameraImpl {
 
-    private static final String INTENT_ZXING_ANALYZER_STATUS = "intent_zxing_analyzer_status";
-
     /**
-     * 0：正常
-     * -1: 暂停
+     * true：正常
+     * false: 暂停
      */
-    private static final String INTENT_ZXING_FOCUS_TIME = "intent_zxing_focus_time";
+    private static final String INTENT_ZXING_STATUS = "intent_zxing_status";
 
     /**
      * Defines the maximum duration in milliseconds between a touch pad
@@ -127,13 +126,13 @@ public final class CameraManager implements ICameraImpl {
 
                 @Override
                 public boolean onScaleBegin(ScaleGestureDetector detector) {
-                    activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
+                    activity.getIntent().putExtra(INTENT_ZXING_STATUS, false);
                     return true;
                 }
 
                 @Override
                 public void onScaleEnd(ScaleGestureDetector detector) {
-                    activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, System.currentTimeMillis());
+                    activity.getIntent().putExtra(INTENT_ZXING_STATUS, true);
                 }
             });
             previewView.setOnTouchListener(new View.OnTouchListener() {
@@ -143,22 +142,22 @@ public final class CameraManager implements ICameraImpl {
                     if (event.getPointerCount() == 1) {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
-                                activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
+                                activity.getIntent().putExtra(INTENT_ZXING_STATUS, false);
                                 isClickTap = true;
                                 mDownX = event.getX();
                                 mDownY = event.getY();
                                 mLastHoveTapTime = System.currentTimeMillis();
                                 break;
                             case MotionEvent.ACTION_MOVE:
-                                activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
+                                activity.getIntent().putExtra(INTENT_ZXING_STATUS, false);
                                 isClickTap = MathUtils.distance(mDownX, mDownY, event.getX(), event.getY()) < HOVER_TAP_SLOP;
                                 break;
                             case MotionEvent.ACTION_UP:
-                                activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, System.currentTimeMillis());
                                 if (isClickTap && mLastHoveTapTime + HOVER_TAP_TIMEOUT > System.currentTimeMillis()) {
                                     MeteringPoint point = previewView.getMeteringPointFactory().createPoint(event.getX(), event.getY());
                                     mCamera.getCameraControl().startFocusAndMetering(new FocusMeteringAction.Builder(point).build());
                                 }
+                                activity.getIntent().putExtra(INTENT_ZXING_STATUS, true);
                                 break;
                         }
                     }
@@ -207,37 +206,14 @@ public final class CameraManager implements ICameraImpl {
                     ImageAnalysis imageAnalysis = CAMERA_CONFIG.options(builder);
 
                     // 分析
-//                    imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), new ImageAnalysis.Analyzer() {
-                    imageAnalysis.setAnalyzer(Executors.newFixedThreadPool(1), new ImageAnalysis.Analyzer() {
+                    ExecutorService threadPool = Executors.newFixedThreadPool(2);
+                    imageAnalysis.setAnalyzer(threadPool, new ImageAnalysis.Analyzer() {
                         @Override
                         public void analyze(@NonNull ImageProxy image) {
-
-                            if (null != mOnCameraStatusChangeListener) {
-                                boolean status = activity.getIntent().getBooleanExtra(INTENT_ZXING_ANALYZER_STATUS, true);
-                                long time = activity.getIntent().getLongExtra(INTENT_ZXING_FOCUS_TIME, 0L);
-                                LogUtil.log("setAnalyzer => status = " + status + ", time = " + time + ", thread = " + Thread.currentThread().getName());
-
-                                if (time == 0L || (time > 0L && (System.currentTimeMillis() - time) > 200L)) {
-                                    activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, 0L);
-
-                                    AnalyzerQrcode analyzerQrcode = AnalyzerQrcode.getAnalyzer();
-                                    Result result = analyzerQrcode.analyzeImage(context, image, context.getResources().getConfiguration().orientation);
-                                    if (result != null) {
-                                        if (status) {
-                                            activity.getIntent().putExtra(INTENT_ZXING_ANALYZER_STATUS, false);
-                                            previewView.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Context context = activity.getApplicationContext();
-                                                    release(context);
-                                                    mOnCameraStatusChangeListener.onResult(result);
-                                                }
-                                            }, 100);
-                                        }
-                                    }
-                                }
+                            boolean analysis = analysis(activity, image);
+                            if (analysis) {
+                                threadPool.shutdownNow();
                             }
-
                             image.close();
                         }
                     });
@@ -253,11 +229,32 @@ public final class CameraManager implements ICameraImpl {
         }, ContextCompat.getMainExecutor(context));
     }
 
-//    private void startFocusAndMetering(@NonNull PreviewView previewView, float x, float y) {
-//        if (mCamera != null) {
-//
-//        }
-//    }
+    @Override
+    public boolean analysis(@NonNull Activity activity, @NonNull ImageProxy image) {
+
+        if (null == mOnCameraStatusChangeListener)
+            return false;
+
+        boolean status = activity.getIntent().getBooleanExtra(INTENT_ZXING_STATUS, true);
+        LogUtil.log("analysis => status = " + status + ", thread = " + Thread.currentThread().getName());
+        if (!status)
+            return false;
+
+        Context context = activity.getApplicationContext();
+        AnalyzerQrcode analyzerQrcode = AnalyzerQrcode.getAnalyzer();
+        Result result = analyzerQrcode.analyzeImage(context, image, context.getResources().getConfiguration().orientation);
+        if (null == result)
+            return false;
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                release(context);
+                mOnCameraStatusChangeListener.onResult(result);
+            }
+        });
+        return true;
+    }
 
     @Override
     public boolean isZoom() {
@@ -423,14 +420,12 @@ public final class CameraManager implements ICameraImpl {
 
     @Override
     public void pause(@NonNull FragmentActivity activity) {
-        activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, -1L);
-        activity.getIntent().putExtra(INTENT_ZXING_ANALYZER_STATUS, false);
+        activity.getIntent().putExtra(INTENT_ZXING_STATUS, false);
     }
 
     @Override
     public void resume(@NonNull FragmentActivity activity) {
-        activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, 0L);
-        activity.getIntent().putExtra(INTENT_ZXING_ANALYZER_STATUS, true);
+        activity.getIntent().putExtra(INTENT_ZXING_STATUS, true);
     }
 
 //    @Override

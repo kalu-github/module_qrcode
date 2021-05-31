@@ -45,22 +45,18 @@ interface AnalyzerRectImpl extends AnalyzerDataImpl {
             }
         } catch (ReaderException e0) {
             LogUtil.log("analyzeRect[exception] => " + e0.getMessage(), e0);
-
             try {
                 Result result = createReader().decode(new BinaryBitmap(new HybridBinarizer(new PlanarYUVLuminanceSource(original, originalWidth, originalHeight, 0, 0, originalWidth, originalHeight))));
                 if (null != result) {
                     ResultPoint[] resultPoints = result.getResultPoints();
-                    LogUtil.log("analyzeRect[succ] => x = " + resultPoints[0].getX() + ", y = " + resultPoints[0].getY() + ", cropLeft = " + cropLeft + ", cropTop = " + cropTop + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
+                    LogUtil.log("analyzeRectReaderException[succ] => x = " + resultPoints[0].getX() + ", y = " + resultPoints[0].getY() + ", cropLeft = " + cropLeft + ", cropTop = " + cropTop + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
                     return result;
                 } else {
-                    LogUtil.log("analyzeRect[fail] => null");
+                    LogUtil.log("analyzeRectReaderException[fail] => null");
                     return null;
                 }
-            } catch (ReaderException e01) {
-                LogUtil.log("analyzeRect[exception] => " + e01.getMessage(), e01);
-                return null;
-            } catch (Exception e11) {
-                LogUtil.log("analyzeRect[exception] => " + e11.getMessage(), e11);
+            } catch (ReaderException e3) {
+                LogUtil.log("analyzeRectReaderException[exception] => " + e3.getMessage(), e3);
                 return null;
             }
         } catch (Exception e1) {

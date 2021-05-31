@@ -52,20 +52,11 @@ public interface AnalyzerBaseImpl {
     Reader createReader();
 
     /**
-     * 错误最多多少次
-     *
-     * @return
-     */
-    long failCount();
-
-    /**
      * 默认全屏扫描
      *
      * @return
      */
-    default float ratio() {
-        return 1F;
-    }
+    float ratio();
 
 //    /**
 //     * 相机预览的每一帧数据, 进行优化
@@ -145,39 +136,34 @@ public interface AnalyzerBaseImpl {
 //        return data;
 //    }
 
-    /**
-     * 直接对相机的原始数据裁剪, 裁剪后的byte[]扔给zxing直接处理
-     * 1. 裁剪区域
-     * 2. 伽马增强
-     * 3. 线性增强
-     * 4. 容错竖屏
-     *
-     * @param original    相机原始帧数据：byte[]
-     * @param dataWidth   相机原始帧数据：width
-     * @param dataHeight  相机原始帧数据：height
-     * @param outWidth    裁剪输出帧数据：width
-     * @param outHeight   裁剪输出帧数据：height
-     * @param left        裁剪原始帧数据坐标：left
-     * @param top         裁剪原始帧数据坐标：top
-     * @param orientation 横屏竖屏
-     * @return
-     */
-    default byte[] crop(@NonNull byte[] original, @NonNull int originalWidth, @NonNull int originalHeight, int cropWidth, int cropHeight, int cropLeft, int cropTop, int orientation) {
+    default byte[] crop(@NonNull byte[] original, @NonNull int originalWidth, @NonNull int originalHeight, int cropWidth, int cropHeight, int cropLeft, int cropTop, int orientation, boolean isGM, boolean isXX) {
         LogUtil.log("crop => orientation = " + (orientation == Configuration.ORIENTATION_PORTRAIT ? "竖屏" : "横屏") + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
 
         int yMin = cropTop;
+        if (yMin < 0) {
+            yMin = 0;
+        }
         int yMax = yMin + cropHeight;
+        if (yMin > originalHeight) {
+            yMin = originalHeight;
+        }
         int xMin = cropLeft;
+        if (xMin < 0) {
+            xMin = 0;
+        }
         int xMax = cropLeft + cropWidth;
+        if (xMax > originalWidth) {
+            xMax = originalWidth;
+        }
 
         byte[] crop = new byte[cropWidth * cropHeight];
-        short random = (short) (Math.random() * 4 + 3);
+        short random = 0;
+        if (isXX) {
+            random = (short) (Math.random() * 4 + 3);
+        }
 
         for (int y = yMin; y < yMax; y++) {
             for (int x = xMin; x < xMax; x++) {
-
-                // planA: 仅裁剪
-                // crop[(x - xMin) + (y - cropTop) * cropWidth] = original[x + y * originalWidth];
 
                 // planB：优化策略：伽马增强, 线性增强, 竖屏切换坐标值
                 int indexOriginal = x + y * originalWidth;
@@ -189,13 +175,55 @@ public interface AnalyzerBaseImpl {
 //                    indexData = (x - xMin) + (y - top) * outWidth;
 //                }
 
-                byte a = original[indexOriginal];
-                // 1. 伽马增强
-                byte b = (byte) (255 * Math.pow((a & 0xff) / 255f, 4f));
-                // 2. 线性增强
-                byte c = (byte) (b * random);
-                // 3. 竖屏切换坐标值
-                crop[indexData] = c;
+                if (isGM && isXX) {
+                    byte a = original[indexOriginal];
+                    byte b = (byte) (255 * Math.pow((a & 0xff) / 255f, 4f));
+                    byte c = (byte) (b * random);
+                    crop[indexData] = c;
+                } else if (isGM) {
+                    byte a = original[indexOriginal];
+                    byte b = (byte) (255 * Math.pow((a & 0xff) / 255f, 4f));
+                    crop[indexData] = b;
+                } else if (isXX) {
+                    byte a = original[indexOriginal];
+                    byte c = (byte) (a * random);
+                    crop[indexData] = c;
+                } else {
+                    crop[indexData] = original[indexOriginal];
+                }
+            }
+        }
+        return crop;
+    }
+
+    /**
+     * 直接对相机的原始数据裁剪, 裁剪后的byte[]扔给zxing直接处理
+     * 1. 裁剪区域
+     *
+     * @param original    相机原始帧数据：byte[]
+     * @param dataWidth   相机原始帧数据：width
+     * @param dataHeight  相机原始帧数据：height
+     * @param outWidth    裁剪输出帧数据：width
+     * @param outHeight   裁剪输出帧数据：height
+     * @param left        裁剪原始帧数据坐标：left
+     * @param top         裁剪原始帧数据坐标：top
+     * @param orientation 横屏竖屏
+     * @return
+     */
+    default byte[] cropOnly(@NonNull byte[] original, @NonNull int originalWidth, @NonNull int originalHeight, int cropWidth, int cropHeight, int cropLeft, int cropTop, int orientation) {
+        LogUtil.log("crop => orientation = " + (orientation == Configuration.ORIENTATION_PORTRAIT ? "竖屏" : "横屏") + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
+
+        int yMin = cropTop;
+        int yMax = yMin + cropHeight;
+        int xMin = cropLeft;
+        int xMax = cropLeft + cropWidth;
+
+        byte[] crop = new byte[cropWidth * cropHeight];
+
+        for (int y = yMin; y < yMax; y++) {
+            for (int x = xMin; x < xMax; x++) {
+                // planA: 仅裁剪
+                crop[(x - xMin) + (y - cropTop) * cropWidth] = original[x + y * originalWidth];
             }
         }
         return crop;
