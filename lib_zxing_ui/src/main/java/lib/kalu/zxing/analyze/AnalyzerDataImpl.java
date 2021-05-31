@@ -16,16 +16,15 @@ import org.jetbrains.annotations.NotNull;
  * @date: 2021-05-07 14:56
  */
 interface AnalyzerDataImpl extends AnalyzerImageImpl {
-
     @Nullable
     @Override
-    default Result analyzeData(@NonNull Context context, @NonNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, int originalWidth, int originalHeight) {
+    default Result analyzeData(@NonNull Context context, @NonNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, @NonNull byte[] original, int originalWidth, int originalHeight) {
 
-        LogUtil.log("analyzeData =>");
-        return analyzeRect(context, crop, cropWidth, cropHeight, cropLeft, cropTop, originalWidth, originalHeight);
+        LogUtil.log("analyzeData => cropWidth = " + cropWidth + ", cropHeight = " + cropHeight + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
+        return analyzeRect(context, crop, cropWidth, cropHeight, cropLeft, cropTop, original, originalWidth, originalHeight);
     }
 
-//    @Nullable
+    //    @Nullable
 //    @Override
 //    default Result analyzeData(byte[] data, int dataWidth, int dataHeight) {
 //

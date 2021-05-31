@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ResultPoint;
+import com.google.zxing.exception.ReaderException;
 import com.google.zxing.source.PlanarYUVLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.GlobalHistogramBinarizer;
@@ -31,16 +32,35 @@ import lib.kalu.zxing.util.LogUtil;
 interface AnalyzerRectImpl extends AnalyzerDataImpl {
 
     @Override
-    default Result analyzeRect(@NonNull @NotNull Context context, @NonNull @NotNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, int originalWidth, int originalHeight) {
+    default Result analyzeRect(@NonNull Context context, @NonNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, @NonNull byte[] original, int originalWidth, int originalHeight) {
         try {
-            PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(crop, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-            Result result = createReader().decode(new BinaryBitmap(new HybridBinarizer(source)));
+            Result result = createReader().decode(new BinaryBitmap(new HybridBinarizer(new PlanarYUVLuminanceSource(crop, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight))));
             if (null != result) {
                 ResultPoint[] resultPoints = result.getResultPoints();
                 LogUtil.log("analyzeRect[succ] => x = " + resultPoints[0].getX() + ", y = " + resultPoints[0].getY() + ", cropLeft = " + cropLeft + ", cropTop = " + cropTop + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
                 return result;
             } else {
                 LogUtil.log("analyzeRect[fail] => null");
+                return null;
+            }
+        } catch (ReaderException e0) {
+            LogUtil.log("analyzeRect[exception] => " + e0.getMessage(), e0);
+
+            try {
+                Result result = createReader().decode(new BinaryBitmap(new HybridBinarizer(new PlanarYUVLuminanceSource(original, originalWidth, originalHeight, 0, 0, originalWidth, originalHeight))));
+                if (null != result) {
+                    ResultPoint[] resultPoints = result.getResultPoints();
+                    LogUtil.log("analyzeRect[succ] => x = " + resultPoints[0].getX() + ", y = " + resultPoints[0].getY() + ", cropLeft = " + cropLeft + ", cropTop = " + cropTop + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
+                    return result;
+                } else {
+                    LogUtil.log("analyzeRect[fail] => null");
+                    return null;
+                }
+            } catch (ReaderException e01) {
+                LogUtil.log("analyzeRect[exception] => " + e01.getMessage(), e01);
+                return null;
+            } catch (Exception e11) {
+                LogUtil.log("analyzeRect[exception] => " + e11.getMessage(), e11);
                 return null;
             }
         } catch (Exception e1) {

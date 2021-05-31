@@ -22,7 +22,6 @@ public interface AnalyzerBaseImpl {
     Result analyzeImage(@NonNull Context context, @NonNull ImageProxy imageProxy, int orientation);
 
     /**
-     *
      * @param context
      * @param crop
      * @param cropWidth
@@ -34,10 +33,9 @@ public interface AnalyzerBaseImpl {
      * @return
      */
     @Nullable
-    Result analyzeData(@NonNull Context context, @NonNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, int originalWidth, int originalHeight);
+    Result analyzeData(@NonNull Context context, @NonNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, @NonNull byte[] original, int originalWidth, int originalHeight);
 
     /**
-     *
      * @param context
      * @param crop
      * @param cropWidth
@@ -48,10 +46,17 @@ public interface AnalyzerBaseImpl {
      * @param originalHeight
      * @return
      */
-    Result analyzeRect(@NonNull Context context, @NonNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, int originalWidth, int originalHeight);
+    Result analyzeRect(@NonNull Context context, @NonNull byte[] crop, int cropWidth, int cropHeight, int cropLeft, int cropTop, @NonNull byte[] original, int originalWidth, int originalHeight);
 
     @Nullable
     Reader createReader();
+
+    /**
+     * 错误最多多少次
+     *
+     * @return
+     */
+    long failCount();
 
     /**
      * 默认全屏扫描
@@ -171,9 +176,11 @@ public interface AnalyzerBaseImpl {
         for (int y = yMin; y < yMax; y++) {
             for (int x = xMin; x < xMax; x++) {
 
-                // 下标：原始帧数据
+                // planA: 仅裁剪
+                // crop[(x - xMin) + (y - cropTop) * cropWidth] = original[x + y * originalWidth];
+
+                // planB：优化策略：伽马增强, 线性增强, 竖屏切换坐标值
                 int indexOriginal = x + y * originalWidth;
-                // 下标：裁剪帧数据
                 int indexData = (x - xMin) + (y - cropTop) * cropWidth;
 //                int indexData;
 //                if (orientation == Configuration.ORIENTATION_PORTRAIT) {

@@ -37,11 +37,12 @@ interface AnalyzerImageImpl extends AnalyzerBaseImpl {
         int originalHeight = imageProxy.getHeight();
 
         // ratio() > 1F ? 全屏扫描 : 区域扫描
-        int cropWidth = ratio() >= 1F ? originalWidth : (int) (Math.min(originalWidth, originalHeight) * ratio());
-        int cropHeight = ratio() >= 1F ? originalHeight : cropWidth;
-        int cropLeft = ratio() >= 1F ? 0 : originalWidth / 2 - cropWidth / 2;
-        int cropTop = ratio() >= 1F ? 0 : originalHeight / 2 - cropHeight / 2;
+        float ratio = ratio() * 1.1F;
+        int cropWidth = ratio >= 1F ? originalWidth : (int) (Math.min(originalWidth, originalHeight) * ratio);
+        int cropHeight = ratio >= 1F ? originalHeight : cropWidth;
+        int cropLeft = ratio >= 1F ? 0 : originalWidth / 2 - cropWidth / 2;
+        int cropTop = ratio >= 1F ? 0 : originalHeight / 2 - cropHeight / 2;
         byte[] crop = crop(original, originalWidth, originalHeight, cropWidth, cropHeight, cropLeft, cropTop, orientation);
-        return analyzeData(context, crop, cropWidth, cropHeight, cropLeft, cropTop, originalWidth, originalHeight);
+        return analyzeData(context, crop, cropWidth, cropHeight, cropLeft, cropTop, original, originalWidth, originalHeight);
     }
 }

@@ -3,6 +3,7 @@ package lib.kalu.zxing.camerax;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -11,6 +12,7 @@ import android.view.View;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.zxing.Result;
 import com.google.zxing.common.detector.MathUtils;
+
 import lib.kalu.zxing.analyze.AnalyzerQrcode;
 import lib.kalu.zxing.impl.ICameraImpl;
 import lib.kalu.zxing.listener.OnCameraStatusChangeListener;
@@ -20,6 +22,7 @@ import lib.kalu.zxing.util.LogUtil;
 import lib.kalu.zxing.util.VibratorUtil;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
@@ -205,7 +208,7 @@ public final class CameraManager implements ICameraImpl {
 
                     // 分析
 //                    imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), new ImageAnalysis.Analyzer() {
-                    imageAnalysis.setAnalyzer(Executors.newFixedThreadPool(2), new ImageAnalysis.Analyzer() {
+                    imageAnalysis.setAnalyzer(Executors.newFixedThreadPool(1), new ImageAnalysis.Analyzer() {
                         @Override
                         public void analyze(@NonNull ImageProxy image) {
 
@@ -216,6 +219,7 @@ public final class CameraManager implements ICameraImpl {
 
                                 if (time == 0L || (time > 0L && (System.currentTimeMillis() - time) > 200L)) {
                                     activity.getIntent().putExtra(INTENT_ZXING_FOCUS_TIME, 0L);
+
                                     AnalyzerQrcode analyzerQrcode = AnalyzerQrcode.getAnalyzer();
                                     Result result = analyzerQrcode.analyzeImage(context, image, context.getResources().getConfiguration().orientation);
                                     if (result != null) {
