@@ -27,9 +27,10 @@
         app:fv_angle_width="2dp"
         app:fv_line_color="@color/moudle_zxing_color_000000"
         app:fv_shadow_color="@color/moudle_zxing_color_66000000"
-        app:fv_text_color="@color/moudle_zxing_color_000000"
-        app:fv_text_size="14sp"
-        app:fv_text_tip="@string/moudle_zxing_string_tip_qrcode"
+        app:fv_text_color="@color/moudle_zxing_color_ffffff"
+        app:fv_text_gravity="bottom"
+        app:fv_text_size="13sp"
+        app:fv_text_tip="@string/moudle_zxing_string_tip_qrcode2"
         app:fv_type="qrcode" />
 
     <!--相册-->
@@ -80,7 +81,7 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:visibility="gone"
-        android:background="@android:color/black" />
+        android:background="@android:color/black"
+        android:visibility="gone" />
 
 </RelativeLayout>

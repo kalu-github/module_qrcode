@@ -3,6 +3,10 @@
         <attr name="fv_text_tip" format="string|reference" />
         <attr name="fv_text_color" format="color|reference" />
         <attr name="fv_text_size" format="dimension|reference" />
+        <attr name="fv_text_gravity" format="enum">
+            <enum name="center" value="0" />
+            <enum name="bottom" value="1" />
+        </attr>
         <attr name="fv_shadow_color" format="color|reference" />
         <attr name="fv_angle_color" format="color|reference" />
         <attr name="fv_angle_width" format="dimension|reference" />

@@ -32,13 +32,13 @@ import lib.kalu.zxing.util.LogUtil;
  */
 public final class FinderView extends View {
 
-    private final int TYPE_QRCODE = 0;
-    private final int TYPE_BARCODE = 1;
     private final int COLOR_66000000 = Color.parseColor("#66000000");
     private final TextPaint CANVAS_PAINT = new TextPaint();
 
     @IntRange(from = 0, to = 1)
-    private int mType = TYPE_QRCODE;
+    private int mType = 0;
+    @IntRange(from = 0, to = 1)
+    private int mTextGravity = 0;
     @Nullable
     private String mTextTip = null;
     @ColorInt
@@ -67,10 +67,11 @@ public final class FinderView extends View {
 
         try {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FinderView);
-            mType = typedArray.getInt(R.styleable.FinderView_fv_type, TYPE_QRCODE);
+            mType = typedArray.getInt(R.styleable.FinderView_fv_type, 0);
             mLineColor = typedArray.getColor(R.styleable.FinderView_fv_line_color, Color.BLACK);
             mAngleColor = typedArray.getColor(R.styleable.FinderView_fv_angle_color, Color.BLACK);
             mShadowColor = typedArray.getColor(R.styleable.FinderView_fv_shadow_color, COLOR_66000000);
+            mTextGravity = typedArray.getInt(R.styleable.FinderView_fv_text_gravity, 0);
             mTextTip = typedArray.getString(R.styleable.FinderView_fv_text_tip);
             mTextColor = typedArray.getColor(R.styleable.FinderView_fv_text_color, Color.BLACK);
             mTextSize = typedArray.getDimension(R.styleable.FinderView_fv_text_size, 10);
@@ -85,10 +86,11 @@ public final class FinderView extends View {
         setLayerType(View.LAYER_TYPE_HARDWARE, null);
         try {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FinderView);
-            mType = typedArray.getInt(R.styleable.FinderView_fv_type, TYPE_QRCODE);
+            mType = typedArray.getInt(R.styleable.FinderView_fv_type, 0);
             mLineColor = typedArray.getColor(R.styleable.FinderView_fv_line_color, Color.BLACK);
             mAngleColor = typedArray.getColor(R.styleable.FinderView_fv_angle_color, Color.BLACK);
             mShadowColor = typedArray.getColor(R.styleable.FinderView_fv_shadow_color, COLOR_66000000);
+            mTextGravity = typedArray.getInt(R.styleable.FinderView_fv_text_gravity, 0);
             mTextTip = typedArray.getString(R.styleable.FinderView_fv_text_tip);
             mTextColor = typedArray.getColor(R.styleable.FinderView_fv_text_color, Color.BLACK);
             mTextSize = typedArray.getDimension(R.styleable.FinderView_fv_text_size, 10);
@@ -116,7 +118,7 @@ public final class FinderView extends View {
         float left, top, right, bottom;
 
         // 二维码
-        if (mType == TYPE_QRCODE) {
+        if (mType == 0) {
             float min = Math.min(height, width) * 0.6f;
             left = width * 0.5f - min * 0.5f;
             top = height * 0.5f - min * 0.5f;
@@ -187,19 +189,37 @@ public final class FinderView extends View {
 
         // 文字
         if (null != mTextTip && mTextTip.length() > 0) {
-            CANVAS_PAINT.setStrokeWidth(0);
-            CANVAS_PAINT.setColor(mTextColor);
-            CANVAS_PAINT.setTextSize(mTextSize);
-            CANVAS_PAINT.setStyle(Paint.Style.FILL);
-            CANVAS_PAINT.setPathEffect(null);
-            CANVAS_PAINT.setTextAlign(Paint.Align.CENTER);
-            StaticLayout layout = new StaticLayout(mTextTip, CANVAS_PAINT, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.4F, 0.0F, true);
-            canvas.save();
-            canvas.translate(width / 2, height / 2 - layout.getHeight() / 2);
-            layout.draw(canvas);
-            canvas.restore();
-            // canvas.drawText(mTextTip, width / 2, height / 2, paint);
-            // super.onDraw(canvas);
+
+            // 中间
+            if (mTextGravity == 0) {
+                CANVAS_PAINT.setStrokeWidth(0);
+                CANVAS_PAINT.setColor(mTextColor);
+                CANVAS_PAINT.setTextSize(mTextSize);
+                CANVAS_PAINT.setStyle(Paint.Style.FILL);
+                CANVAS_PAINT.setPathEffect(null);
+                CANVAS_PAINT.setTextAlign(Paint.Align.CENTER);
+                StaticLayout layout = new StaticLayout(mTextTip, CANVAS_PAINT, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.4F, 0.0F, true);
+                canvas.save();
+                canvas.translate(width / 2, height / 2 - layout.getHeight() / 2);
+                layout.draw(canvas);
+                canvas.restore();
+                // canvas.drawText(mTextTip, width / 2, height / 2, paint);
+                // super.onDraw(canvas);
+            }
+            // 底部
+            else {
+                CANVAS_PAINT.setStrokeWidth(0);
+                CANVAS_PAINT.setColor(mTextColor);
+                CANVAS_PAINT.setTextSize(mTextSize);
+                CANVAS_PAINT.setStyle(Paint.Style.FILL);
+                CANVAS_PAINT.setPathEffect(null);
+                CANVAS_PAINT.setTextAlign(Paint.Align.CENTER);
+                canvas.drawText(mTextTip, width / 2, height - height / 11 * 3, CANVAS_PAINT);
+                // canvas.drawText(mTextTip, width / 2, height / 2, paint);
+                // super.onDraw(canvas);
+            }
+
+
         }
 
         if (null == mTextTip || mTextTip.length() == 0)
@@ -213,14 +233,14 @@ public final class FinderView extends View {
             displacement = Math.abs(parseFloat);
 
             if (parseFloat < 0) {
-                displacement -= (mType == TYPE_BARCODE ? 2f : 5f);
+                displacement -= (mType == 1 ? 2f : 5f);
             } else {
-                displacement += (mType == TYPE_BARCODE ? 2f : 5f);
+                displacement += (mType == 1 ? 2f : 5f);
             }
             setTag(R.id.moudle_zxing_id_finderview_tag, String.valueOf(parseFloat < 0 ? -displacement : displacement));
 
         } catch (Exception e) {
-            displacement = (mType == TYPE_BARCODE ? 2f : 5f);
+            displacement = (mType == 1 ? 2f : 5f);
             setTag(R.id.moudle_zxing_id_finderview_tag, String.valueOf(displacement));
         }
 
@@ -233,11 +253,11 @@ public final class FinderView extends View {
 
         // 下移
         if (null == getTag(R.id.moudle_zxing_id_finderview_tag) || !getTag(R.id.moudle_zxing_id_finderview_tag).toString().startsWith("-")) {
-            displacement += (mType == TYPE_BARCODE ? 2f : 5f);
+            displacement += (mType == 1 ? 2f : 5f);
         }
         // 上移
         else {
-            displacement -= (mType == TYPE_BARCODE ? 2f : 5f);
+            displacement -= (mType == 1 ? 2f : 5f);
         }
 
         // 底部

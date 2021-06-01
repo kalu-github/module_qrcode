@@ -2,4 +2,5 @@
 <resources>
     <color name="moudle_zxing_color_66000000">#66000000</color>
     <color name="moudle_zxing_color_000000">#000000</color>
+    <color name="moudle_zxing_color_ffffff">#ffffff</color>
 </resources>
