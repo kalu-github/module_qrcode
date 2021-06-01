@@ -10,6 +10,7 @@ import android.os.Vibrator;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -156,7 +157,8 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
     public void startCamera() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             PreviewView previewView = findViewById(R.id.lib_zxing_ui_id_preview);
-            CameraManager.build().start(this, previewView);
+            ImageView imageView = findViewById(R.id.lib_zxing_ui_id_pic);
+            CameraManager.build().start(this, previewView, imageView);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0X86);
         }
@@ -249,8 +251,6 @@ public final class QrcodeActivity extends AppCompatActivity implements OnCameraS
         if (beep) {
             BeepUtil.release();
         }
-
-        LogUtil.log("onResult => text = " + result.getText());
 
         Intent intent = new Intent();
         intent.putExtra(INTENT_RESULT, result.getText());

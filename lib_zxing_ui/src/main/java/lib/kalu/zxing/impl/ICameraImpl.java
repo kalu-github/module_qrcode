@@ -3,6 +3,7 @@ package lib.kalu.zxing.impl;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.zxing.Result;
 import com.google.zxing.qrcode.QRCodeReader;
@@ -31,7 +32,7 @@ public interface ICameraImpl extends ICameraBaseLifecycleImpl, ICameraBaseContro
      * @param image
      * @return
      */
-    boolean analysis(@NonNull Activity activity, @NonNull ImageProxy image);
+    boolean analysis(@NonNull Activity activity, @Nullable ImageView imageView, @NonNull ImageProxy image);
 
 //    /**
 //     * 设置是否需要支持自动缩放

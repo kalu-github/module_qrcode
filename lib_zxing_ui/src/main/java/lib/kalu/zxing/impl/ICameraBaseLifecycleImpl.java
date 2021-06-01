@@ -1,6 +1,7 @@
 package lib.kalu.zxing.impl;
 
 import android.content.Context;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +15,7 @@ import androidx.fragment.app.FragmentActivity;
  */
 interface ICameraBaseLifecycleImpl {
 
-    void start(@NonNull FragmentActivity activity, @NonNull PreviewView previewView);
+    void start(@NonNull FragmentActivity activity, @NonNull PreviewView previewView, @Nullable ImageView imageView);
 
     void release(@NonNull Context context);
 

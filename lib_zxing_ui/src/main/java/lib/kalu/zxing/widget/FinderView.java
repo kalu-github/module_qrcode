@@ -22,7 +22,6 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 
 import lib.kalu.zxing.R;
 import lib.kalu.zxing.util.LogUtil;

@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.zxing.Result;
@@ -36,8 +37,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -183,7 +182,7 @@ public final class CameraManager implements ICameraImpl {
     }
 
     @Override
-    public void start(@NonNull FragmentActivity activity, @NonNull PreviewView previewView) {
+    public void start(@NonNull FragmentActivity activity, @NonNull PreviewView previewView, @Nullable ImageView imageView) {
 
         Context context = activity.getApplicationContext();
         ListenableFuture<ProcessCameraProvider> instance = ProcessCameraProvider.getInstance(context);
@@ -210,7 +209,7 @@ public final class CameraManager implements ICameraImpl {
                     imageAnalysis.setAnalyzer(threadPool, new ImageAnalysis.Analyzer() {
                         @Override
                         public void analyze(@NonNull ImageProxy image) {
-                            boolean analysis = analysis(activity, image);
+                            boolean analysis = analysis(activity, imageView, image);
                             if (analysis) {
                                 threadPool.shutdownNow();
                             }
@@ -230,7 +229,7 @@ public final class CameraManager implements ICameraImpl {
     }
 
     @Override
-    public boolean analysis(@NonNull Activity activity, @NonNull ImageProxy image) {
+    public boolean analysis(@NonNull Activity activity, @Nullable ImageView imageView, @NonNull ImageProxy image) {
 
         if (null == mOnCameraStatusChangeListener)
             return false;
@@ -242,7 +241,7 @@ public final class CameraManager implements ICameraImpl {
 
         Context context = activity.getApplicationContext();
         AnalyzerQrcode analyzerQrcode = AnalyzerQrcode.getAnalyzer();
-        Result result = analyzerQrcode.analyzeImage(context, image, context.getResources().getConfiguration().orientation);
+        Result result = analyzerQrcode.analyzeImage(context, imageView, image, context.getResources().getConfiguration().orientation);
         if (null == result)
             return false;
 

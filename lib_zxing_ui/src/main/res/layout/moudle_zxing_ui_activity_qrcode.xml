@@ -74,4 +74,13 @@
         android:textSize="12sp"
         android:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/lib_zxing_ui_id_pic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"
+        android:background="@android:color/black" />
+
 </RelativeLayout>
