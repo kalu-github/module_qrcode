@@ -124,37 +124,4 @@ public interface AnalyzerBaseImpl {
         }
         return crop;
     }
-
-    /**
-     * 直接对相机的原始数据裁剪, 裁剪后的byte[]扔给zxing直接处理
-     * 1. 裁剪区域
-     *
-     * @param original    相机原始帧数据：byte[]
-     * @param dataWidth   相机原始帧数据：width
-     * @param dataHeight  相机原始帧数据：height
-     * @param outWidth    裁剪输出帧数据：width
-     * @param outHeight   裁剪输出帧数据：height
-     * @param left        裁剪原始帧数据坐标：left
-     * @param top         裁剪原始帧数据坐标：top
-     * @param orientation 横屏竖屏
-     * @return
-     */
-    default byte[] cropOnly(@NonNull byte[] original, @NonNull int originalWidth, @NonNull int originalHeight, int cropWidth, int cropHeight, int cropLeft, int cropTop, int orientation) {
-        LogUtil.log("crop => orientation = " + (orientation == Configuration.ORIENTATION_PORTRAIT ? "竖屏" : "横屏") + ", originalWidth = " + originalWidth + ", originalHeight = " + originalHeight);
-
-        int yMin = cropTop;
-        int yMax = yMin + cropHeight;
-        int xMin = cropLeft;
-        int xMax = cropLeft + cropWidth;
-
-        byte[] crop = new byte[cropWidth * cropHeight];
-
-        for (int y = yMin; y < yMax; y++) {
-            for (int x = xMin; x < xMax; x++) {
-                // planA: 仅裁剪
-                crop[(x - xMin) + (y - cropTop) * cropWidth] = original[x + y * originalWidth];
-            }
-        }
-        return crop;
-    }
 }

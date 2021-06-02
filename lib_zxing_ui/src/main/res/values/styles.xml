@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="QrcodeAnimation">
+    <style name="AnimationZxing">
         <item name="android:activityOpenEnterAnimation">@null</item>
         <item name="android:activityOpenExitAnimation">@null</item>
         <item name="android:activityCloseEnterAnimation">@null</item>
@@ -16,7 +16,7 @@
         <item name="android:taskToBackExitAnimation">@null</item>
     </style>
 
-    <style name="QrcodeTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="ThemeZxing" parent="Theme.AppCompat.DayNight.NoActionBar">
 
         // Dialog的windowFrame框为无
         <item name="android:windowFrame">@null</item>
@@ -31,7 +31,7 @@
         // 背景是否模糊显示
         <item name="android:backgroundDimEnabled">false</item>
         // 样式
-        <item name="android:windowAnimationStyle">@style/QrcodeAnimation</item>
+        <item name="android:windowAnimationStyle">@style/AnimationZxing</item>
         <item name="android:windowFullscreen">false</item>
     </style>
 

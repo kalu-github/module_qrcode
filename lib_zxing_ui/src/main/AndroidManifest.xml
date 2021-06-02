@@ -25,7 +25,7 @@
 
         <provider
             android:name="lib.kalu.zxing.contentprovider.ContextProviderZxing"
-            android:authorities="${applicationId}.mediaplayer.contextprovider"
+            android:authorities="${applicationId}.zxing.contextprovider"
             android:exported="false"
             android:process=":zxing" />
 
@@ -35,6 +35,6 @@
             android:launchMode="singleTop"
             android:process=":zxing"
             android:screenOrientation="portrait"
-            android:theme="@style/QrcodeTheme" />
+            android:theme="@style/ThemeZxing" />
     </application>
 </manifest>
