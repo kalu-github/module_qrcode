@@ -7,8 +7,10 @@ import android.graphics.BlendMode;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -48,7 +50,11 @@ public final class FinderView extends View {
     @ColorInt
     private int mShadowColor = COLOR_66000000;
     @ColorInt
-    private int mLineColor = Color.BLACK;
+    private int mLineColorStart = Color.BLACK;
+    @ColorInt
+    private int mLineColorCenter = Color.BLACK;
+    @ColorInt
+    private int mLineColorEnd = Color.BLACK;
     @ColorInt
     private int mAngleColor = Color.BLACK;
     @FloatRange(from = 1, to = 40)
@@ -68,7 +74,9 @@ public final class FinderView extends View {
         try {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FinderView);
             mType = typedArray.getInt(R.styleable.FinderView_fv_type, 0);
-            mLineColor = typedArray.getColor(R.styleable.FinderView_fv_line_color, Color.BLACK);
+            mLineColorStart = typedArray.getColor(R.styleable.FinderView_fv_line_color_start, Color.BLACK);
+            mLineColorCenter = typedArray.getColor(R.styleable.FinderView_fv_line_color_center, Color.BLACK);
+            mLineColorEnd = typedArray.getColor(R.styleable.FinderView_fv_line_color_end, Color.BLACK);
             mAngleColor = typedArray.getColor(R.styleable.FinderView_fv_angle_color, Color.BLACK);
             mShadowColor = typedArray.getColor(R.styleable.FinderView_fv_shadow_color, COLOR_66000000);
             mTextGravity = typedArray.getInt(R.styleable.FinderView_fv_text_gravity, 0);
@@ -87,7 +95,9 @@ public final class FinderView extends View {
         try {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FinderView);
             mType = typedArray.getInt(R.styleable.FinderView_fv_type, 0);
-            mLineColor = typedArray.getColor(R.styleable.FinderView_fv_line_color, Color.BLACK);
+            mLineColorStart = typedArray.getColor(R.styleable.FinderView_fv_line_color_start, Color.BLACK);
+            mLineColorCenter = typedArray.getColor(R.styleable.FinderView_fv_line_color_center, Color.BLACK);
+            mLineColorEnd = typedArray.getColor(R.styleable.FinderView_fv_line_color_end, Color.BLACK);
             mAngleColor = typedArray.getColor(R.styleable.FinderView_fv_angle_color, Color.BLACK);
             mShadowColor = typedArray.getColor(R.styleable.FinderView_fv_shadow_color, COLOR_66000000);
             mTextGravity = typedArray.getInt(R.styleable.FinderView_fv_text_gravity, 0);
@@ -269,13 +279,16 @@ public final class FinderView extends View {
             setTag(R.id.moudle_zxing_id_finderview_tag, String.valueOf(displacement));
         }
 
+        LinearGradient backGradient = new LinearGradient(rectLeft, rectTop, rectRight, rectBottom, new int[]{mLineColorStart, mLineColorCenter, mLineColorCenter, mLineColorEnd}, new float[]{0, 0.25f, 0.75f, 1f}, Shader.TileMode.CLAMP);
+        CANVAS_PAINT.setShader(backGradient);
         CANVAS_PAINT.setStrokeWidth(0);
-        CANVAS_PAINT.setColor(mLineColor);
         CANVAS_PAINT.setStyle(Paint.Style.STROKE);
         CANVAS_PAINT.setAntiAlias(true);
-        CANVAS_PAINT.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{4, 4}, 0);
+        CANVAS_PAINT.setPathEffect(dashPathEffect);
         canvas.drawLine(rectLeft, rectTop, rectRight, rectBottom, CANVAS_PAINT);
-//        canvas.drawRect(rectLeft, rectTop, rectRight, rectBottom, paint);
+        CANVAS_PAINT.setShader(null);
+        CANVAS_PAINT.clearShadowLayer();
         postInvalidateDelayed(20, (int) left, (int) top, (int) right, (int) bottom);
         // LogUtil.log("onDraw[二维码扫描框] => lineDisplacement = " + getHint());
     }

@@ -86,7 +86,6 @@ class DecodeTool {
 
             if (null != bitmap || !bitmap.isRecycled()) {
                 bitmap.recycle();
-                bitmap = null;
             }
 
             RGBLuminanceSource source = new RGBLuminanceSource(bitmapWidth, bitmapHeight, pixels);

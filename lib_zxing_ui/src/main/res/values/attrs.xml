@@ -11,7 +11,9 @@
         <attr name="fv_angle_color" format="color|reference" />
         <attr name="fv_angle_width" format="dimension|reference" />
         <attr name="fv_angle_height" format="dimension|reference" />
-        <attr name="fv_line_color" format="color|reference" />
+        <attr name="fv_line_color_start" format="color|reference" />
+        <attr name="fv_line_color_center" format="color|reference" />
+        <attr name="fv_line_color_end" format="color|reference" />
         <attr name="fv_type" format="enum">
             <enum name="qrcode" value="0" />
             <enum name="barcode" value="1" />
