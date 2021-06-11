@@ -28,7 +28,8 @@ https://mvnrepository.com/artifact/com.google.zxing/core
 https://mvnrepository.com/artifact/com.google.zxing/android-core
 ```
 
-# czxing-1.2.0
+#
+#### czxing-1.2.0
 ```
 https://github.com/nu-book/zxing-cpp/tags
 ```
