@@ -1,10 +1,4 @@
 #
-#### 基于CameraX-Zbar二维码扫描库
-```
-https://github.com/153437803/moudle_zbar
-```
-
-#
 #### demo
 
 ![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162026.gif )
@@ -17,14 +11,6 @@ https://github.com/153437803/moudle_zbar
 - [x] 支持浅色二维码识别, 线性增强
 - [x] 支持花式二维码识别, 伽马增强
 - [x] 支持线程池并发解析数据
-
-#
-#### 模块
-```
-lib_zxing_ui => ui
-lib_zxing_source_all => zxing源码
-lib_zxing_source_qrcode => zxing源码 - 仅保留二维码编解码
-```
 
 #
 #### cameraX
@@ -40,6 +26,11 @@ https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androi
 https://github.com/zxing/zxing/releases
 https://mvnrepository.com/artifact/com.google.zxing/core
 https://mvnrepository.com/artifact/com.google.zxing/android-core
+```
+
+# czxing-1.2.0
+```
+https://github.com/nu-book/zxing-cpp/tags
 ```
 
 #
