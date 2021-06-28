@@ -1,0 +1,93 @@
+apply plugin: 'com.android.library'
+
+android {
+
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
+    compileOptions.encoding = "UTF-8"
+    ndkPath "C:\\Users\\Administrator\\android-sdk\\ndk\\17.2.4988734"
+    ndkVersion "17.2.4988734"
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++11',                        //支持c++11标准
+                        '-frtti',                             //支持运行时类型检查
+                        '-fexceptions',                       //支持异常处理
+                        '-Wno-switch-enum -Wno-switch',       //
+                        '-fopenmp',                           //支持并行计算
+                        '-Os -Oz',                            //开启编译优化-Os 优化GCC -Oz优化Clang
+                        '-fvisibility=hidden',                //隐藏elf符号表，可以减少 so 文件大小
+                        '-fvisibility-inlines-hidden',        //隐藏所有内联函数，从而减小导出符号表的大小，既能缩减文件的大小，还能提高运行性能
+                        '-ffunction-sections -fdata-sections' //删除无用函数，减小so文件大小
+
+                arguments '-DANDROID_PLATFORM=android-23',
+                        '-DANDROID_TOOLCHAIN=clang',
+                        '-DANDROID_STL=gnustl_static'
+
+                //abiFilters /*'x86', 'armeabi', */ 'armeabi-v7a'/*,'arm64-v8a'*/
+                abiFilters 'armeabi-v7a'
+            }
+        }
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.all {
+            def type = new String(buildType.name).toLowerCase()
+            def time = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+08"))
+            outputFileName = "lib_zbar_all_r1.3.1_" + type + "_" + time + ".aar"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            zipAlignEnabled false
+            shrinkResources false
+            multiDexEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard/proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
+            zipAlignEnabled false
+            shrinkResources false
+            multiDexEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard/proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    api files('libs/lib_zbar_source.jar')
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MoudleAnimationCzxing">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
+    </style>
+
+    <style name="MoudleThemeCzxing" parent="Theme.AppCompat.DayNight.NoActionBar">
+
+        // Dialog的windowFrame框为无
+        <item name="android:windowFrame">@null</item>
+        // 是否浮现在activity之上
+        <item name="android:windowIsFloating">false</item>
+        // 是否浮现在activity之上
+        <item name="android:windowIsTranslucent">false</item>
+        // 是否显示title
+        <item name="android:windowNoTitle">false</item>
+        // 设置dialog的背景
+        <item name="android:windowBackground">@android:color/black</item>
+        // 背景是否模糊显示
+        <item name="android:backgroundDimEnabled">false</item>
+        // 样式
+        <item name="android:windowAnimationStyle">@style/MoudleAnimationCzxing</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
+
+</resources>

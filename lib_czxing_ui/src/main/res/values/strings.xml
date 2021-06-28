@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="moudle_zxing_string_warning">未发现相机</string>
+    <string name="moudle_zxing_string_null">未发现二维码</string>
+    <string name="moudle_zxing_string_tip_qrcode">将二维码放入框内\n自动扫描</string>
+    <string name="moudle_zxing_string_tip_qrcode2">将二维码放入框内，即可自动扫描</string>
+    <string name="moudle_zxing_string_tip_barcode">将条形码放入框内\n自动扫描</string>
+    <string name="moudle_zxing_string_tip_barcode2">将条形码放入框内，即可自动扫描</string>
+    <string name="moudle_zxing_string_album">相册</string>
+    <string name="moudle_zxing_string_light_on">打开手电筒</string>
+    <string name="moudle_zxing_string_light_off">关闭手电筒</string>
+</resources>

@@ -1,4 +1,19 @@
 include ':app'
+
+// zxing
 //include ':lib_zxing_ui'
 //include ':lib_zxing_source_qrcode'
 //include ':lib_zxing_source_all'
+
+// czxing
+//include ':lib_czxing_ui'
+//include ':lib_czxing_source_qrcode_1.2.0'
+//include ':lib_czxing_source_all_1.2.0'
+//include ':lib_czxing_source_all'
+//include ':lib_czxing_source_all_opencv'
+
+// zbar
+//include ':lib_zbar_ui'
+//include ':lib_zbar_source_ndk_qrcode'
+//include ':lib_zbar_source_jar'
+//include ':lib_zbar_source_ndk_all'
