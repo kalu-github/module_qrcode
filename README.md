@@ -1,8 +1,8 @@
 #
 #### demo
 
-![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162026.gif )
-![image](https://github.com/153437803/moudle_zxing/blob/master/image20210513162824.gif )
+![image](https://github.com/153437803/moudle_barcode/blob/master/image20210513162026.gif )
+![image](https://github.com/153437803/moudle_barcode/blob/master/image20210513162824.gif )
 
 #
 #### todolist
