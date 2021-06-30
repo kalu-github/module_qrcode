@@ -1,4 +1,4 @@
-package com.kalu.zxing;
+package com.kalu.barcode;
 
 import android.Manifest;
 import android.app.Activity;
@@ -134,92 +134,28 @@ public class MainActivity extends Activity {
         findViewById(R.id.decode_qr2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                requestCameraPerm();
-
                 Intent intent = new Intent(getApplicationContext(), QrcodeActivity.class);
                 startActivity(intent);
             }
         });
-//
-//        // 默认扫描
-//        findViewById(R.id.scan_normal).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                requestCameraPerm();
-//                QrcodeManager.start(MainActivity.this, new OnQrcodeScanChangeListener() {
-//                    @Override
-//                    public void onSucc(@NonNull String s) {
-//                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onFail(@NonNull String s) {
-//                        Toast.makeText(getApplicationContext(), "onFail", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onCancle() {
-//                        Toast.makeText(getApplicationContext(), "onCancle", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        });
-//
-//        // 自定义扫描
-//        findViewById(R.id.scan_custom).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                requestCameraPerm();
-//                QrcodeConfig builder = new QrcodeConfig.Builder()
-//                        //设置完成震动
-//                        .isShowVibrate(false)
-//                        //扫描完成声音
-//                        .isShowBeep(true)
-//                        //显示相册功能
-//                        .isShowPhotoAlbum(true)
-//                        //打开扫描页面的动画
-//                        .setActivityOpenAnime(R.anim.activity_anmie_in)
-//                        //退出扫描页面动画
-//                        .setActivityExitAnime(R.anim.activity_anmie_out)
-//                        //自定义文案
-//                        .setScanHintText("请将二维码放入框中...")
-//                        //扫描线的颜色
-//                        .setScanColor("#FFFF00")
-//                        //是否显示缩放控制器
-//                        .isShowZoomController(true)
-//                        //显示缩放控制器位置
-//                        .setZoomControllerLocation(QrcodeConfig.ZoomControllerLocation.Bottom)
-//                        .builder();
-//                QrcodeManager.start(MainActivity.this, builder, new OnQrcodeScanChangeListener() {
-//                    @Override
-//                    public void onSucc(@NonNull String s) {
-//                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onFail(@NonNull String s) {
-//                        Toast.makeText(getApplicationContext(), "onFail", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onCancle() {
-//                        Toast.makeText(getApplicationContext(), "onCancle", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        });
-    }
 
-    public void requestCameraPerm() {
-        //判断权限
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, 10010);
+        // czxing_decode_qrcode
+        findViewById(R.id.czxing_decode_qrcode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), lib.kalu.czxing.QrcodeActivity.class);
+                startActivityForResult(intent, 20000);
             }
-        }
+        });
+
+        // czxing_decode_all
+        findViewById(R.id.czxing_decode_all).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), lib.kalu.czxing.QrcodeActivity.class);
+                startActivityForResult(intent, 20000);
+            }
+        });
     }
 
     @Override

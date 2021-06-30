@@ -1,102 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright"
-    android:fillViewport="true">
+    android:background="@android:color/holo_blue_bright">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/holo_red_dark" />
+
+            <Button
+                android:id="@+id/create_qr1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="编码: 生成二维码无LOGO"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/create_qr2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="编码: 生成二维码有LOGOUrl"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/create_qr3"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="编码: 生成二维码有LOGORAW"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/create_qr4"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="编码: 生成二维码有LOGOAsset"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/decode_qr1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="解码: 二维码图片"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/decode_qr2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="解码: 扫描二维码"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/decode_bar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="解码: 扫描条形码"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/holo_red_dark" />
+
+            <Button
+                android:id="@+id/czxing_decode_qrcode"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="czxing: 扫描二维码"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/czxing_decode_all"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#eeeeee"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="20dp"
+                android:text="czxing: 扫描"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/holo_red_dark" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_horizontal"
         android:layout_margin="10dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:background="@android:color/darker_gray" />
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:background="#eeeeee" />
-
-        <Button
-            android:id="@+id/create_qr1"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="编码: 生成二维码无LOGO"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/create_qr2"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="编码: 生成二维码有LOGOUrl"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/create_qr3"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="编码: 生成二维码有LOGORAW"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/create_qr4"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="编码: 生成二维码有LOGOAsset"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/decode_qr1"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="解码: 二维码图片"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/decode_qr2"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="解码: 扫描二维码"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/decode_bar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:text="解码: 扫描条形码"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>
+</RelativeLayout>

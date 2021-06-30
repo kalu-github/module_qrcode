@@ -6,9 +6,9 @@ include ':app'
 //include ':lib_zxing_source_all'
 
 // czxing
-//include ':lib_czxing_ui'
+include ':lib_czxing_ui'
 //include ':lib_czxing_source_qrcode_1.2.0'
-//include ':lib_czxing_source_all_1.2.0'
+include ':lib_czxing_source_all_1.2.0'
 //include ':lib_czxing_source_all'
 //include ':lib_czxing_source_all_opencv'
 
