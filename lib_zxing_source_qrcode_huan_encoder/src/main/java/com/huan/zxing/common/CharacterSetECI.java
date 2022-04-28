@@ -16,8 +16,6 @@
 
 package com.huan.zxing.common;
 
-import com.huan.zxing.exception.FormatException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,18 +92,6 @@ public enum CharacterSetECI {
         return values[0];
     }
 
-    /**
-     * @param value character set ECI value
-     * @return {@code CharacterSetECI} representing ECI of given value, or null if it is legal but
-     * unsupported
-     * @throws FormatException if ECI value is invalid
-     */
-    public static CharacterSetECI getCharacterSetECIByValue(int value) throws FormatException {
-        if (value < 0 || value >= 900) {
-            throw FormatException.getFormatInstance();
-        }
-        return VALUE_TO_ECI.get(value);
-    }
 
     /**
      * @param name character set ECI encoding name

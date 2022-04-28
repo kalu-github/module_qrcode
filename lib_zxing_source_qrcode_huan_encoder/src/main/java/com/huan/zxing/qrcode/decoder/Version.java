@@ -16,7 +16,6 @@
 
 package com.huan.zxing.qrcode.decoder;
 
-import com.huan.zxing.exception.FormatException;
 import com.huan.zxing.common.BitMatrix;
 
 /**
@@ -82,23 +81,6 @@ public final class Version {
         return ecBlocks[ecLevel.ordinal()];
     }
 
-    /**
-     * <p>Deduces version information purely from QR Code dimensions.</p>
-     *
-     * @param dimension dimension in modules
-     * @return Version for a QR Code of that dimension
-     * @throws FormatException if dimension is not 1 mod 4
-     */
-    public static Version getProvisionalVersionForDimension(int dimension) throws FormatException {
-        if (dimension % 4 != 1) {
-            throw FormatException.getFormatInstance();
-        }
-        try {
-            return getVersionForNumber((dimension - 17) / 4);
-        } catch (IllegalArgumentException ignored) {
-            throw FormatException.getFormatInstance();
-        }
-    }
 
     public static Version getVersionForNumber(int versionNumber) {
         if (versionNumber < 1 || versionNumber > 40) {
