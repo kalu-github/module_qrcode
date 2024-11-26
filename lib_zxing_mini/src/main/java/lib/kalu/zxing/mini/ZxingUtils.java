@@ -44,7 +44,7 @@ public final class ZxingUtils {
             @NonNull Context context,
             @NonNull String text) {
 
-        return create(context, null, text, 3, 0, 0, 0, 0);
+        return create1(context, text, null, 3, 0, 0, 0, 0);
     }
 
     @Keep
@@ -53,7 +53,7 @@ public final class ZxingUtils {
             @NonNull String text,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int margin) {
 
-        return create(context, null, text, 3, margin, margin, margin, margin);
+        return create1(context, text, null, 3, margin, margin, margin, margin);
     }
 
     @Keep
@@ -62,7 +62,7 @@ public final class ZxingUtils {
             @NonNull String text,
             @Nullable String logoBase64) {
 
-        return create(context, text, logoBase64, 3, 0, 0, 0, 0);
+        return create1(context, text, logoBase64, 3, 0, 0, 0, 0);
     }
 
     @Keep
@@ -72,7 +72,7 @@ public final class ZxingUtils {
             @Nullable String logoBase64,
             @IntRange(from = 3, to = 100) int multiple) {
 
-        return create(context, text, logoBase64, multiple, 0, 0, 0, 0);
+        return create1(context, text, logoBase64, multiple, 0, 0, 0, 0);
     }
 
     @Keep
@@ -83,7 +83,7 @@ public final class ZxingUtils {
             @IntRange(from = 3, to = 100) int multiple,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int margin) {
 
-        return create(context, text, logoBase64, multiple, margin, margin, margin, margin);
+        return create1(context, text, logoBase64, multiple, margin, margin, margin, margin);
     }
 
     /**
@@ -97,8 +97,7 @@ public final class ZxingUtils {
      * @param marginBottom 二维码白边下边距
      * @return
      */
-    @Keep
-    public static String create(
+    private static String create1(
             @NonNull Context context,
             @NonNull String text,
             @Nullable String logoBase64,
@@ -108,59 +107,17 @@ public final class ZxingUtils {
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom) {
 
-        InputStream logoInputStream = null;
-        if (null != logoBase64 && logoBase64.length() > 0) {
-            logoInputStream = logoBase64ToInputStream(logoBase64);
-        }
-
-        String qrcode = create(context, text, logoInputStream, multiple, marginLeft, marginTop, marginRight, marginBottom);
-
-        if (null != logoInputStream) {
-            try {
-                logoInputStream.close();
-                logoInputStream = null;
-            } catch (Exception e) {
+        try {
+            if (null == logoBase64 || logoBase64.length() == 0) {
+                return create2(context, text, null, multiple, marginLeft, marginTop, marginRight, marginBottom);
+            } else {
+                InputStream logoInputStream = logoBase64ToInputStream(logoBase64);
+                Bitmap logoBitmap = createLogoBitmap(logoInputStream, 20, Color.WHITE);
+                return create2(context, text, logoBitmap, multiple, marginLeft, marginTop, marginRight, marginBottom);
             }
-        }
-
-        return qrcode;
-    }
-
-
-    /**
-     * @param context         上下文context
-     * @param text            二维码信息
-     * @param logoInputStream 二维码中间logo
-     * @param multiple        二维码放大倍数(from = 3, to = 100)
-     * @param marginLeft      二维码白边左边距
-     * @param marginTop       二维码白边上边距
-     * @param marginRight     二维码白边右边距
-     * @param marginBottom    二维码白边下边距
-     * @return
-     */
-    @Keep
-    private static String create(
-            @NonNull Context context,
-            @NonNull String text,
-            @Nullable InputStream logoInputStream,
-            @IntRange(from = 3, to = 100) int multiple,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom) {
-
-        if (null == context)
+        } catch (Exception e) {
             return null;
-
-        Bitmap logoBitmap = createBitmapLogo(context, logoInputStream, 20, Color.WHITE);
-        String qrcode = create(context, text, logoBitmap, multiple, marginLeft, marginTop, marginRight, marginBottom);
-
-        if (null != logoBitmap) {
-            logoBitmap.recycle();
-            logoBitmap = null;
         }
-
-        return qrcode;
     }
 
     /**
@@ -174,8 +131,7 @@ public final class ZxingUtils {
      * @param marginBottom 二维码白边下边距
      * @return
      */
-    @Keep
-    public static String create(
+    private static String create2(
             @NonNull Context context,
             @NonNull String text,
             @Nullable Bitmap logoBitmap,
@@ -188,10 +144,10 @@ public final class ZxingUtils {
         if (null == context || null == text || text.length() == 0)
             return null;
 
-        Bitmap bitmapQrcode = createBitmap(context, text, logoBitmap, multiple, marginLeft, marginTop, marginRight, marginBottom, ErrorCorrectionLevel.M, null);
+        Bitmap qrBitmap = createBitmap(context, text, logoBitmap, multiple, marginLeft, marginTop, marginRight, marginBottom, ErrorCorrectionLevel.M, null);
 
         int hashcode = text.hashCode();
-        String saveBitmapLocal = saveBitmapLocal(context, bitmapQrcode, hashcode);
+        String saveBitmapLocal = saveBitmapLocal(context, qrBitmap, hashcode);
 
         if (null != logoBitmap) {
             logoBitmap.recycle();
@@ -201,16 +157,6 @@ public final class ZxingUtils {
         return saveBitmapLocal;
     }
 
-    /****************************** createQrcode *************************************/
-
-    /**
-     * 保存bitmap至本地
-     *
-     * @param context  上下文
-     * @param bitmap   bitmap
-     * @param hashcode 文件名hashcode
-     * @return
-     */
     @Keep
     private static String saveBitmapLocal(@NonNull Context context, @NonNull Bitmap bitmap, @NonNull int hashcode) {
 
@@ -260,13 +206,7 @@ public final class ZxingUtils {
         }
     }
 
-    /**
-     * createBitmapLogoFromFile
-     *
-     * @param filePath
-     * @return
-     */
-    private static Bitmap createBitmapLogoFromFile(@NonNull Context context, @NonNull String filePath, @IntRange(from = 4, to = 14) int boderWidth, @ColorInt int borderColor) {
+    private static Bitmap createLogoBitmap(@NonNull InputStream logoInputStream, @IntRange(from = 10, to = 20) int boderWidth, @ColorInt int borderColor) {
 
         try {
 
@@ -278,7 +218,7 @@ public final class ZxingUtils {
             }
             options.inSampleSize = 2;
 
-            Bitmap logoBitmap = BitmapFactory.decodeFile(filePath, options);
+            Bitmap logoBitmap = BitmapFactory.decodeStream(logoInputStream, null, options);
             Bitmap bitmapBorder = createBitmapBorder(logoBitmap, options, boderWidth, borderColor);
 
             if (null != logoBitmap) {
@@ -286,71 +226,9 @@ public final class ZxingUtils {
                 logoBitmap = null;
             }
 
-            return bitmapBorder;
-
-        } catch (Exception e) {
-            Log.e("QrcodeTool", "decodeBitmapFromInputStream => " + e.getMessage(), e);
-            return null;
-        }
-    }
-
-    /**
-     * decodeBitmapFromInputStream
-     *
-     * @param inputStream
-     * @return
-     */
-    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull InputStream inputStream, @IntRange(from = 10, to = 20) int boderWidth, @ColorInt int borderColor) {
-
-        try {
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;//不缩放
-            options.inJustDecodeBounds = false;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                options.outConfig = Bitmap.Config.RGB_565;
-            }
-            options.inSampleSize = 2;
-
-            Bitmap logoBitmap = BitmapFactory.decodeStream(inputStream, null, options);
-            Bitmap bitmapBorder = createBitmapBorder(logoBitmap, options, boderWidth, borderColor);
-
-            if (null != logoBitmap) {
-                logoBitmap.recycle();
-                logoBitmap = null;
-            }
-
-            if (null != inputStream) {
-                inputStream.close();
-                inputStream = null;
-            }
-
-            return bitmapBorder;
-
-        } catch (Exception e) {
-            Log.e("QrcodeTool", "decodeBitmapFromInputStream => " + e.getMessage(), e);
-            return null;
-        }
-    }
-
-    private static Bitmap createBitmapLogo(@NonNull Context context, @NonNull String base64, @IntRange(from = 4, to = 14) int boderWidth, @ColorInt int borderColor) {
-
-        try {
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;//不缩放
-            options.inJustDecodeBounds = false;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                options.outConfig = Bitmap.Config.RGB_565;
-            }
-            options.inSampleSize = 2;
-
-            Bitmap logoBitmap = base64ToBitmap(base64, options);
-            Bitmap bitmapBorder = createBitmapBorder(logoBitmap, options, boderWidth, borderColor);
-
-            if (null != logoBitmap) {
-                logoBitmap.recycle();
-                logoBitmap = null;
+            if (null != logoInputStream) {
+                logoInputStream.close();
+                logoInputStream = null;
             }
 
             return bitmapBorder;
@@ -369,8 +247,7 @@ public final class ZxingUtils {
      * @param border
      * @return
      */
-    private static @Nullable
-    Bitmap createBitmapBorder(@Nullable Bitmap logoBitmap, @NonNull BitmapFactory.Options options, @IntRange(from = 0, to = 100) int border, @ColorInt int color) {
+    private static Bitmap createBitmapBorder(@Nullable Bitmap logoBitmap, @NonNull BitmapFactory.Options options, @IntRange(from = 0, to = 100) int border, @ColorInt int color) {
 
         if (null == logoBitmap)
             return null;
