@@ -1,15 +1,15 @@
-include ':app'
+//include ':app'
 
 // zxing
 //include ':lib_zxing_ui'
 //include ':lib_zxing_source_qrcode'
 //include ':lib_zxing_source_all'
-include ':lib_zxing_source_qrcode_huan_encoder'
+include ':lib_zxing_mini'
 
 // czxing
-include ':lib_czxing_ui'
+//include ':lib_czxing_ui'
 //include ':lib_czxing_source_qrcode_1.2.0'
-include ':lib_czxing_source_qrcode_1.2.0'
+//include ':lib_czxing_source_qrcode_1.2.0'
 //include ':lib_czxing_source_all'
 //include ':lib_czxing_source_all_opencv'
 

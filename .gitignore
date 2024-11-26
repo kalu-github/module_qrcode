@@ -1,11 +1,9 @@
 /.idea
 /.gradle
 /app/build
-/lib_zxing_ui/build
-/lib_zxing_source_all/build
-/lib_zxing_source_qrcode/build
+
 /local.properties
-/lib_zxing_source_barcode/build
+
 /lib_czxing_source_all_1.2.0/build
 /lib_czxing_source_all_1.2.0/.cxx
 /lib_czxing_source_qrcode_1.2.0/build
@@ -15,4 +13,12 @@
 /lib_zbar_source_ndk_qrcode/build
 /lib_zbar_source_ndk_qrcode/.cxx
 /lib_zbar_ui/build
+
+
+# zxing
+/lib_zxing_mini/build
+/lib_zxing_ui/build
+/lib_zxing_source_all/build
+/lib_zxing_source_qrcode/build
+/lib_zxing_source_barcode/build
 /lib_zxing_source_qrcode_huan_encoder/build/

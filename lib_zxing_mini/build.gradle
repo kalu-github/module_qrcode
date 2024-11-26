@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+
+android {
+
+    namespace 'lib.kalu.zxing.mini'
+    compileSdkVersion 33
+    buildToolsVersion "33.0.1"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0.1"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            consumerProguardFiles 'consumer-rules.pro'
+            proguardFiles 'proguard-rules.pro', 'consumer-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            consumerProguardFiles 'consumer-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.all {
+            def type = new String(buildType.name).toLowerCase()
+            def time = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+08"))
+            outputFileName = "lib_zxing_mini_" + type + "_" + time + ".aar"
+        }
+    }
+
+    // aar方法参数名被混淆问题
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += ["-g", "-parameters"]
+    }
+}
+
+dependencies {
+    compileOnly 'androidx.annotation:annotation:1.1.0'
+}
