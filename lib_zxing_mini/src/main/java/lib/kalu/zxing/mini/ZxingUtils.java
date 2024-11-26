@@ -42,66 +42,83 @@ public final class ZxingUtils {
     @Keep
     public static String create(
             @NonNull Context context,
-            @NonNull String text,
-            @Nullable String base64) {
+            @NonNull String text) {
 
-        return create(context, text, 3, 0, 0, 0, 0, base64);
+        return create(context, null, text, 3, 0, 0, 0, 0);
     }
 
     @Keep
     public static String create(
             @NonNull Context context,
             @NonNull String text,
-            @IntRange(from = 3, to = 100) int multiple,
-            @Nullable String base64) {
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin) {
 
-        return create(context, text, multiple, 0, 0, 0, 0, base64);
+        return create(context, null, text, 3, margin, margin, margin, margin);
     }
 
     @Keep
     public static String create(
             @NonNull Context context,
             @NonNull String text,
-            @IntRange(from = 3, to = 100) int multiple,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin,
-            @Nullable String base64) {
+            @Nullable String logoBase64) {
 
-        return create(context, text, multiple, margin, margin, margin, margin, base64);
+        return create(context, text, logoBase64, 3, 0, 0, 0, 0);
+    }
+
+    @Keep
+    public static String create(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable String logoBase64,
+            @IntRange(from = 3, to = 100) int multiple) {
+
+        return create(context, text, logoBase64, multiple, 0, 0, 0, 0);
+    }
+
+    @Keep
+    public static String create(
+            @NonNull Context context,
+            @NonNull String text,
+            @Nullable String logoBase64,
+            @IntRange(from = 3, to = 100) int multiple,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int margin) {
+
+        return create(context, text, logoBase64, multiple, margin, margin, margin, margin);
     }
 
     /**
      * @param context      上下文context
      * @param text         二维码信息
+     * @param logoBase64   二维码中间logo
      * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
      * @param marginBottom 二维码白边下边距
-     * @param base64       二维码中间logo
      * @return
      */
     @Keep
     public static String create(
             @NonNull Context context,
             @NonNull String text,
+            @Nullable String logoBase64,
             @IntRange(from = 3, to = 100) int multiple,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
-            @Nullable String base64) {
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom) {
 
-        InputStream inputStream = null;
-        if (null != base64 && base64.length() > 0) {
-            inputStream = base64ToInputStream(base64);
+        InputStream logoInputStream = null;
+        if (null != logoBase64 && logoBase64.length() > 0) {
+            logoInputStream = logoBase64ToInputStream(logoBase64);
         }
 
-        String qrcode = create(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, inputStream);
+        String qrcode = create(context, text, logoInputStream, multiple, marginLeft, marginTop, marginRight, marginBottom);
 
-        if (null != inputStream) {
+        if (null != logoInputStream) {
             try {
-                inputStream.close();
-                inputStream = null;
+                logoInputStream.close();
+                logoInputStream = null;
             } catch (Exception e) {
             }
         }
@@ -111,32 +128,32 @@ public final class ZxingUtils {
 
 
     /**
-     * @param context      上下文context
-     * @param text         二维码信息
-     * @param multiple     二维码放大倍数(from = 3, to = 100)
-     * @param marginLeft   二维码白边左边距
-     * @param marginTop    二维码白边上边距
-     * @param marginRight  二维码白边右边距
-     * @param marginBottom 二维码白边下边距
-     * @param inputStream  二维码中间logo
+     * @param context         上下文context
+     * @param text            二维码信息
+     * @param logoInputStream 二维码中间logo
+     * @param multiple        二维码放大倍数(from = 3, to = 100)
+     * @param marginLeft      二维码白边左边距
+     * @param marginTop       二维码白边上边距
+     * @param marginRight     二维码白边右边距
+     * @param marginBottom    二维码白边下边距
      * @return
      */
     @Keep
     private static String create(
             @NonNull Context context,
             @NonNull String text,
+            @Nullable InputStream logoInputStream,
             @IntRange(from = 3, to = 100) int multiple,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
-            @Nullable InputStream inputStream) {
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom) {
 
         if (null == context)
             return null;
 
-        Bitmap logoBitmap = createBitmapLogo(context, inputStream, 20, Color.WHITE);
-        String qrcode = create(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, logoBitmap);
+        Bitmap logoBitmap = createBitmapLogo(context, logoInputStream, 20, Color.WHITE);
+        String qrcode = create(context, text, logoBitmap, multiple, marginLeft, marginTop, marginRight, marginBottom);
 
         if (null != logoBitmap) {
             logoBitmap.recycle();
@@ -149,36 +166,36 @@ public final class ZxingUtils {
     /**
      * @param context      上下文context
      * @param text         二维码信息
+     * @param logoBitmap   二维码中间logo
      * @param multiple     二维码放大倍数(from = 3, to = 100)
      * @param marginLeft   二维码白边左边距
      * @param marginTop    二维码白边上边距
      * @param marginRight  二维码白边右边距
      * @param marginBottom 二维码白边下边距
-     * @param logo         二维码中间logo
      * @return
      */
     @Keep
     public static String create(
             @NonNull Context context,
             @NonNull String text,
+            @Nullable Bitmap logoBitmap,
             @IntRange(from = 3, to = 100) int multiple,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
-            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
-            @Nullable Bitmap logo) {
+            @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom) {
 
         if (null == context || null == text || text.length() == 0)
             return null;
 
-        Bitmap bitmapQrcode = createBitmap(context, text, multiple, marginLeft, marginTop, marginRight, marginBottom, ErrorCorrectionLevel.M, null, logo);
+        Bitmap bitmapQrcode = createBitmap(context, text, logoBitmap, multiple, marginLeft, marginTop, marginRight, marginBottom, ErrorCorrectionLevel.M, null);
 
         int hashcode = text.hashCode();
         String saveBitmapLocal = saveBitmapLocal(context, bitmapQrcode, hashcode);
 
-        if (null != logo) {
-            logo.recycle();
-            logo = null;
+        if (null != logoBitmap) {
+            logoBitmap.recycle();
+            logoBitmap = null;
         }
 
         return saveBitmapLocal;
@@ -417,9 +434,9 @@ public final class ZxingUtils {
      * description: 将Base64转换成为Bitmap
      * created by kalu on 2021-02-18
      */
-    private static InputStream base64ToInputStream(@NonNull String base64) {
+    private static InputStream logoBase64ToInputStream(@NonNull String logoBase64) {
         //将字符串转换为byte数组
-        String trim = base64.trim();
+        String trim = logoBase64.trim();
         byte[] bytes = Base64.decode(trim, Base64.DEFAULT);
         //转化为输入流
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
@@ -467,14 +484,14 @@ public final class ZxingUtils {
     private static Bitmap createBitmap(
             @NonNull Context context,
             @NonNull String text,
+            @Nullable Bitmap logoBitmap,
             @IntRange(from = 3, to = 100) int multiple,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginLeft,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginTop,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginRight,
             @IntRange(from = 0, to = Integer.MAX_VALUE) int marginBottom,
             @NonNull ErrorCorrectionLevel level,
-            @Nullable Map<EncodeHintType, ?> hints,
-            @Nullable Bitmap logo) {
+            @Nullable Map<EncodeHintType, ?> hints) {
 
         if (null == context || null == text || text.length() == 0)
             return null;
@@ -500,7 +517,7 @@ public final class ZxingUtils {
             // 缩放logo
             Bitmap scaleBitmap = null;
 
-            if (null != logo) {
+            if (null != logoBitmap) {
 
                 // logo输出宽度
                 int logoOutWidth = matrixWidth / 4;
@@ -522,19 +539,19 @@ public final class ZxingUtils {
 //                maxY = minY + logoOutHeight;
 
                 // logo真实高度
-                int logoRealWidth = logo.getWidth();
-                int logoRealHeight = logo.getHeight();
+                int logoRealWidth = logoBitmap.getWidth();
+                int logoRealHeight = logoBitmap.getHeight();
 
                 // Matrix缩放至指定大小
                 Matrix matrix = new Matrix();
                 float sx = ((float) logoOutHeight) / logoRealWidth;
                 float sy = ((float) logoOutHeight) / logoRealHeight;
                 matrix.setScale(sx, sy);
-                scaleBitmap = Bitmap.createBitmap(logo, 0, 0, logoRealWidth, logoRealHeight, matrix, false);
+                scaleBitmap = Bitmap.createBitmap(logoBitmap, 0, 0, logoRealWidth, logoRealHeight, matrix, false);
 
-                if (null != logo && !logo.isRecycled()) {
-                    logo.recycle();
-                    logo = null;
+                if (null != logoBitmap && !logoBitmap.isRecycled()) {
+                    logoBitmap.recycle();
+                    logoBitmap = null;
                 }
             }
 
